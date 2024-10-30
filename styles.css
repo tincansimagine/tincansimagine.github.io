@@ -2,14 +2,20 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    overflow: hidden; /* 스크롤 숨기기 */
 }
 
 .navbar {
+    position: fixed; /* 고정 위치 */
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     background-color: #333;
     padding: 10px 20px;
+    z-index: 1;
 }
 
 .hamburger {
@@ -27,26 +33,27 @@ body {
     transition: 0.3s;
 }
 
+.menu-container {
+    display: flex;
+    position: relative; /* 메뉴와 콘텐츠를 수평으로 배치 */
+    height: 100vh; /* 화면 전체 높이 */
+    transition: transform 0.3s ease; /* 애니메이션 효과 */
+}
+
 .menu {
-    display: none; /* 기본적으로 메뉴 숨김 */
-}
-
-.menu ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.menu ul li {
-    padding: 10px;
-    text-align: center;
-}
-
-.menu ul li a {
+    width: 250px; /* 메뉴 폭 */
+    background-color: #444;
     color: white;
-    text-decoration: none;
+    transform: translateX(-100%); /* 초기에는 숨김 */
+    transition: transform 0.3s ease;
 }
 
 .menu.active {
-    display: block; /* active 클래스가 있을 때 메뉴 표시 */
+    transform: translateX(0); /* 메뉴가 보이도록 이동 */
+}
+
+.content {
+    flex-grow: 1; /* 남은 공간을 채움 */
+    padding: 20px;
+    background-color: #f0f0f0;
 }
