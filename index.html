@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Translator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 깡갤 번역기</h1>
+        
+        <div class="api-section">
+            <div class="api-keys">
+                <div class="input-group">
+                    <label for="geminiApiKey">Google Gemini API Key</label>
+                    <input type="password" id="geminiApiKey" placeholder="Gemini API 키를 입력하세요">
+                </div>
+                <div class="input-group">
+                    <label for="openaiApiKey">OpenAI API Key</label>
+                    <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
+                </div>
+                <div class="input-group">
+                    <label for="anthropicApiKey">Anthropic API Key</label>
+                    <input type="password" id="anthropicApiKey" placeholder="Anthropic API 키를 입력하세요">
+                </div>
+                <button id="saveApiKeys" class="btn-small">API 키 저장</button>
+            </div>
+            
+            <div class="model-select">
+                <label for="modelSelect">번역 모델 선택</label>
+                <select id="modelSelect">
+                    <!-- 옵션들은 JavaScript에서 동적으로 생성됨 -->
+                </select>
+            </div>
+        </div>
+
+        <div class="prompt-section">
+            <label for="customPrompt">번역 프롬프트 설정</label>
+            <textarea id="customPrompt" rows="3"></textarea>
+            <button id="savePrompt" class="btn-small">프롬프트 저장</button>
+        </div>
+
+        <div class="word-rules-section">
+            <h3>
+                단어 변환 규칙
+                <button class="toggle-btn" id="toggleRules">▶</button>
+            </h3>
+            <div class="rules-content" id="rulesContent">
+                <div class="rule-input">
+                    <input type="text" id="sourceWord" placeholder="원본 단어">
+                    <input type="text" id="targetWord" placeholder="변환할 단어">
+                    <button id="addRule" class="btn-small">규칙 추가</button>
+                </div>
+                <div class="rules-list" id="rulesList"></div>
+            </div>
+        </div>
+
+        <div class="style-settings">
+            <h3>텍스트 스타일 설정</h3>
+            <div class="style-options">
+                <div class="color-picker">
+                    <label for="baseColor">기본 텍스트 색상:</label>
+                    <input type="color" id="baseColor" value="#333333">
+                </div>
+                <div class="color-picker">
+                    <label for="quoteColor">대사 색상 (쌍따옴표):</label>
+                    <input type="color" id="quoteColor" value="#2E5CB8">
+                </div>
+                <div class="color-picker">
+                    <label for="thoughtColor">생각 색상 (홑따옴표):</label>
+                    <input type="color" id="thoughtColor" value="#6B4C9A">
+                </div>
+                <div class="color-picker">
+                    <label for="emphasisColor">강조 색상 (이텔릭체):</label>
+                    <input type="color" id="emphasisColor" value="#7B3B3B">
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="enableMarkdown" checked>
+                    <label for="enableMarkdown">마크다운 변환 사용</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="translation-box">
+            <div class="input-group">
+                <label for="sourceText">입력 텍스트</label>
+                <div class="textarea-container">
+                    <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요"></textarea>
+                    <button class="copy-btn" id="copySource">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="translatedText">번역 결과</label>
+                <div class="textarea-container">
+                    <div id="formattedResult" class="formatted-result"></div>
+                    <textarea id="translatedText" placeholder="번역 결과가 여기에 표시됩니다"></textarea>
+                    <button class="copy-btn" id="copyTranslated">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button id="translateButton" class="translate-btn">번역하기</button>
+        <div id="loading" class="loading">번역 중...</div>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+    <script src="translator.js"></script>
+</body>
+</html>
