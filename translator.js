@@ -244,6 +244,112 @@ function initializeModelSelect() {
     }
 }
 
+// initialize 함수 추가 (initializeModelSelect 함수 다음에 위치)
+function initialize() {
+    initializeModelSelect();
+    initializeTheme();
+    setupPasswordToggles();
+    setupShortcuts();
+    
+    // 기존 값 복원
+    if (geminiApiKey) elements.geminiApiKeyInput.value = geminiApiKey;
+    if (openaiApiKey) elements.openaiApiKeyInput.value = openaiApiKey;
+    if (anthropicApiKey) elements.anthropicApiKeyInput.value = anthropicApiKey;
+    if (selectedModel) elements.modelSelect.value = selectedModel;
+    if (customPrompt) elements.customPromptInput.value = customPrompt;
+    if (baseColor) elements.baseColorInput.value = baseColor;
+    if (quoteColor) elements.quoteColorInput.value = quoteColor;
+    if (thoughtColor) elements.thoughtColorInput.value = thoughtColor;
+    if (emphasisColor) elements.emphasisColorInput.value = emphasisColor;
+    elements.enableMarkdownInput.checked = enableMarkdown;
+    
+    // 저장된 텍스트 복원
+    if (savedText) {
+        elements.sourceText.value = savedText;
+        updateTextCounts(elements.sourceText, 'source');
+    }
+    
+    if (lastTranslation) {
+        elements.translatedText.value = lastTranslation;
+        updateTextCounts(elements.translatedText, 'translated');
+        updateFormattedResult();
+    }
+    
+    // 단어 규칙 섹션 초기 상태 설정
+    if (elements.rulesContent) {
+        elements.rulesContent.style.display = 'none';
+    }
+    displayWordRules();
+    setupEventListeners();
+}
+
+function initializeTheme() {
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+}
+
+function setupPasswordToggles() {
+    elements.togglePasswordBtns?.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = btn.previousElementSibling;
+            const type = input.type === 'password' ? 'text' : 'password';
+            input.type = type;
+            btn.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+    });
+}
+
+function setupShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            elements.translateBtn?.click();
+        }
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            elements.savePromptBtn?.click();
+        }
+        if (e.key === 'Escape') {
+            elements.loading.style.display = 'none';
+            elements.translateBtn.disabled = false;
+        }
+        if (e.ctrlKey && e.key === 'd') {
+            e.preventDefault();
+            elements.themeToggle?.click();
+        }
+    });
+}
+
+function setupEventListeners() {
+    elements.saveApiKeysBtn?.addEventListener('click', saveApiKeys);
+    elements.modelSelect?.addEventListener('change', handleModelChange);
+    elements.toggleRulesBtn?.addEventListener('click', toggleRules);
+    elements.addRuleBtn?.addEventListener('click', handleAddRule);
+    elements.translateBtn?.addEventListener('click', translateText);
+    elements.savePromptBtn?.addEventListener('click', saveCustomPrompt);
+    elements.baseColorInput?.addEventListener('change', handleColorChange);
+    elements.quoteColorInput?.addEventListener('change', handleColorChange);
+    elements.thoughtColorInput?.addEventListener('change', handleColorChange);
+    elements.emphasisColorInput?.addEventListener('change', handleColorChange);
+    elements.enableMarkdownInput?.addEventListener('change', handleMarkdownToggle);
+    elements.copySource?.addEventListener('click', () => copyText(elements.sourceText));
+    elements.copyTranslated?.addEventListener('click', () => copyText(elements.translatedText));
+    elements.themeToggle?.addEventListener('click', toggleTheme);
+    elements.showShortcutsBtn?.addEventListener('click', () => elements.shortcutModal.style.display = 'block');
+    elements.closeModalBtn?.addEventListener('click', () => elements.shortcutModal.style.display = 'none');
+    elements.promptTemplate?.addEventListener('change', handlePromptTemplate);
+    elements.saveAsTemplateBtn?.addEventListener('click', saveAsTemplate);
+
+    elements.sourceText?.addEventListener('input', (e) => {
+        localStorage.setItem('savedText', e.target.value);
+        updateTextCounts(e.target, 'source');
+    });
+    
+    elements.translatedText?.addEventListener('input', (e) => {
+        localStorage.setItem('lastTranslation', e.target.value);
+        updateTextCounts(e.target, 'translated');
+    });
+}
+
 // API 호출 함수들
 async function translateWithGemini(text, apiKey) {
     const response = await fetch(
