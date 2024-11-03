@@ -173,7 +173,7 @@ function showToast(message, type = 'success') {
 // 모델 제공자 확인
 function getModelProvider(model) {
     if (model.startsWith('gemini')) return 'gemini';
-    if (model.startsWith('gpt')) return 'openai';
+    if (model.startsWith('gpt') || model.startsWith('chatgpt') || model.startsWith('o1')) return 'openai';
     if (model.startsWith('claude')) return 'anthropic';
     return '';
 }
