@@ -158,6 +158,98 @@ function initialize() {
     setupEventListeners();
 }
 
+// 모델 선택 초기화 함수
+function initializeModelSelect() {
+    const select = elements.modelSelect;
+    if (!select) return;
+    
+    // 기존 옵션 제거
+    select.innerHTML = '';
+    
+    // 모델 옵션 추가
+    modelOptions.forEach(group => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = group.group;
+        
+        group.options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.label;
+            optgroup.appendChild(opt);
+        });
+        
+        select.appendChild(optgroup);
+    });
+    
+    // 저장된 모델 선택
+    if (selectedModel) {
+        select.value = selectedModel;
+    }
+}
+
+// 토스트 메시지 표시 함수
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    elements.toastContainer.appendChild(toast);
+    
+    // 3초 후 제거
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s ease-out forwards';
+        setTimeout(() => {
+            elements.toastContainer.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+
+// 테마 초기화 함수
+function initializeTheme() {
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+}
+
+// 비밀번호 토글 설정
+function setupPasswordToggles() {
+    elements.togglePasswordBtns?.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = btn.previousElementSibling;
+            const type = input.type === 'password' ? 'text' : 'password';
+            input.type = type;
+            btn.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+    });
+}
+
+// 단축키 설정
+function setupShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + Enter: 번역
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            elements.translateBtn?.click();
+        }
+        
+        // Ctrl + S: 프롬프트 저장
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            elements.savePromptBtn?.click();
+        }
+        
+        // Esc: 번역 취소
+        if (e.key === 'Escape') {
+            elements.loading.style.display = 'none';
+            elements.translateBtn.disabled = false;
+        }
+        
+        // Ctrl + D: 다크모드 토글
+        if (e.ctrlKey && e.key === 'd') {
+            e.preventDefault();
+            elements.themeToggle?.click();
+        }
+    });
+}
+
 // 이벤트 리스너 설정
 function setupEventListeners() {
     elements.saveApiKeysBtn?.addEventListener('click', saveApiKeys);
