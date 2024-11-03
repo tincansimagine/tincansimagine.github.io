@@ -1,16 +1,28 @@
+// translator.js 시작 부분에 추가
+console.log('Script loading...');
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded');
+    if (typeof marked === 'undefined') {
+        console.error('marked is not loaded');
+    } else {
+        console.log('marked is loaded');
+    }
+});
+
+
 // 전역 변수 정의
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
+let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
 let geminiApiKey = localStorage.getItem('geminiApiKey') || '';
 let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
 let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
 let customPrompt = localStorage.getItem('customPrompt') || 'Translate the following text to Korean naturally, maintaining a formal and professional tone:\n';
-let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
 let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
 let thoughtColor = localStorage.getItem('thoughtColor') || '#6B4C9A';
 let emphasisColor = localStorage.getItem('emphasisColor') || '#7B3B3B';
 let enableMarkdown = localStorage.getItem('enableMarkdown') !== 'false';
-let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
 
