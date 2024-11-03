@@ -49,6 +49,26 @@ const modelOptions = [
         ]
     },
     {
+        group: 'OpenAI GPT-4o',
+        options: [
+            { value: 'gpt-4o', label: 'GPT-4o' },
+            { value: 'gpt-4o-2024-08-06', label: 'GPT-4o-2024-08-06' },
+            { value: 'gpt-4o-2024-05-13', label: 'GPT-4o-2024-05-13' },
+            { value: 'chatgpt-4o-latest', label: 'chatgpt-4o-latest' },
+            { value: 'gpt-4o-mini', label: 'gpt-4o-mini' },
+            { value: 'gpt-4o-mini-2024-07-18', label: 'gpt-4o-mini-2024-07-18' }
+        ]
+    },
+    {
+        group: 'OpenAI GPT-o1',
+        options: [
+            { value: 'o1-preview', label: 'o1-preview' },
+            { value: 'o1-preview-2024-09-12', label: 'o1-preview-2024-09-12' },
+            { value: 'o1-mini', label: 'o1-mini' },
+            { value: 'o1-mini-2024-09-12', label: 'o1-mini-2024-09-12' }
+        ]
+    },
+    {
         group: 'Claude 3',
         options: [
             { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus 24-02-29' },
