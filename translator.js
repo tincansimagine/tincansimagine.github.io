@@ -1,5 +1,9 @@
-// translator.js 시작 부분에 추가
+// 가장 먼저 isDarkMode 초기화
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+// Script 로딩 로그
 console.log('Script loading...');
+
 window.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded');
     if (typeof marked === 'undefined') {
@@ -8,10 +12,6 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log('marked is loaded');
     }
 });
-
-
-// 전역 변수 정의
-let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
 let geminiApiKey = localStorage.getItem('geminiApiKey') || '';
 let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
