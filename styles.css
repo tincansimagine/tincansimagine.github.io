@@ -86,6 +86,40 @@ h1 {
     color: #333;
 }
 
+/* 데이터 관리 섹션 스타일 */
+
+.data-management-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.data-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.data-controls .btn-small {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    flex: 1;
+}
+
+.data-controls .btn-small span {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.data-controls .btn-small small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
 /* 프롬프트 섹션 스타일 */
 .prompt-section {
     margin-bottom: 2rem;
@@ -530,6 +564,10 @@ kbd {
 [data-theme="dark"] option {
     background-color: #2d2d2d;
     color: #ffffff;
+}
+
+[data-theme="dark"] .data-management-section {
+    background-color: #363636;
 }
 
 /* 애니메이션 */

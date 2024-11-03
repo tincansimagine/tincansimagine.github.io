@@ -57,6 +57,22 @@
             </div>
         </div>
 
+        <!-- 데이터 관리 섹션 -->
+        <div class="data-management-section">
+            <h3>⚙️ 설정 관리</h3>
+            <div class="data-controls">
+                <button id="exportData" class="btn-small">
+                    <span>💾 설정 내보내기</span>
+                    <small>모든 설정을 파일로 저장</small>
+                </button>
+                <button id="importData" class="btn-small">
+                    <span>📂 설정 가져오기</span>
+                    <small>저장된 설정 복원</small>
+                </button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+        </div>
+
         <div class="prompt-section">
             <label for="customPrompt">번역 프롬프트 설정</label>
             <div class="prompt-controls">
