@@ -4,61 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- 필수 라이브러리 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🤖 깡갤 번역기</h1>
-            <button id="themeToggle" class="theme-toggle">
-                <i class="fas fa-sun"></i>
-            </button>
-        </div>
+        <h1>🤖 깡갤 번역기</h1>
         
+        <!-- API 키 섹션 -->
         <div class="api-section">
             <div class="api-keys">
-                <div class="input-group">
-                    <label for="geminiApiKey">Google Gemini API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="geminiApiKey" placeholder="Gemini API 키를 입력하세요">
-                        <button class="toggle-password" type="button">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
+                <div class="api-input-container">
+                    <input type="password" id="geminiApiKey" placeholder="Google Gemini API Key">
+                    <button class="toggle-password">👁️</button>
                 </div>
-                <div class="input-group">
-                    <label for="openaiApiKey">OpenAI API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
-                        <button class="toggle-password" type="button">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
+                <div class="api-input-container">
+                    <input type="password" id="openaiApiKey" placeholder="OpenAI API Key">
+                    <button class="toggle-password">👁️</button>
                 </div>
-                <div class="input-group">
-                    <label for="anthropicApiKey">Anthropic API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="anthropicApiKey" placeholder="Anthropic API 키를 입력하세요">
-                        <button class="toggle-password" type="button">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
+                <div class="api-input-container">
+                    <input type="password" id="anthropicApiKey" placeholder="Anthropic API Key">
+                    <button class="toggle-password">👁️</button>
                 </div>
-                <button id="saveApiKeys" class="btn-small">API 키 저장</button>
             </div>
-            
-            <div class="model-select">
-                <label for="modelSelect">번역 모델 선택</label>
-                <select id="modelSelect">
-                    <!-- 옵션들은 JavaScript에서 동적으로 생성됨 -->
-                </select>
-            </div>
+            <button id="saveApiKeys" class="btn-small">API 키 저장</button>
         </div>
 
+        <!-- 모델 선택 섹션 -->
+        <div class="model-section">
+            <select id="modelSelect">
+                <!-- JavaScript로 동적 생성됨 -->
+            </select>
+        </div>
+
+        <!-- 프롬프트 섹션 -->
         <div class="prompt-section">
-            <label for="customPrompt">번역 프롬프트 설정</label>
+            <h3>번역 프롬프트 설정</h3>
             <div class="prompt-controls">
                 <select id="promptTemplate">
                     <option value="">템플릿 선택...</option>
@@ -69,43 +54,42 @@
                 </select>
                 <button id="saveAsTemplate" class="btn-small">현재 프롬프트 저장</button>
             </div>
-            <textarea id="customPrompt" rows="3"></textarea>
+            <textarea id="customPrompt"></textarea>
             <button id="savePrompt" class="btn-small">프롬프트 저장</button>
         </div>
 
+        <!-- 단어 규칙 섹션 -->
         <div class="word-rules-section">
-            <h3>
-                단어 변환 규칙
-                <button class="toggle-btn" id="toggleRules">▶</button>
-            </h3>
-            <div class="rules-content" id="rulesContent">
+            <button id="toggleRules" class="btn-small">단어 변환 규칙</button>
+            <div id="rulesContent">
                 <div class="rule-input">
                     <input type="text" id="sourceWord" placeholder="원본 단어">
-                    <input type="text" id="targetWord" placeholder="변환할 단어">
+                    <input type="text" id="targetWord" placeholder="변환 단어">
                     <button id="addRule" class="btn-small">규칙 추가</button>
                 </div>
-                <div class="rules-list" id="rulesList"></div>
+                <div id="rulesList"></div>
             </div>
         </div>
 
+        <!-- 스타일 설정 섹션 -->
         <div class="style-settings">
             <h3>텍스트 스타일 설정</h3>
             <div class="style-options">
                 <div class="color-picker">
                     <label for="baseColor">기본 텍스트 색상:</label>
-                    <input type="color" id="baseColor" value="#333333">
+                    <input type="color" id="baseColor">
                 </div>
                 <div class="color-picker">
                     <label for="quoteColor">대사 색상 (쌍따옴표):</label>
-                    <input type="color" id="quoteColor" value="#2E5CB8">
+                    <input type="color" id="quoteColor">
                 </div>
                 <div class="color-picker">
                     <label for="thoughtColor">생각 색상 (홑따옴표):</label>
-                    <input type="color" id="thoughtColor" value="#6B4C9A">
+                    <input type="color" id="thoughtColor">
                 </div>
                 <div class="color-picker">
                     <label for="emphasisColor">강조 색상 (이텔릭체):</label>
-                    <input type="color" id="emphasisColor" value="#7B3B3B">
+                    <input type="color" id="emphasisColor">
                 </div>
                 <div class="checkbox-option">
                     <input type="checkbox" id="enableMarkdown" checked>
@@ -114,32 +98,23 @@
             </div>
         </div>
 
+        <!-- 번역 박스 -->
         <div class="translation-box">
-            <div class="input-group">
-                <label for="sourceText">입력 텍스트</label>
-                <div class="textarea-container">
-                    <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요"></textarea>
-                    <div class="text-counter">
-                        <span id="sourceCharCount">0</span> 글자
-                        <span id="sourceWordCount">0</span> 단어
-                    </div>
-                    <button class="copy-btn" id="copySource">
-                        <i class="fas fa-copy"></i>
-                    </button>
+            <div class="textarea-container">
+                <textarea id="sourceText" placeholder="입력 텍스트"></textarea>
+                <button id="copySource" class="copy-btn">📋</button>
+                <div class="text-counter">
+                    <span id="sourceCharCount">0</span> 글자
+                    <span id="sourceWordCount">0</span> 단어
                 </div>
             </div>
-            <div class="input-group">
-                <label for="translatedText">번역 결과</label>
-                <div class="textarea-container">
-                    <div id="formattedResult" class="formatted-result"></div>
-                    <textarea id="translatedText" placeholder="번역 결과가 여기에 표시됩니다"></textarea>
-                    <div class="text-counter">
-                        <span id="translatedCharCount">0</span> 글자
-                        <span id="translatedWordCount">0</span> 단어
-                    </div>
-                    <button class="copy-btn" id="copyTranslated">
-                        <i class="fas fa-copy"></i>
-                    </button>
+            <div class="textarea-container">
+                <textarea id="translatedText" placeholder="번역 결과"></textarea>
+                <div id="formattedResult"></div>
+                <button id="copyTranslated" class="copy-btn">📋</button>
+                <div class="text-counter">
+                    <span id="translatedCharCount">0</span> 글자
+                    <span id="translatedWordCount">0</span> 단어
                 </div>
             </div>
         </div>
@@ -150,28 +125,31 @@
             <span>번역 중...</span>
         </div>
         <div id="errorMessage" class="error-message"></div>
-        
-        <div class="shortcut-help">
-            <button id="showShortcuts" class="btn-small">
-                <i class="fas fa-keyboard"></i> 단축키
-            </button>
-        </div>
-
-        <div id="shortcutModal" class="modal">
-            <div class="modal-content">
-                <h3>단축키 목록</h3>
-                <ul>
-                    <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> : 번역하기</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>S</kbd> : 프롬프트 저장</li>
-                    <li><kbd>Esc</kbd> : 번역 취소</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
-                </ul>
-                <button class="close-modal">&times;</button>
-            </div>
-        </div>
-
-        <div id="toastContainer" class="toast-container"></div>
     </div>
-    <script src="./translator.js"></script>
+
+    <!-- 단축키 도움말 -->
+    <div class="shortcut-help">
+        <button id="showShortcuts" class="btn-small">단축키</button>
+    </div>
+
+    <!-- 단축키 모달 -->
+    <div id="shortcutModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h3>단축키 목록</h3>
+            <ul>
+                <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd>: 번역하기</li>
+                <li><kbd>Ctrl</kbd> + <kbd>S</kbd>: 프롬프트 저장</li>
+                <li><kbd>Esc</kbd>: 번역 취소</li>
+                <li><kbd>Ctrl</kbd> + <kbd>D</kbd>: 다크모드 토글</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 컨테이너 -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- JavaScript -->
+    <script src="translator.js"></script>
 </body>
 </html>
