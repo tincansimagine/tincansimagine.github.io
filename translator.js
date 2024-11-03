@@ -1,4 +1,5 @@
 // 전역 변수 정의
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let geminiApiKey = localStorage.getItem('geminiApiKey') || '';
 let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
 let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
@@ -10,7 +11,6 @@ let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
 let thoughtColor = localStorage.getItem('thoughtColor') || '#6B4C9A';
 let emphasisColor = localStorage.getItem('emphasisColor') || '#7B3B3B';
 let enableMarkdown = localStorage.getItem('enableMarkdown') !== 'false';
-let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
 
