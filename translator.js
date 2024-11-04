@@ -78,7 +78,8 @@ const modelOptions = [
         options: [
             { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus 24-02-29' },
             { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet 24-02-29' },
-            { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku 24-03-07' }
+            { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku 24-03-07' },
+            { value: 'claude-3-5-sonnet-20241022', label: 'claude-3-5-sonnet-20241022' },
         ]
     },
     {
