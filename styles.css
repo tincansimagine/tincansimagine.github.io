@@ -144,8 +144,15 @@ h1 {
 
 .prompt-section textarea {
     width: 100%;
-    height: 80px;
+    height: 120px; /* 80px에서 120px로 증가 */
     margin: 0.5rem 0;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    resize: vertical; /* 사용자가 필요시 수직으로 크기 조절 가능 */
+    min-height: 120px; /* 최소 높이 설정 */
+    max-height: 400px; /* 최대 높이 제한 */
 }
 
 /* 단어 규칙 섹션 스타일 */
@@ -471,16 +478,72 @@ kbd {
 }
 
 .translation-history-section {
-    margin-bottom: 3rem;  /* 히스토리 섹션 아래 여백 증가 */
+    margin-bottom: 2rem;
     padding: 1rem;
     background-color: #f8f9fa;
     border-radius: 8px;
 }
 
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* 토글 버튼 스타일 개선 */
+.toggle-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 1rem; /* 화살표 크기 증가 */
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* 히스토리 검색창 스타일 수정 */
+.history-search {
+    width: 40%; /* 검색창 너비 축소 */
+    margin-bottom: 1rem;
+}
+
+.history-search-input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.history-controls .btn-small {
+    padding: 0.2rem 0.8rem;
+    font-size: 0.9rem;
+    flex: 1;
+    white-space: nowrap;
+}
+
+.history-content {
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.history-content.collapsed {
+    display: none;
+}
+
+/* 히스토리 컨트롤 버튼 스타일 */
 .history-controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .history-list {
@@ -587,6 +650,9 @@ kbd {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-width: 200px;
+    width: 100%;
+    max-width: 300px;
 }
 
 .direction-btn-container {
@@ -595,6 +661,41 @@ kbd {
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+}
+
+.source-text-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+/* 파일 업로드 */
+.file-upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    white-space: nowrap;
+    width: auto;
+}
+
+.file-upload-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.supported-formats {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.25rem;
 }
 
 .direction-btn:hover {
@@ -693,6 +794,15 @@ kbd {
     color: #ffffff;  /* 텍스트 색상 추가 */
 }
 
+[data-theme="dark"] .toggle-btn {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+}
+[data-theme="dark"] .toggle-btn:hover {
+    background-color: #404040;
+}
+
 [data-theme="dark"] input[type="text"],
 [data-theme="dark"] input[type="password"],
 [data-theme="dark"] textarea,
@@ -779,6 +889,12 @@ kbd {
     color: #ffffff;
 }
 
+[data-theme="dark"] .prompt-section textarea {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+}
+
 [data-theme="dark"] .history-item {
     background-color: #2d2d2d;
 }
@@ -792,6 +908,15 @@ kbd {
 [data-theme="dark"] .history-timestamp,
 [data-theme="dark"] .history-model {
     color: #cccccc;  /* 히스토리 헤더 텍스트 색상 수정 */
+}
+[data-theme="dark"] .history-search-input {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .history-search-input::placeholder {
+    color: #888;
 }
 
 [data-theme="dark"] .progress-bar {
@@ -809,6 +934,20 @@ kbd {
 
 [data-theme="dark"] .copyright a {
     color: #8ab4f8;
+}
+
+[data-theme="dark"] .file-upload-btn {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .file-upload-btn:hover {
+    background-color: #404040;
+}
+
+[data-theme="dark"] .supported-formats {
+    color: #aaa;
 }
 
 /* 애니메이션 */
@@ -863,8 +1002,9 @@ kbd {
     }
 
     .direction-btn {
+        min-width: unset;
+        max-width: 100%;
         width: 100%;
-        padding: 0.75rem;
     }
 
     .direction-text {
@@ -891,7 +1031,6 @@ kbd {
 
     .history-controls {
         flex-direction: column;
-        gap: 0.5rem;
     }
 
     .history-controls .btn-small {
@@ -922,12 +1061,26 @@ kbd {
         font-size: 0.8rem;
     }
 
-    /* 진행률 바 모바일 스타일 */
-    .progress-bar {
-        height: 16px;
-        margin: 0.75rem 0;
+    .history-search {
+        width: 100%; /* 모바일에서는 전체 너비 사용 */
     }
 
+    /* 번역 히스토리 섹션 헤더 스타일 */
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem; /* 간격 증가 */
+        font-weight: bold; /* 글자 굵게 */
+    }
+
+
+    .progress-bar {
+        width: 80%;
+        height: 16px;
+        bottom: 55px; /* 모바일에서의 위치 조정 */
+    }
+    
     .progress-text {
         font-size: 0.7rem;
     }
@@ -964,6 +1117,23 @@ kbd {
     .prompt-controls button {
         width: 100%;
     }
+    .source-text-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .file-upload-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .supported-formats {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
 }
 
 /* 더 작은 모바일 화면을 위한 추가 최적화 */
@@ -988,5 +1158,14 @@ kbd {
     .translate-btn {
         font-size: 0.9rem;
         padding: 0.5rem 1rem;
+    }
+
+    .file-upload-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .supported-formats {
+        font-size: 0.75rem;
     }
 }

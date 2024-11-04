@@ -21,6 +21,14 @@ let translationHistory = JSON.parse(localStorage.getItem('translationHistory')) 
 let currentDirection = 'enToKo'; // 기본값은 영→한
 let koToEnTemplate = '';
 let enToKoTemplate = '';
+// 파일 업로드 변수
+const ALLOWED_FILE_TYPES = {
+    'text/plain': 'TXT',
+    'application/pdf': 'PDF',
+    'application/msword': 'DOC',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX'
+};
+const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB 제한
 const CHUNK_SIZE = 1000; // 청크 크기 설정
 let isTranslating = false;
 let controller = null;  // AbortController를 위한 변수
@@ -124,6 +132,12 @@ const templateNames = {
     'casual': '구어체 번역'
 };
 
+// 번역 방향 전환 단축키 설정
+const DIRECTION_SHORTCUTS = {
+    'Alt+1': 'koToEn', // 한→영
+    'Alt+2': 'enToKo'  // 영→한
+};
+
 // marked 라이브러리 설정
 marked.setOptions({
     breaks: true,
@@ -183,7 +197,15 @@ const elements = {
     enToKoBtn: document.getElementById('enToKoBtn'),
     templateNameKoToEn: document.querySelector('#koToEnBtn .template-name'),
     templateNameEnToKo: document.querySelector('#enToKoBtn .template-name'),
-    setTemplateButtons: document.querySelectorAll('.set-template-btn')
+    setTemplateButtons: document.querySelectorAll('.set-template-btn'),
+    fileUpload: document.getElementById('file-upload'),
+    fileUploadBtn: document.querySelector('.file-upload-btn'),
+    dropZone: document.getElementById('sourceText'),
+    toggleHistory: document.getElementById('toggleHistory'),
+    historyContent: document.getElementById('historyContent'),
+    historyList: document.getElementById('historyList'),
+    clearHistory: document.getElementById('clearHistory'),
+    exportHistory: document.getElementById('exportHistory')
 };
 
 /*********************************************
@@ -381,6 +403,148 @@ function setTemplateForDirection(direction) {
         showToast(`${direction === 'koToEn' ? '한→영' : '영→한'} 방향에 템플릿이 설정되었습니다.`);
     }
 }
+
+// 번역 방향 전환 함수
+function switchTranslationDirection(direction) {
+    currentDirection = direction;
+    
+    // 버튼 활성화 상태 업데이트
+    elements.koToEnBtn.classList.toggle('active', direction === 'koToEn');
+    elements.enToKoBtn.classList.toggle('active', direction === 'enToKo');
+    
+    // 프롬프트 업데이트
+    if (direction === 'koToEn') {
+        elements.customPromptInput.value = koToEnTemplate || promptTemplates.basicKoToEn;
+    } else {
+        elements.customPromptInput.value = enToKoTemplate || promptTemplates.basicEnToKo;
+    }
+}
+
+/*********************************************
+ * 파일 업로드 관련 함수들
+ *********************************************/
+
+// 파일 유효성 검사
+function validateFile(file) {
+    if (!file) return { isValid: false, error: '파일이 선택되지 않았습니다.' };
+    
+    if (!ALLOWED_FILE_TYPES[file.type]) {
+        return { 
+            isValid: false, 
+            error: `지원하지 않는 파일 형식입니다. (지원 형식: ${Object.values(ALLOWED_FILE_TYPES).join(', ')})` 
+        };
+    }
+    
+    if (file.size > MAX_FILE_SIZE) {
+        return { 
+            isValid: false, 
+            error: `파일 크기는 10MB를 초과할 수 없습니다. (현재: ${(file.size / 1024 / 1024).toFixed(1)}MB)` 
+        };
+    }
+    
+    return { isValid: true };
+}
+
+// 파일 읽기 함수
+async function readFile(file) {
+    try {
+        switch (file.type) {
+            case 'text/plain':
+                return await readTextFile(file);
+            case 'application/pdf':
+                return await readPDFFile(file);
+            case 'application/msword':
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                return await readWordFile(file);
+            default:
+                throw new Error('지원하지 않는 파일 형식입니다.');
+        }
+    } catch (error) {
+        throw new Error(`파일 읽기 실패: ${error.message}`);
+    }
+}
+
+// 텍스트 파일 읽기
+function readTextFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = (e) => reject(new Error('텍스트 파일 읽기 실패'));
+        reader.readAsText(file);
+    });
+}
+
+// PDF 파일 읽기
+async function readPDFFile(file) {
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let text = '';
+        
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(item => item.str).join(' ') + '\n';
+        }
+        
+        return text;
+    } catch (error) {
+        throw new Error('PDF 파일 읽기 실패');
+    }
+}
+
+// Word 파일 읽기
+async function readWordFile(file) {
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        return result.value;
+    } catch (error) {
+        throw new Error('Word 파일 읽기 실패');
+    }
+}
+
+// 드래그 앤 드롭 이벤트 핸들러
+function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    elements.dropZone.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    elements.dropZone.classList.remove('drag-over');
+}
+
+async function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    elements.dropZone.classList.remove('drag-over');
+    
+    const file = e.dataTransfer.files[0];
+    await handleFileUpload(file);
+}
+
+// 파일 업로드 처리
+async function handleFileUpload(file) {
+    try {
+        const validation = validateFile(file);
+        if (!validation.isValid) {
+            showToast(validation.error, 'error');
+            return;
+        }
+
+        showToast('파일을 읽는 중입니다...', 'info');
+        const text = await readFile(file);
+        elements.sourceText.value = text;
+        updateTextCounts(elements.sourceText, 'source');
+        showToast('파일이 성공적으로 업로드되었습니다.');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+}
+
 /*********************************************
  * 4. 데이터 관리 함수들
  *********************************************/
@@ -802,7 +966,7 @@ async function translateText() {
                 currentProgress += 1;
                 updateProgress(currentProgress);
             }
-        }, 120);  // 120ms마다 업데이트
+        }, 150);  // 150ms마다 업데이트
 
         let translatedText;
         switch(modelProvider) {
@@ -1295,6 +1459,12 @@ function setupShortcuts() {
         updateTextCounts(elements.translatedText, 'translated');
     });
 
+    // 히스토리 토글 이벤트 리스너
+    elements.toggleHistory?.addEventListener('click', () => {
+        elements.historyContent.classList.toggle('collapsed');
+        elements.toggleHistory.textContent = elements.historyContent.classList.contains('collapsed') ? '▶' : '▼ ';
+    });
+
     // 단축키 모달 관련
     elements.showShortcutsBtn?.addEventListener('click', () => {
         elements.shortcutModal.style.display = 'block';
@@ -1302,6 +1472,30 @@ function setupShortcuts() {
 
     elements.closeModalBtn?.addEventListener('click', () => {
         elements.shortcutModal.style.display = 'none';
+    });
+
+    // 파일 업로드
+    elements.fileUpload?.addEventListener('change', (e) => handleFileUpload(e.target.files[0]));
+
+    // 드래그 앤 드롭
+    elements.dropZone?.addEventListener('dragover', handleDragOver);
+    elements.dropZone?.addEventListener('dragleave', handleDragLeave);
+    elements.dropZone?.addEventListener('drop', handleDrop);
+
+    // 번역 방향 전환 단축키 이벤트 리스너
+    document.addEventListener('keydown', (e) => {
+        // Alt + 1: 한→영
+        if (e.altKey && e.key === '1') {
+            e.preventDefault();
+            switchTranslationDirection('koToEn');
+            showToast('번역 방향이 한→영으로 변경되었습니다.');
+        }
+        // Alt + 2: 영→한
+        else if (e.altKey && e.key === '2') {
+            e.preventDefault();
+            switchTranslationDirection('enToKo');
+            showToast('번역 방향이 영→한으로 변경되었습니다.');
+        }
     });
 
     // 모달 외부 클릭 시 닫기
@@ -1359,6 +1553,10 @@ function setupEventListeners() {
         updateTextCounts(e.target, 'translated');
     });
 }
+
+    elements.showShortcutsBtn?.addEventListener('click', () => {
+        elements.shortcutModal.style.display = 'block';
+    });
 
 // 데이터 관리 설정
 function setupDataManagement() {

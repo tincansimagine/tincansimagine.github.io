@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -141,17 +143,27 @@
         </div>
 
         <div class="translation-history-section">
-            <h3>번역 히스토리</h3>
+            <h3>
+                번역 히스토리
+            <button id="toggleHistory" class="toggle-btn">▶</button>
+            </h3>
+            <div id="historyContent" class="history-content collapsed">
                 <div class="history-controls">
-                    <input type="text" id="historySearch" placeholder="히스토리 검색...">
+                    <!-- 검색 입력 필드 추가 -->
+                    <div class="history-search">
+                        <input type="text" id="historySearch" placeholder="히스토리 검색..." class="history-search-input">
+                    </div>
                     <button id="clearHistory" class="btn-small">히스토리 비우기</button>
                     <button id="exportHistory" class="btn-small">히스토리 내보내기</button>
                 </div>
-                <div class="history-list" id="historyList"></div>
+                <div class="history-list" id="historyList">
+                    <!-- 히스토리 아이템들이 여기에 추가됨 -->
+                </div>
                 <div id="translationProgress" class="progress-bar" style="display: none;">
                     <div class="progress-fill"></div>
                     <span class="progress-text">0%</span>
                 </div>
+            </div>
         </div>
 
         <div class="translation-direction-controls">
@@ -171,6 +183,16 @@
             </div>
         </div>
         
+        <div class="source-text-controls">
+            <label for="file-upload" class="file-upload-btn">
+                <i class="fas fa-file-upload"></i> 파일 업로드
+            </label>
+            <input type="file" id="file-upload" accept=".txt,.doc,.docx,.pdf" hidden>
+            <div class="supported-formats">
+                지원 형식: TXT, DOC, DOCX, PDF (최대 30MB)
+            </div>
+        </div>
+
         <div class="translation-box">
             <div class="input-group">
                 <label for="sourceText">입력 텍스트</label>
@@ -199,10 +221,6 @@
                     </button>
                 </div>
             </div>
-            <div id="translationProgress" class="progress-bar" style="display: none;">
-                <div class="progress-fill"></div>
-                <span class="progress-text">0%</span>
-            </div>
         </div>
 
         <button id="translateButton" class="translate-btn">번역하기</button>
@@ -226,6 +244,8 @@
                     <li><kbd>Ctrl</kbd> + <kbd>S</kbd> : 프롬프트 저장</li>
                     <li><kbd>Esc</kbd> : 번역 취소</li>
                     <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
+                    <li><kbd>Alt</kbd> + <kbd>1</kbd> : 한→영 전환</li>
+                <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
                 </ul>
                 <button class="close-modal">&times;</button>
             </div>
