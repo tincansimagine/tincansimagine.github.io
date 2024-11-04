@@ -379,7 +379,7 @@ function exportSettings() {
             geminiApiKey,
             openaiApiKey,
             anthropicApiKey,
-            cohereApiKey,
+            cohereApiKey,        // 이 줄이 없었네
             wordRules,
             selectedModel,
             customPrompt,
@@ -441,6 +441,7 @@ function importSettings(file) {
             geminiApiKey = data.geminiApiKey || '';
             openaiApiKey = data.openaiApiKey || '';
             anthropicApiKey = data.anthropicApiKey || '';
+            cohereApiKey = data.cohereApiKey || '';
             wordRules = data.wordRules || [];
             selectedModel = data.selectedModel || 'gemini-1.5-pro-002';
             customPrompt = data.customPrompt || '';
@@ -607,6 +608,7 @@ function saveApiKeys() {
         }
         if (newCohereKey) {
             cohereApiKey = newCohereKey;
+            console.log('Saving cohereApiKey:', cohereApiKey);
             localStorage.setItem('cohereApiKey', cohereApiKey);
         }
         showToast('API 키가 저장되었습니다.');
