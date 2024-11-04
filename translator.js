@@ -379,6 +379,7 @@ function exportSettings() {
             geminiApiKey,
             openaiApiKey,
             anthropicApiKey,
+            cohereApiKey,
             wordRules,
             selectedModel,
             customPrompt,
@@ -389,7 +390,6 @@ function exportSettings() {
             enableMarkdown,
             savedText,
             lastTranslation,
-            // 사용자 정의 템플릿 저장
             promptTemplates: JSON.parse(localStorage.getItem('promptTemplates') || '{}')
         }
     };
