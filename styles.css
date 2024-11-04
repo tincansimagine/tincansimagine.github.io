@@ -565,6 +565,110 @@ kbd {
     text-decoration: underline;
 }
 
+/* 번역 방향 컨트롤 스타일 */
+.translation-direction-controls {
+    margin: 1rem 0;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.direction-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.direction-btn-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.direction-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.direction-btn.active {
+    border-color: #4285f4;
+    background-color: #e8f0fe;
+}
+
+.direction-text {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.template-name {
+    font-size: 0.8rem;
+    color: #666;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 번역 방향 컨트롤 다크모드 스타일 */
+[data-theme="dark"] .translation-direction-controls {
+    background-color: #363636;
+}
+
+[data-theme="dark"] .direction-btn {
+    background-color: #2d2d2d;
+    border-color: #4a4a4a;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .direction-btn:hover {
+    background-color: #404040;
+}
+
+[data-theme="dark"] .direction-btn.active {
+    background-color: #1a3c6d;
+    border-color: #4285f4;
+}
+
+[data-theme="dark"] .template-name {
+    color: #999;
+}
+
+.set-template-btn {
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+.set-template-btn:hover {
+    background-color: #3367d6;
+}
+
+[data-theme="dark"] .set-template-btn {
+    background-color: #5294ff;
+}
+
+[data-theme="dark"] .set-template-btn:hover {
+    background-color: #4285f4;
+}
+
 /* 다크모드 스타일 */
 [data-theme="dark"] {
     background-color: #1a1a1a;
@@ -745,5 +849,144 @@ kbd {
     .style-options {
         flex-direction: column;
         gap: 1rem;
+    }
+    /* 번역 방향 컨트롤 모바일 스타일 */
+    .translation-direction-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        margin: 0.75rem 0;
+    }
+
+    .direction-btn-container {
+        width: 100%;
+    }
+
+    .direction-btn {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .direction-text {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .template-name {
+        font-size: 0.75rem;
+        max-width: 100%;
+    }
+
+    .set-template-btn {
+        width: 100%;
+        margin-top: 0.25rem;
+        padding: 0.4rem;
+    }
+
+    /* 번역 히스토리 섹션 모바일 스타일 */
+    .translation-history-section {
+        margin-bottom: 2rem;
+        padding: 0.75rem;
+    }
+
+    .history-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .history-controls .btn-small {
+        width: 100%;
+        padding: 0.6rem;
+    }
+
+    .history-item {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .history-item-header {
+        flex-direction: column;
+        gap: 0.25rem;
+        align-items: flex-start;
+    }
+
+    .history-actions {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .history-actions button {
+        flex: 1;
+        min-width: calc(50% - 0.25rem);
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    /* 진행률 바 모바일 스타일 */
+    .progress-bar {
+        height: 16px;
+        margin: 0.75rem 0;
+    }
+
+    .progress-text {
+        font-size: 0.7rem;
+    }
+
+    /* 번역 박스 모바일 스타일 개선 */
+    .translation-box {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .textarea-container {
+        height: 300px; /* 모바일에서는 높이 줄임 */
+    }
+
+    /* 기타 모바일 최적화 */
+    .container {
+        padding: 1rem;
+    }
+
+    .prompt-section,
+    .word-rules-section,
+    .style-settings,
+    .api-section {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .prompt-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .prompt-controls select,
+    .prompt-controls button {
+        width: 100%;
+    }
+}
+
+/* 더 작은 모바일 화면을 위한 추가 최적화 */
+@media (max-width: 480px) {
+    .direction-text {
+        font-size: 0.9rem;
+    }
+
+    .template-name {
+        font-size: 0.7rem;
+    }
+
+    .history-item {
+        font-size: 0.9rem;
+    }
+
+    .container {
+        padding: 0.75rem;
+    }
+
+    .btn-small,
+    .translate-btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
     }
 }

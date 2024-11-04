@@ -87,7 +87,8 @@
             <div class="prompt-controls">
                 <select id="promptTemplate">
                     <option value="">템플릿 선택...</option>
-                    <option value="basic">기본 번역</option>
+                    <option value="basicEnToKo">기본 번역 (영→한)</option>
+                    <option value="basicKoToEn">기본 번역(한→영)</option>
                     <option value="natural">자연스러운 번역</option>
                     <option value="formal">격식체 번역</option>
                     <option value="casual">구어체 번역</option>
@@ -153,6 +154,23 @@
                 </div>
         </div>
 
+        <div class="translation-direction-controls">
+            <div class="direction-btn-container">
+                <button id="koToEnBtn" class="direction-btn">
+                    <span class="direction-text">한 → 영</span>
+                    <small class="template-name">선택된 템플릿: 없음</small>
+                </button>
+                <button class="set-template-btn" data-direction="koToEn">템플릿 설정</button>
+            </div>
+            <div class="direction-btn-container">
+                <button id="enToKoBtn" class="direction-btn active">
+                    <span class="direction-text">영 → 한</span>
+                    <small class="template-name">선택된 템플릿: 없음</small>
+                </button>
+                <button class="set-template-btn" data-direction="enToKo">템플릿 설정</button>
+            </div>
+        </div>
+        
         <div class="translation-box">
             <div class="input-group">
                 <label for="sourceText">입력 텍스트</label>

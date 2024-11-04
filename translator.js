@@ -9,7 +9,7 @@ let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
 let cohereApiKey = localStorage.getItem('cohereApiKey') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
-let customPrompt = localStorage.getItem('customPrompt') || 'Translate the following text to Korean naturally, maintaining a formal and professional tone:\n';
+let customPrompt = localStorage.getItem('customPrompt') || "# Translation Task Definition\nYou are a professional English-Korean translator specializing in roleplaying content. Your task is to translate English text into natural, fluent Korean while preserving the original tone, context, and cultural nuances. Focus particularly on translating both dialogue and action descriptions in roleplay scenarios.\n\n# Translation Requirements\n\n## Core Translation Principles\n1. Maintain the original meaning and intent\n2. Choose appropriate Korean honorific levels\n3. Convert English expressions to natural Korean equivalents\n4. Keep character personalities consistent through appropriate speech levels\n5. Apply Korean cultural context while preserving original story elements\n\n## Technical Guidelines\n\n### For Dialogue Translation\n- Select appropriate Korean honorific levels based on context:\n  * Formal situations → 합쇼체 (-ㅂ니다/습니다)\n  * Polite casual → 해요체 (-아/어요)\n  * Informal between friends/close relations → 반말 (-아/어)\n  * Professional settings → 존댓말 with proper honorific markers\n\n- Handle English dialogue features:\n  * Convert direct English expressions into natural Korean patterns\n  * Add appropriate sentence-final particles (요, 네, 군요, etc.)\n  * Consider speaker-listener relationship for proper honorifics\n  * Include context-appropriate Korean discourse markers\n\n### For Action Description Translation\n- Transform English action descriptions into natural Korean flow:\n  * Convert SVO (Subject-Verb-Object) to SOV (Subject-Object-Verb) structure\n  * Use appropriate Korean action descriptors and auxiliaries\n  * Add proper Korean particles (조사) based on context\n  * Incorporate Korean-style onomatopoeia and mimetic words\n\n### Cultural Elements\n- Adapt English titles and forms of address to Korean equivalents\n- Use appropriate Korean relationship terms (언니, 오빠, 선배 etc.)\n- Convert Western gestures to Korean cultural equivalents\n- Apply proper level of formality in different situations\n\n## Specific Instructions\n\n1. Initial Analysis\n- Understand the overall context and relationship between characters\n- Identify the appropriate speech levels for each character\n- Note any cultural references that need adaptation\n\n2. Translation Process\n- First pass: Basic translation maintaining core meaning\n- Second pass: Apply proper Korean grammar and particles\n- Final pass: Refine for natural Korean flow and proper honorifics\n\n3. Quality Checks\n- Verify honorific consistency\n- Check particle usage accuracy\n- Confirm natural Korean expression\n- Validate cultural appropriateness\n\n# Format Specifications\n\nInput Format:\n```\n[Action] English action description\n\"English dialogue\"\n```\n\nOutput Format:\n```\n[Action] 한국어 행동 묘사\n\"한국어 대사\"\n```\n\n# Special Considerations\n\n## Honorific System Guidelines\n- Business/Formal: \n  * \"Could you please...\" → \"~해 주시겠습니까?\"\n  * \"I would like to...\" → \"~하고 싶습니다\"\n\n- Casual Polite:\n  * \"Can you...\" → \"~할 수 있으세요?\"\n  * \"I think...\" → \"~인 것 같아요\"\n\n- Informal:\n  * \"Hey, do this\" → \"야, 이거 해\"\n  * \"What's up\" → \"뭐 해?\"\n\n## Tense and Aspect Guidelines\n\n### Present Tense\n- Simple present → \"-ㄴ다/는다\" or \"-아/어요\"\n- Present continuous → \"-고  있다\" or \"-고 있어요\"\n- Present habits → \"-ㄴ다/는다\" or relevant time markers\n\n### Past Tense\n- Simple past → \"-았/었다\" or \"-았/었어요\"\n- Past perfect → \"-았/었었다\" or \"-았/었었어요\"\n- Past continuous → \"-고 있었다\" or \"-고 있었어요\"\n\n### Future Tense\n- Will/Shall → \"-ㄹ/을 거예요\" or \"-ㄹ/을 것입니다\"\n- Going to → \"-려고 해요\" or \"-기로 했어요\"\n- Future plans → \"-ㄹ/을 예정이다\"\n\n## Style Adaptation\n- Convert English emphasis to Korean particles and endings\n- Adapt English idiomatic expressions to Korean equivalents\n- Maintain character voice through consistent speech patterns\n- Use appropriate Korean discourse markers and fillers\n\n## Common Translation Patterns\n\n### Action Descriptions\nEnglish: \"He slowly walks towards the door\"\nKorean: \"그가 천천히 문쪽으로 걸어간다\"\n\n### Emotional Expressions\nEnglish: \"I'm so excited!\"\nKorean: \"정말 신나요!\" or \"너무 설레요!\"\n\n### Requests\nEnglish: \"Could you help me with this?\"\nKorean: \"이것 좀 도와주시겠어요?\"\n\n# Error Prevention\n- Avoid awkward literal translations\n- Maintain proper particle usage\n- Keep honorific levels consistent\n- Preserve emotional nuances\n\n# Examples with Context\n\nFormal Business Setting:\n```\n[English]\n[Action] Checks the document carefully\n\"I apologize for the delay in processing your request.\"\n\n[Korean]\n[Action] 서류를 세심히 확인한다\n\"요청하신 건의 처리가 지연되어 대단히 죄송합니다.\"\n```\n\nCasual Friend Setting:\n```\n[English]\n[Action] Waves excitedly\n\"Hey! I missed you so much!\"\n\n[Korean]\n[Action] 신나서 손을 흔든다\n\"야! 너무 보고 싶었어!\"\n```\n\nRemember: Focus on creating natural Korean expressions that convey the same meaning and feeling as the original English text, while appropriately adapting to Korean cultural and linguistic norms.\n\n# Your Translation Task\n\nNow, following all the guidelines above, please translate the following English text into natural, fluent Korean. Consider the context, use appropriate honorific levels, and ensure natural expression:\n";
 let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
 let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
 let thoughtColor = localStorage.getItem('thoughtColor') || '#6B4C9A';
@@ -18,6 +18,9 @@ let enableMarkdown = localStorage.getItem('enableMarkdown') !== 'false';
 let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
 let translationHistory = JSON.parse(localStorage.getItem('translationHistory')) || [];
+let currentDirection = 'enToKo'; // 기본값은 영→한
+let koToEnTemplate = '';
+let enToKoTemplate = '';
 const CHUNK_SIZE = 1000; // 청크 크기 설정
 let isTranslating = false;
 let controller = null;  // AbortController를 위한 변수
@@ -105,10 +108,20 @@ const modelOptions = [
 
 // 프롬프트 템플릿 정의
 const promptTemplates = {
-    basic: 'Translate the following text to Korean naturally:\n',
+    basicEnToKo: "# Translation Task Definition\nYou are a professional English-Korean translator specializing in roleplaying content. Your task is to translate English text into natural, fluent Korean while preserving the original tone, context, and cultural nuances. Focus particularly on translating both dialogue and action descriptions in roleplay scenarios.\n\n# Translation Requirements\n\n## Core Translation Principles\n1. Maintain the original meaning and intent\n2. Choose appropriate Korean honorific levels\n3. Convert English expressions to natural Korean equivalents\n4. Keep character personalities consistent through appropriate speech levels\n5. Apply Korean cultural context while preserving original story elements\n\n## Technical Guidelines\n\n### For Dialogue Translation\n- Select appropriate Korean honorific levels based on context:\n  * Formal situations → 합쇼체 (-ㅂ니다/습니다)\n  * Polite casual → 해요체 (-아/어요)\n  * Informal between friends/close relations → 반말 (-아/어)\n  * Professional settings → 존댓말 with proper honorific markers\n\n- Handle English dialogue features:\n  * Convert direct English expressions into natural Korean patterns\n  * Add appropriate sentence-final particles (요, 네, 군요, etc.)\n  * Consider speaker-listener relationship for proper honorifics\n  * Include context-appropriate Korean discourse markers\n\n### For Action Description Translation\n- Transform English action descriptions into natural Korean flow:\n  * Convert SVO (Subject-Verb-Object) to SOV (Subject-Object-Verb) structure\n  * Use appropriate Korean action descriptors and auxiliaries\n  * Add proper Korean particles (조사) based on context\n  * Incorporate Korean-style onomatopoeia and mimetic words\n\n### Cultural Elements\n- Adapt English titles and forms of address to Korean equivalents\n- Use appropriate Korean relationship terms (언니, 오빠, 선배 etc.)\n- Convert Western gestures to Korean cultural equivalents\n- Apply proper level of formality in different situations\n\n## Specific Instructions\n\n1. Initial Analysis\n- Understand the overall context and relationship between characters\n- Identify the appropriate speech levels for each character\n- Note any cultural references that need adaptation\n\n2. Translation Process\n- First pass: Basic translation maintaining core meaning\n- Second pass: Apply proper Korean grammar and particles\n- Final pass: Refine for natural Korean flow and proper honorifics\n\n3. Quality Checks\n- Verify honorific consistency\n- Check particle usage accuracy\n- Confirm natural Korean expression\n- Validate cultural appropriateness\n\n# Format Specifications\n\nInput Format:\n```\n[Action] English action description\n\"English dialogue\"\n```\n\nOutput Format:\n```\n[Action] 한국어 행동 묘사\n\"한국어 대사\"\n```\n\n# Special Considerations\n\n## Honorific System Guidelines\n- Business/Formal: \n  * \"Could you please...\" → \"~해 주시겠습니까?\"\n  * \"I would like to...\" → \"~하고 싶습니다\"\n\n- Casual Polite:\n  * \"Can you...\" → \"~할 수 있으세요?\"\n  * \"I think...\" → \"~인 것 같아요\"\n\n- Informal:\n  * \"Hey, do this\" → \"야, 이거 해\"\n  * \"What's up\" → \"뭐 해?\"\n\n## Tense and Aspect Guidelines\n\n### Present Tense\n- Simple present → \"-ㄴ다/는다\" or \"-아/어요\"\n- Present continuous → \"-고  있다\" or \"-고 있어요\"\n- Present habits → \"-ㄴ다/는다\" or relevant time markers\n\n### Past Tense\n- Simple past → \"-았/었다\" or \"-았/었어요\"\n- Past perfect → \"-았/었었다\" or \"-았/었었어요\"\n- Past continuous → \"-고 있었다\" or \"-고 있었어요\"\n\n### Future Tense\n- Will/Shall → \"-ㄹ/을 거예요\" or \"-ㄹ/을 것입니다\"\n- Going to → \"-려고 해요\" or \"-기로 했어요\"\n- Future plans → \"-ㄹ/을 예정이다\"\n\n## Style Adaptation\n- Convert English emphasis to Korean particles and endings\n- Adapt English idiomatic expressions to Korean equivalents\n- Maintain character voice through consistent speech patterns\n- Use appropriate Korean discourse markers and fillers\n\n## Common Translation Patterns\n\n### Action Descriptions\nEnglish: \"He slowly walks towards the door\"\nKorean: \"그가 천천히 문쪽으로 걸어간다\"\n\n### Emotional Expressions\nEnglish: \"I'm so excited!\"\nKorean: \"정말 신나요!\" or \"너무 설레요!\"\n\n### Requests\nEnglish: \"Could you help me with this?\"\nKorean: \"이것 좀 도와주시겠어요?\"\n\n# Error Prevention\n- Avoid awkward literal translations\n- Maintain proper particle usage\n- Keep honorific levels consistent\n- Preserve emotional nuances\n\n# Examples with Context\n\nFormal Business Setting:\n```\n[English]\n[Action] Checks the document carefully\n\"I apologize for the delay in processing your request.\"\n\n[Korean]\n[Action] 서류를 세심히 확인한다\n\"요청하신 건의 처리가 지연되어 대단히 죄송합니다.\"\n```\n\nCasual Friend Setting:\n```\n[English]\n[Action] Waves excitedly\n\"Hey! I missed you so much!\"\n\n[Korean]\n[Action] 신나서 손을 흔든다\n\"야! 너무 보고 싶었어!\"\n```\n\nRemember: Focus on creating natural Korean expressions that convey the same meaning and feeling as the original English text, while appropriately adapting to Korean cultural and linguistic norms.\n\n# Your Translation Task\n\nNow, following all the guidelines above, please translate the following English text into natural, fluent Korean. Consider the context, use appropriate honorific levels, and ensure natural expression:\n",
+    basicKoToEn: "# Translation Task Definition\nYou are a professional Korean-English translator specializing in roleplaying content. Your task is to translate Korean text into natural, fluent English while preserving the original tone, context, and cultural nuances. Focus particularly on translating both dialogue and action descriptions in roleplay scenarios.\n\n# Translation Requirements\n\n## Core Translation Principles\n1. Maintain the original meaning and intent\n2. Preserve the tone and style of speech (formal/informal/honorific levels)\n3. Adapt Korean-specific expressions into natural English equivalents\n4. Keep character personalities consistent through their dialogue patterns\n5. Preserve cultural context while making it accessible to English readers\n\n## Technical Guidelines\n\n### For Dialogue Translation\n- Convert Korean honorific levels appropriately:\n  * 합쇼체 (formal polite) → Formal, professional English\n  * 해요체 (polite) → Casual but respectful English\n  * 반말 (informal) → Casual, friendly English\n  * 존댓말 conventions → Reflect appropriate power dynamics in English\n\n- Handle Korean-specific dialogue features:\n  * Sentence-final particles (요, 네, 군요, etc.) → Convey their nuance through tone and word choice\n  * Omitted subjects → Add appropriate pronouns based on context\n  * Age/status-based speech patterns → Reflect in English through vocabulary and phrasing choices\n\n### For Action Description Translation\n- Transform Korean action descriptions into natural English flow:\n  * Convert SOV (Subject-Object-Verb) to SVO (Subject-Verb-Object) structure\n  * Maintain the immediacy and vividness of present-tense narration\n  * Preserve emotional and atmospheric details\n  * Adapt onomatopoeia and mimetic words appropriately\n\n### Cultural Elements\n- Retain honorific titles (선배, 언니, etc.) when relevant to the relationship dynamic\n- Preserve cultural references with appropriate context\n- Adapt Korean-specific gestures and body language to equivalent English expressions\n\n## Specific Instructions\n\n1. Initial Analysis\n- Read the entire passage to understand context and tone\n- Identify speaker relationships and formality levels\n- Note any cultural references or idioms\n\n2. Translation Process\n- First pass: Create a basic translation preserving core meaning\n- Second pass: Refine for natural English flow\n- Final pass: Polish for consistency in voice and style\n\n3. Quality Checks\n- Ensure all meaning is accurately conveyed\n- Verify natural English expression\n- Confirm consistency in character voice\n- Check for cultural accuracy and accessibility\n\n# Format Specifications\n\nInput Format:\n```\n[Action] 한국어 행동 묘사\n\"한국어 대사\"\n```\n\nOutput Format:\n```\n[Action] English action description\n\"English dialogue\"\n```\n\n# Special Considerations\n\n## Context Adaptation\n- Adapt Korean context-dependent expressions naturally\n- Preserve emotional subtext and implications\n- Maintain character relationships and social dynamics\n\n## Style Preservation\n- Keep the original's level of formality/informality\n- Maintain character-specific speech patterns\n- Preserve the emotional tone and intensity\n\n## Technical Elements\n- Maintain any formatting or special characters\n- Preserve paragraph breaks and dialogue structure\n\n## Tense Guidelines\n\n### Present Tense Translation\n- Korean: \"밥을 먹는다\" → English: \"eating/eats\"\n- For ongoing actions and habitual actions\n- Default tense for most roleplay action descriptions\n- Used for immediate dialogue and reactions\n\n### Past Tense Translation\n- Korean: \"밥을 먹었다\" → English: \"ate/had eaten\"\n- Distinguish between simple past (했다) and past perfect (했었다)\n- Pay attention to Korean time markers (아까, 어제, 전에)\n- Consider context for implicit past tense in Korean\n\n### Future Tense Translation\n- Korean: \"밥을 먹을 거다\" → English: \"will eat/going to eat\"\n- Differentiate between immediate future (-ㄹ 거다) and planned future (-기로 했다)\n- Consider the level of certainty implied\n- Maintain consistency with surrounding context\n\n### Special Tense Considerations\n- Maintain tense consistency within related actions\n- Watch for Korean tense-aspect markers (고 있다, 아/어 있다)\n- Consider aspect (continuous, perfect) alongside tense\n- Handle mixed tense scenarios appropriately\n\nExample Tense Usage:\n```\n[Korean]\n[Action] 문을 열었다가 다시 닫는다\n\"아까 여기서 뭔가를 보았을 텐데...\"\n\n[English]\n[Action] Opens the door and closes it again\n\"I must have seen something here earlier...\"\n```\n\nNote: Pay special attention to Korean's context-dependent implicit tense markers and convert them to appropriate explicit English tenses.\n\n# Example Translations\n\nInput:\n```\n[Action] 문을 조심스럽게 열어보며 안을 살핀다\n\"여기... 아무도 없나요?\"\n```\n\nOutput:\n```\n[Action] Carefully opens the door and peers inside\n\"Is... anyone here?\"\n```\n\n# Error Prevention\n- Avoid literal translations that sound unnatural\n- Don't lose subtle emotional nuances\n- Maintain consistency in pronouns and names\n- Preserve the level of politeness/formality\n\n# Additional Notes\n- When in doubt about cultural references, prioritize clarity for English readers while preserving the original intent\n- Pay special attention to emotional subtext in both dialogue and actions\n- Consider the broader context of the roleplay scenario when making translation choices\n- Adapt Korean-specific humor and wordplay into culturally appropriate English equivalents\n\nRemember: The goal is to create a translation that reads naturally in English while faithfully conveying the original Korean content's meaning, tone, and emotional impact.\n\n# Your Translation Task\n\nNow, following all the guidelines above, please translate the following Korean text into natural, fluent English. Maintain the original formatting, preserve the emotional nuances, and ensure appropriate tense usage:\n",
     natural: 'Translate the following text to Korean with natural and fluent expressions:\n',
     formal: 'Translate the following text to Korean using formal and professional language:\n',
     casual: 'Translate the following text to Korean using casual and conversational language:\n'
+};
+
+// 템플릿 이름 매핑 객체 추가
+const templateNames = {
+    'basicEnToKo': '기본 번역 (영→한)',
+    'basicKoToEn': '기본 번역(한→영)',
+    'natural': '자연스러운 번역',
+    'formal': '격식체 번역',
+    'casual': '구어체 번역'
 };
 
 // marked 라이브러리 설정
@@ -165,7 +178,12 @@ const elements = {
     closeModalBtn: document.querySelector('.close-modal'),
     translationProgress: document.getElementById('translationProgress'),
     progressFill: document.querySelector('.progress-fill'),
-    progressText: document.querySelector('.progress-text')
+    progressText: document.querySelector('.progress-text'),
+    koToEnBtn: document.getElementById('koToEnBtn'),
+    enToKoBtn: document.getElementById('enToKoBtn'),
+    templateNameKoToEn: document.querySelector('#koToEnBtn .template-name'),
+    templateNameEnToKo: document.querySelector('#enToKoBtn .template-name'),
+    setTemplateButtons: document.querySelectorAll('.set-template-btn')
 };
 
 /*********************************************
@@ -317,7 +335,7 @@ function updatePromptTemplateOptions() {
     Object.entries(promptTemplates).forEach(([key, value]) => {
         const option = document.createElement('option');
         option.value = key;
-        option.textContent = key;
+        option.textContent = templateNames[key] || key; // 매핑된 한글 이름 사용
         select.appendChild(option);
     });
     
@@ -331,6 +349,38 @@ function updatePromptTemplateOptions() {
     });
 }
 
+// 템플릿 설정 함수
+function setTemplateForDirection(direction) {
+    const selectedTemplate = elements.promptTemplate.value;
+    if (!selectedTemplate) {
+        showToast('템플릿을 먼저 선택해주세요.', 'error');
+        return;
+    }
+
+    const templates = JSON.parse(localStorage.getItem('promptTemplates') || '{}');
+    const templateText = templates[selectedTemplate] || promptTemplates[selectedTemplate];
+    
+    if (templateText) {
+        // 템플릿의 표시 이름 가져오기 (한글 이름 또는 원래 이름)
+        const displayName = templateNames[selectedTemplate] || selectedTemplate;
+        
+        if (direction === 'koToEn') {
+            koToEnTemplate = templateText;
+            localStorage.setItem('koToEnTemplate', selectedTemplate);
+            elements.templateNameKoToEn.textContent = `선택된 템플릿: ${displayName}`;
+        } else {
+            enToKoTemplate = templateText;
+            localStorage.setItem('enToKoTemplate', selectedTemplate);
+            elements.templateNameEnToKo.textContent = `선택된 템플릿: ${displayName}`;
+        }
+        
+        if (currentDirection === direction) {
+            elements.customPromptInput.value = templateText;
+        }
+        
+        showToast(`${direction === 'koToEn' ? '한→영' : '영→한'} 방향에 템플릿이 설정되었습니다.`);
+    }
+}
 /*********************************************
  * 4. 데이터 관리 함수들
  *********************************************/
@@ -380,7 +430,7 @@ function exportSettings() {
             geminiApiKey,
             openaiApiKey,
             anthropicApiKey,
-            cohereApiKey,        // 이 줄이 없었네
+            cohereApiKey,
             wordRules,
             selectedModel,
             customPrompt,
@@ -949,6 +999,48 @@ function restoreTranslation(id) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   });
+
+  // 저장된 템플릿 불러오기
+const savedKoToEnTemplate = localStorage.getItem('koToEnTemplate');
+const savedEnToKoTemplate = localStorage.getItem('enToKoTemplate');
+
+if (savedKoToEnTemplate) {
+    koToEnTemplate = JSON.parse(localStorage.getItem('promptTemplates') || '{}')[savedKoToEnTemplate];
+    elements.templateNameKoToEn.textContent = `선택된 템플릿: ${savedKoToEnTemplate}`;
+}
+
+if (savedEnToKoTemplate) {
+    enToKoTemplate = JSON.parse(localStorage.getItem('promptTemplates') || '{}')[savedEnToKoTemplate];
+    elements.templateNameEnToKo.textContent = `선택된 템플릿: ${savedEnToKoTemplate}`;
+}
+
+// 방향 전환 버튼 이벤트 리스너
+elements.koToEnBtn.addEventListener('click', () => {
+    currentDirection = 'koToEn';
+    elements.koToEnBtn.classList.add('active');
+    elements.enToKoBtn.classList.remove('active');
+    if (koToEnTemplate) {
+        elements.customPromptInput.value = koToEnTemplate;
+    }
+});
+
+elements.enToKoBtn.addEventListener('click', () => {
+    currentDirection = 'enToKo';
+    elements.enToKoBtn.classList.add('active');
+    elements.koToEnBtn.classList.remove('active');
+    if (enToKoTemplate) {
+        elements.customPromptInput.value = enToKoTemplate;
+    }
+});
+
+// 템플릿 설정 버튼 이벤트 리스너
+elements.setTemplateButtons.forEach((button, index) => {
+    button.addEventListener('click', (e) => {
+        e.stopPropagation(); // 버블링 방지
+        const direction = index === 0 ? 'koToEn' : 'enToKo';
+        setTemplateForDirection(direction);
+    });
+});
 
 // Gemini로 번역
 async function translateWithGemini(text, apiKey) {
