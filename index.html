@@ -46,6 +46,15 @@
                         </button>
                     </div>
                 </div>
+                <div class="input-group">
+                    <label for="anthropicApiKey">Cohere API Key</label>
+                    <div class="api-input-container">
+                        <input type="password" id="cohereApiKey" placeholder="Cohere API Key">
+                        <button class="toggle-password" type="button">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
                 <button id="saveApiKeys" class="btn-small">API 키 저장</button>
             </div>
             
@@ -130,6 +139,20 @@
             </div>
         </div>
 
+        <div class="translation-history-section">
+            <h3>번역 히스토리</h3>
+                <div class="history-controls">
+                    <input type="text" id="historySearch" placeholder="히스토리 검색...">
+                    <button id="clearHistory" class="btn-small">히스토리 비우기</button>
+                    <button id="exportHistory" class="btn-small">히스토리 내보내기</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+                <div id="translationProgress" class="progress-bar" style="display: none;">
+                    <div class="progress-fill"></div>
+                    <span class="progress-text">0%</span>
+                </div>
+        </div>
+
         <div class="translation-box">
             <div class="input-group">
                 <label for="sourceText">입력 텍스트</label>
@@ -158,10 +181,14 @@
                     </button>
                 </div>
             </div>
+            <div id="translationProgress" class="progress-bar" style="display: none;">
+                <div class="progress-fill"></div>
+                <span class="progress-text">0%</span>
+            </div>
         </div>
 
         <button id="translateButton" class="translate-btn">번역하기</button>
-        <div id="loading" class="loading">
+        <div id="loading" class="loading" style="display: none;">
             <div class="spinner"></div>
             <span>번역 중...</span>
         </div>
@@ -187,6 +214,10 @@
         </div>
 
         <div id="toastContainer" class="toast-container"></div>
+        <div class="copyright">
+            <p>copyrightⓒ 2024 All rights reserved by <a href="https://github.com/tincansimagine" target="_blank">tincansimagine</a></p>
+            <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
+        </div>
     </div>
     <script src="translator.js"></script>
 </body>

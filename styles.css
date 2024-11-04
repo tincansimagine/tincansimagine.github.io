@@ -220,6 +220,7 @@ h1 {
 
 /* 번역 박스 스타일 */
 .translation-box {
+    margin-top: 1rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -229,11 +230,12 @@ h1 {
 .textarea-container {
     position: relative;
     width: 100%;
+    height: 500px;  /* 컨테이너 높이 고정 */
 }
 
 textarea, .formatted-result {
     width: 100%;
-    height: 500px;
+    height: 100%;  /* 부모 높이에 맞춤 */
     padding: 1rem;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
@@ -245,13 +247,14 @@ textarea, .formatted-result {
 
 .text-counter {
     position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
+    bottom: 10px;  /* 동일한 위치로 조정 */
+    right: 10px;
     font-size: 0.8rem;
     color: #666;
     background: rgba(255, 255, 255, 0.8);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
+    z-index: 1;
 }
 
 textarea:focus {
@@ -260,9 +263,12 @@ textarea:focus {
 }
 
 .formatted-result {
-    display: none;
+    position: absolute;  /* 절대 위치로 변경 */
+    top: 0;
+    left: 0;
     overflow-y: auto;
     background-color: white;
+    display: none;
 }
 
 .formatted-result p {
@@ -464,6 +470,101 @@ kbd {
     color: #333;
 }
 
+.translation-history-section {
+    margin-bottom: 3rem;  /* 히스토리 섹션 아래 여백 증가 */
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.history-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.history-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.history-item {
+  background-color: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.history-text {
+  margin-bottom: 0.5rem;
+}
+
+.history-source, .history-translated {
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.history-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: #4285f4;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 0.8rem;
+}
+
+.copyright {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.copyright a {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.copyright a:hover {
+    text-decoration: underline;
+}
+
 /* 다크모드 스타일 */
 [data-theme="dark"] {
     background-color: #1a1a1a;
@@ -481,8 +582,11 @@ kbd {
 [data-theme="dark"] .api-section,
 [data-theme="dark"] .prompt-section,
 [data-theme="dark"] .word-rules-section,
-[data-theme="dark"] .style-settings {
+[data-theme="dark"] .style-settings,
+[data-theme="dark"] .data-management-section,
+[data-theme="dark"] .translation-history-section {
     background-color: #363636;
+    color: #ffffff;  /* 텍스트 색상 추가 */
 }
 
 [data-theme="dark"] input[type="text"],
@@ -492,7 +596,6 @@ kbd {
 [data-theme="dark"] .formatted-result {
     background-color: #2d2d2d;
     color: #ffffff;
-    border-color: #4a4a4a;
 }
 
 [data-theme="dark"] input[type="text"]::placeholder,
@@ -502,7 +605,12 @@ kbd {
 }
 
 [data-theme="dark"] label,
-[data-theme="dark"] .rule-item {
+[data-theme="dark"] .rule-item,
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .rule-text,
+[data-theme="dark"] .history-item,
+[data-theme="dark"] .history-source,
+[data-theme="dark"] .history-translated {
     color: #ffffff;
 }
 
@@ -537,9 +645,10 @@ kbd {
     color: #ffffff;
 }
 
+/* 다크모드에서의 스타일 */
 [data-theme="dark"] .text-counter {
-    color: #aaa;
-    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.7);
 }
 
 [data-theme="dark"] .modal-content {
@@ -566,8 +675,36 @@ kbd {
     color: #ffffff;
 }
 
-[data-theme="dark"] .data-management-section {
+[data-theme="dark"] .history-item {
+    background-color: #2d2d2d;
+}
+
+[data-theme="dark"] .history-source,
+[data-theme="dark"] .history-translated {
     background-color: #363636;
+}
+
+[data-theme="dark"] .history-item-header,
+[data-theme="dark"] .history-timestamp,
+[data-theme="dark"] .history-model {
+    color: #cccccc;  /* 히스토리 헤더 텍스트 색상 수정 */
+}
+
+[data-theme="dark"] .progress-bar {
+    background-color: #363636;
+}
+
+[data-theme="dark"] .progress-text {
+    color: #fff;
+}
+
+[data-theme="dark"] .copyright {
+    border-top-color: #4a4a4a;
+    color: #999;
+}
+
+[data-theme="dark"] .copyright a {
+    color: #8ab4f8;
 }
 
 /* 애니메이션 */
