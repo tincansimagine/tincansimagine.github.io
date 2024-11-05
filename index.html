@@ -6,6 +6,9 @@
     <title>깡갤 번역기</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
@@ -74,7 +77,7 @@
             <div class="data-controls">
                 <button id="exportData" class="btn-small">
                     <span>💾 설정 내보내기</span>
-                    <small>모든 설정을 파일로 저장</small>
+                    <small>모든 설정 파일로 저장</small>
                 </button>
                 <button id="importData" class="btn-small">
                     <span>📂 설정 가져오기</span>
@@ -132,8 +135,27 @@
                     <input type="color" id="thoughtColor" value="#6B4C9A">
                 </div>
                 <div class="color-picker">
-                    <label for="emphasisColor">강조 색상 (이텔릭체):</label>
+                    <label for="emphasisColor">이텔릭체 색상:</label>
                     <input type="color" id="emphasisColor" value="#7B3B3B">
+                </div>
+                <div class="color-picker">
+                    <label for="boldColor">볼드체 색상:</label>
+                    <input type="color" id="boldColor" value="#FF0000">
+                </div>
+                <div class="font-selector">
+                    <label for="fontFamily">글꼴 선택:</label>
+                    <select id="fontFamily">
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="Roboto Slab">Roboto Slab</option>
+                        <option value="Roboto Slab">Noto Serif Telugu</option>
+                        <option value="Nanum Gothic">나눔고딕</option>
+                        <option value="Malgun Gothic">맑은고딕</option>
+                        <option value="RIDIBatang">RIDI 바탕</option>
+                    </select>
                 </div>
                 <div class="checkbox-option">
                     <input type="checkbox" id="enableMarkdown" checked>
@@ -148,6 +170,10 @@
             <button id="toggleHistory" class="toggle-btn">▶</button>
             </h3>
             <div id="historyContent" class="history-content collapsed">
+                <div class="history-filter">
+                    <button id="showAllHistory" class="btn-small active">전체</button>
+                    <button id="showBookmarked" class="btn-small">즐겨찾기</button>
+                </div>
                 <div class="history-controls">
                     <!-- 검색 입력 필드 추가 -->
                     <div class="history-search">
@@ -155,6 +181,8 @@
                     </div>
                     <button id="clearHistory" class="btn-small">히스토리 비우기</button>
                     <button id="exportHistory" class="btn-small">히스토리 내보내기</button>
+                    <button id="importHistory" class="btn-small">히스토리 가져오기</button>
+                    <input type="file" id="historyFileInput" accept=".json" style="display: none;">
                 </div>
                 <div class="history-list" id="historyList">
                     <!-- 히스토리 아이템들이 여기에 추가됨 -->
