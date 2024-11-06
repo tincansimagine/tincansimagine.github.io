@@ -21,6 +21,8 @@ let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
 let translationHistory = JSON.parse(localStorage.getItem('translationHistory')) || [];
 let currentDirection = 'enToKo'; // 기본값은 영→한
+let savedKoToEnTemplate = localStorage.getItem('savedKoToEnTemplate') || '';
+let savedEnToKoTemplate = localStorage.getItem('savedEnToKoTemplate') || '';
 let koToEnTemplate = '';
 let enToKoTemplate = '';
 let toastTimeout;
@@ -166,6 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (showAllBtn) showAllBtn.addEventListener('click', () => displayTranslationHistory('all'));
     if (showBookmarkedBtn) showBookmarkedBtn.addEventListener('click', () => displayTranslationHistory('bookmarked'));
     if (importHistoryBtn) importHistoryBtn.addEventListener('click', importHistory);
+    // 번역 방향 전환 버튼 이벤트 리스너
+    if (elements.koToEnBtn) {
+        elements.koToEnBtn.addEventListener('click', () => {
+            switchTranslationDirection('koToEn');
+        });
+    }
+
+    if (elements.enToKoBtn) {
+        elements.enToKoBtn.addEventListener('click', () => {
+            switchTranslationDirection('enToKo');
+        });
+    }
 });
 
 /*********************************************
@@ -463,22 +477,48 @@ function setTemplateForDirection(direction) {
     }
 }
 
-// 번역 방향 전환 함수
 function switchTranslationDirection(direction) {
     currentDirection = direction;
     
-    // 버튼 활성화 상태 업데이트
+    // 방향에 따른 버튼 활성화 상태 변경
     elements.koToEnBtn.classList.toggle('active', direction === 'koToEn');
     elements.enToKoBtn.classList.toggle('active', direction === 'enToKo');
     
-    // 프롬프트 업데이트
+    // 현재 프롬프트 입력값을 템플릿으로 저장
     if (direction === 'koToEn') {
-        elements.customPromptInput.value = koToEnTemplate || promptTemplates.basicKoToEn;
+        // 저장된 한영 템플릿이 있으면 사용
+        if (koToEnTemplate) {
+            elements.customPromptInput.value = koToEnTemplate;
+            customPrompt = koToEnTemplate;
+            localStorage.setItem('customPrompt', koToEnTemplate);
+            localStorage.setItem('savedKoToEnTemplate', koToEnTemplate);
+            
+            // 현재 선택된 템플릿 이름 표시
+            const selectedTemplate = Array.from(elements.promptTemplate.options)
+                .find(option => option.value === koToEnTemplate);
+            if (selectedTemplate) {
+                elements.templateNameKoToEn.textContent = selectedTemplate.label;
+            }
+        }
     } else {
-        elements.customPromptInput.value = enToKoTemplate || promptTemplates.basicEnToKo;
+        // 저장된 영한 템플릿이 있으면 사용
+        if (enToKoTemplate) {
+            elements.customPromptInput.value = enToKoTemplate;
+            customPrompt = enToKoTemplate;
+            localStorage.setItem('customPrompt', enToKoTemplate);
+            localStorage.setItem('savedEnToKoTemplate', enToKoTemplate);
+            
+            // 현재 선택된 템플릿 이름 표시
+            const selectedTemplate = Array.from(elements.promptTemplate.options)
+                .find(option => option.value === enToKoTemplate);
+            if (selectedTemplate) {
+                elements.templateNameEnToKo.textContent = selectedTemplate.label;
+            }
+        }
     }
+    
+    showToast(`번역 방향이 ${direction === 'koToEn' ? '한→영' : '영→한'}으로 변경되었습니다.`);
 }
-
 /*********************************************
  * 파일 업로드 관련 함수들
  *********************************************/
@@ -1380,10 +1420,6 @@ document.getElementById('exportHistory').addEventListener('click', () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 });
-
-  // 저장된 템플릿 불러오기
-const savedKoToEnTemplate = localStorage.getItem('koToEnTemplate');
-const savedEnToKoTemplate = localStorage.getItem('enToKoTemplate');
 
 if (savedKoToEnTemplate) {
     koToEnTemplate = JSON.parse(localStorage.getItem('promptTemplates') || '{}')[savedKoToEnTemplate];
