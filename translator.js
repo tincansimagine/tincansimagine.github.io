@@ -25,7 +25,10 @@ let savedKoToEnTemplate = localStorage.getItem('savedKoToEnTemplate') || '';
 let savedEnToKoTemplate = localStorage.getItem('savedEnToKoTemplate') || '';
 let koToEnTemplate = '';
 let enToKoTemplate = '';
+let savedKoToEnTemplateName = localStorage.getItem('savedKoToEnTemplateName') || '';
+let savedEnToKoTemplateName = localStorage.getItem('savedEnToKoTemplateName') || '';
 let toastTimeout;
+let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 // 파일 업로드 변수
 const ALLOWED_FILE_TYPES = {
     'text/plain': 'TXT',
@@ -160,26 +163,114 @@ marked.setOptions({
 
 // DOM이 로드된 후 실행되도록 이벤트 리스너 추가
 document.addEventListener('DOMContentLoaded', () => {
-    // 히스토리 필터 버튼 이벤트 리스너
-    const showAllBtn = document.getElementById('showAllHistory');
-    const showBookmarkedBtn = document.getElementById('showBookmarked');
-    const importHistoryBtn = document.getElementById('importHistory');
-    
-    if (showAllBtn) showAllBtn.addEventListener('click', () => displayTranslationHistory('all'));
-    if (showBookmarkedBtn) showBookmarkedBtn.addEventListener('click', () => displayTranslationHistory('bookmarked'));
-    if (importHistoryBtn) importHistoryBtn.addEventListener('click', importHistory);
-    // 번역 방향 전환 버튼 이벤트 리스너
-    if (elements.koToEnBtn) {
-        elements.koToEnBtn.addEventListener('click', () => {
-            switchTranslationDirection('koToEn');
-        });
+    // 필수 요소 확인
+    if (!elements.customPromptInput || !elements.promptTemplate) {
+        console.error('Required elements not found');
+        return;
     }
 
-    if (elements.enToKoBtn) {
-        elements.enToKoBtn.addEventListener('click', () => {
-            switchTranslationDirection('enToKo');
+    // API 키 입력란 이벤트 리스너
+    elements.togglePasswordBtns.forEach(btn => {
+        btn.addEventListener('click', () => togglePasswordVisibility(btn));
+    });
+
+    // 번역 방향 버튼 이벤트 리스너
+    elements.koToEnBtn.addEventListener('click', () => switchTranslationDirection('koToEn'));
+    elements.enToKoBtn.addEventListener('click', () => switchTranslationDirection('enToKo'));
+
+    // 모델 선택 옵션 초기화
+    initializeModelSelect();
+
+    // 저장된 상태 복원
+    const savedDirection = localStorage.getItem('currentDirection') || 'enToKo';
+    
+    // 템플릿 설정 버튼 이벤트 리스너
+    elements.setTemplateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const direction = this.closest('.direction-btn-container').querySelector('.direction-btn').id === 'koToEnBtn' ? 'koToEn' : 'enToKo';
+            const templateValue = elements.promptTemplate.value;
+            
+            if (!templateValue) {
+                showToast('템플릿을 선택해주세요.', 'error');
+                return;
+            }
+
+            // 템플릿 내용과 이름 가져오기 (사용자 정의 템플릿 포함)
+            let templateContent = elements.customPromptInput.value;
+            let templateDisplayName = templateValue;
+
+            // 기본 템플릿인 경우 미리 정의된 내용 사용
+            if (promptTemplates[templateValue]) {
+                templateContent = promptTemplates[templateValue];
+                templateDisplayName = templateNames[templateValue] || templateValue;
+            }
+
+            if (direction === 'koToEn') {
+                savedKoToEnTemplate = templateContent;
+                savedKoToEnTemplateName = templateDisplayName;
+                localStorage.setItem('savedKoToEnTemplate', templateContent);
+                localStorage.setItem('savedKoToEnTemplateName', templateDisplayName);
+                elements.templateNameKoToEn.textContent = templateDisplayName;
+                
+                if (currentDirection === 'koToEn') {
+                    elements.customPromptInput.value = templateContent;
+                    customPrompt = templateContent;
+                    localStorage.setItem('customPrompt', customPrompt);
+                }
+            } else {
+                savedEnToKoTemplate = templateContent;
+                savedEnToKoTemplateName = templateDisplayName;
+                localStorage.setItem('savedEnToKoTemplate', templateContent);
+                localStorage.setItem('savedEnToKoTemplateName', templateDisplayName);
+                elements.templateNameEnToKo.textContent = templateDisplayName;
+                
+                if (currentDirection === 'enToKo') {
+                    elements.customPromptInput.value = templateContent;
+                    customPrompt = templateContent;
+                    localStorage.setItem('customPrompt', customPrompt);
+                }
+            }
+
+            showToast(`${direction === 'koToEn' ? '한→영' : '영→한'} 템플릿이 설정되었습니다.`);
         });
+    });
+
+    // 저장된 템플릿 이름과 내용 복원
+    if (elements.templateNameKoToEn) {
+        const savedKoToEnName = localStorage.getItem('savedKoToEnTemplateName');
+        const savedKoToEnContent = localStorage.getItem('savedKoToEnTemplate');
+        elements.templateNameKoToEn.textContent = savedKoToEnName || '템플릿 없음';
+        if (savedKoToEnContent) {
+            savedKoToEnTemplate = savedKoToEnContent;
+        }
     }
+
+    if (elements.templateNameEnToKo) {
+        const savedEnToKoName = localStorage.getItem('savedEnToKoTemplateName');
+        const savedEnToKoContent = localStorage.getItem('savedEnToKoTemplate');
+        elements.templateNameEnToKo.textContent = savedEnToKoName || '템플릿 없음';
+        if (savedEnToKoContent) {
+            savedEnToKoTemplate = savedEnToKoContent;
+        }
+    }
+
+    // 초기 방향 설정
+    switchTranslationDirection(savedDirection);
+
+    // 단축키 이벤트 리스너
+    document.addEventListener('keydown', (e) => {
+        const shortcutKey = `${e.altKey ? 'Alt+' : ''}${e.key}`;
+        if (DIRECTION_SHORTCUTS[shortcutKey]) {
+            e.preventDefault();
+            switchTranslationDirection(DIRECTION_SHORTCUTS[shortcutKey]);
+        }
+    });
+
+    // 기타 초기화 작업...
+    initializeEventListeners();
+    restoreSettings();
+    updateCharacterCount();
+    updateTheme();
 });
 
 /*********************************************
@@ -412,6 +503,42 @@ function displayWordRules() {
     });
 }
 
+function savePrompt() {
+    const promptText = elements.customPromptInput.value;
+    customPrompt = promptText;
+    localStorage.setItem('customPrompt', promptText);
+    
+    // 현재 선택된 템플릿 이름 가져오기
+    const selectedTemplate = elements.promptTemplate.value;
+    const templateName = templateNames[selectedTemplate] || selectedTemplate;
+    
+    // 현재 방향에 따라 템플릿과 이름 저장
+    if (currentDirection === 'koToEn') {
+        savedKoToEnTemplate = promptText;
+        localStorage.setItem('savedKoToEnTemplate', promptText);
+        localStorage.setItem('savedKoToEnTemplateName', templateName);
+        if (elements.templateNameKoToEn) {
+            elements.templateNameKoToEn.textContent = templateName;
+        }
+    } else {
+        savedEnToKoTemplate = promptText;
+        localStorage.setItem('savedEnToKoTemplate', promptText);
+        localStorage.setItem('savedEnToKoTemplateName', templateName);
+        if (elements.templateNameEnToKo) {
+            elements.templateNameEnToKo.textContent = templateName;
+        }
+    }
+    
+    showToast('프롬프트가 저장되었습니다.');
+}
+
+function saveUserTemplate(name, content) {
+    userTemplates[name] = content;
+    localStorage.setItem('userTemplates', JSON.stringify(userTemplates));
+    // 템플릿 이름도 저장
+    templateNames[name] = name;
+}
+
 // 템플릿 옵션 업데이트
 function updatePromptTemplateOptions() {
     const select = elements.promptTemplate;
@@ -480,45 +607,40 @@ function setTemplateForDirection(direction) {
 function switchTranslationDirection(direction) {
     currentDirection = direction;
     
-    // 방향에 따른 버튼 활성화 상태 변경
-    elements.koToEnBtn.classList.toggle('active', direction === 'koToEn');
-    elements.enToKoBtn.classList.toggle('active', direction === 'enToKo');
-    
-    // 현재 프롬프트 입력값을 템플릿으로 저장
     if (direction === 'koToEn') {
-        // 저장된 한영 템플릿이 있으면 사용
-        if (koToEnTemplate) {
-            elements.customPromptInput.value = koToEnTemplate;
-            customPrompt = koToEnTemplate;
-            localStorage.setItem('customPrompt', koToEnTemplate);
-            localStorage.setItem('savedKoToEnTemplate', koToEnTemplate);
-            
-            // 현재 선택된 템플릿 이름 표시
-            const selectedTemplate = Array.from(elements.promptTemplate.options)
-                .find(option => option.value === koToEnTemplate);
-            if (selectedTemplate) {
-                elements.templateNameKoToEn.textContent = selectedTemplate.label;
+        elements.koToEnBtn.classList.add('active');
+        elements.enToKoBtn.classList.remove('active');
+        
+        const savedTemplate = localStorage.getItem('savedKoToEnTemplate');
+        const savedName = localStorage.getItem('savedKoToEnTemplateName');
+        
+        if (savedTemplate && savedName) {
+            elements.customPromptInput.value = savedTemplate;
+            customPrompt = savedTemplate;
+            if (elements.templateNameKoToEn) {
+                elements.templateNameKoToEn.textContent = savedName;
             }
         }
     } else {
-        // 저장된 영한 템플릿이 있으면 사용
-        if (enToKoTemplate) {
-            elements.customPromptInput.value = enToKoTemplate;
-            customPrompt = enToKoTemplate;
-            localStorage.setItem('customPrompt', enToKoTemplate);
-            localStorage.setItem('savedEnToKoTemplate', enToKoTemplate);
-            
-            // 현재 선택된 템플릿 이름 표시
-            const selectedTemplate = Array.from(elements.promptTemplate.options)
-                .find(option => option.value === enToKoTemplate);
-            if (selectedTemplate) {
-                elements.templateNameEnToKo.textContent = selectedTemplate.label;
+        elements.enToKoBtn.classList.add('active');
+        elements.koToEnBtn.classList.remove('active');
+        
+        const savedTemplate = localStorage.getItem('savedEnToKoTemplate');
+        const savedName = localStorage.getItem('savedEnToKoTemplateName');
+        
+        if (savedTemplate && savedName) {
+            elements.customPromptInput.value = savedTemplate;
+            customPrompt = savedTemplate;
+            if (elements.templateNameEnToKo) {
+                elements.templateNameEnToKo.textContent = savedName;
             }
         }
     }
     
-    showToast(`번역 방향이 ${direction === 'koToEn' ? '한→영' : '영→한'}으로 변경되었습니다.`);
+    localStorage.setItem('currentDirection', direction);
+    showToast(`번역 방향이 ${direction === 'koToEn' ? '한→영' : '영→한'}으로 전환되었습니다.`);
 }
+
 /*********************************************
  * 파일 업로드 관련 함수들
  *********************************************/
