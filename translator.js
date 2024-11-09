@@ -161,6 +161,61 @@ marked.setOptions({
     smartypants: false
 });
 
+function initializeEventListeners() {
+    // 텍스트 입력 이벤트 리스너
+    if (elements.sourceText) {
+        elements.sourceText.addEventListener('input', updateCharacterCount);
+    }
+
+    // 복사 버튼 이벤트 리스너
+    if (elements.copySource) {
+        elements.copySource.addEventListener('click', () => copyText(elements.sourceText));
+    }
+    if (elements.copyTranslated) {
+        elements.copyTranslated.addEventListener('click', () => copyText(elements.translatedText));
+    }
+
+    // 단축키 모달 이벤트 리스너
+    if (elements.showShortcutsBtn) {
+        elements.showShortcutsBtn.addEventListener('click', () => {
+            if (elements.shortcutModal) {
+                elements.shortcutModal.style.display = 'block';
+            }
+        });
+    }
+    if (elements.closeModalBtn) {
+        elements.closeModalBtn.addEventListener('click', () => {
+            if (elements.shortcutModal) {
+                elements.shortcutModal.style.display = 'none';
+            }
+        });
+    }
+
+    // 글로벌 키보드 단축키
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + Enter: 번역 시작
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            if (elements.translateBtn) {
+                elements.translateBtn.click();
+            }
+        }
+        
+        // Esc: 번역 취소
+        if (e.key === 'Escape') {
+            if (isTranslating) {
+                cancelTranslation();
+            }
+        }
+
+        // Ctrl + D: 다크모드 토글
+        if (e.ctrlKey && e.key === 'd') {
+            e.preventDefault();
+            toggleTheme();
+        }
+    });
+}
+
 // DOM이 로드된 후 실행되도록 이벤트 리스너 추가
 document.addEventListener('DOMContentLoaded', () => {
     // 필수 요소 확인
@@ -195,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 템플릿 내용과 이름 가져오기 (사용자 정의 템플릿 포함)
+            // 템플릿 내용과 이름 가져오기
             let templateContent = elements.customPromptInput.value;
             let templateDisplayName = templateValue;
 
@@ -266,11 +321,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 기타 초기화 작업...
-    initializeEventListeners();
-    restoreSettings();
-    updateCharacterCount();
-    updateTheme();
+    // 텍스트 입력 이벤트 리스너 초기화
+    if (elements.sourceText) {
+        elements.sourceText.addEventListener('input', () => {
+            const text = elements.sourceText.value;
+            // 글자 수 업데이트
+            if (elements.sourceCharCount) {
+                elements.sourceCharCount.textContent = text.length;
+            }
+            // 단어 수 업데이트
+            if (elements.sourceWordCount) {
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                elements.sourceWordCount.textContent = words;
+            }
+        });
+    }
 });
 
 /*********************************************
@@ -394,13 +459,38 @@ function getApiKey(provider) {
 
 //* 텍스트 처리
 // 글자 수 업데이트
-function updateTextCounts(element, type) {
-    const text = element.value;
-    const charCount = text.length;
-    const wordCount = text.trim().split(/\s+/).length;
+// 글자 수와 단어 수를 업데이트하는 함수
+function updateCharacterCount() {
+    const sourceText = elements.sourceText.value;
+    const translatedText = elements.translatedText.value;
     
-    elements[`${type}CharCount`].textContent = charCount;
-    elements[`${type}WordCount`].textContent = wordCount;
+    // 소스 텍스트 카운트 업데이트
+    const sourceCount = document.querySelector('#sourceCount');
+    const sourceWordCount = document.querySelector('#sourceWordCount');
+    if (sourceCount) {
+        sourceCount.textContent = sourceText.length;
+    }
+    if (sourceWordCount) {
+        sourceWordCount.textContent = countWords(sourceText);
+    }
+    
+    // 번역된 텍스트 카운트 업데이트
+    const translatedCount = document.querySelector('#translatedCount');
+    const translatedWordCount = document.querySelector('#translatedWordCount');
+    if (translatedCount) {
+        translatedCount.textContent = translatedText.length;
+    }
+    if (translatedWordCount) {
+        translatedWordCount.textContent = countWords(translatedText);
+    }
+}
+
+// 단어 수를 세는 헬퍼 함수
+function countWords(text) {
+    if (!text) return 0;
+    // 줄바꿈과 여러 공백을 단일 공백으로 변환하고 앞뒤 공백 제거
+    const trimmed = text.replace(/\s+/g, ' ').trim();
+    return trimmed ? trimmed.split(' ').length : 0;
 }
 
 // 텍스트 복사
@@ -759,7 +849,7 @@ async function handleFileUpload(file) {
         showToast('파일을 읽는 중입니다...', 'info');
         const text = await readFile(file);
         elements.sourceText.value = text;
-        updateTextCounts(elements.sourceText, 'source');
+        updateCharacterCount(elements.sourceText, 'source');
         showToast('파일이 성공적으로 업로드되었습니다.');
     } catch (error) {
         showToast(error.message, 'error');
@@ -1297,8 +1387,8 @@ function restoreTranslation(id) {
     elements.translatedText.value = item.translated;
     
     // 글자 수와 단어 수 업데이트
-    updateTextCounts(elements.sourceText, 'source');
-    updateTextCounts(elements.translatedText, 'translated');
+    updateCharacterCount(elements.sourceText, 'source');
+    updateCharacterCount(elements.translatedText, 'translated');
     
     // 마크다운 변환이 활성화되어 있다면 번역 결과 포맷팅
     if (enableMarkdown) {
@@ -1375,8 +1465,8 @@ function restoreTranslation(id) {
     elements.translatedText.value = item.translated;
     
     // 글자 수와 단어 수 업데이트
-    updateTextCounts(elements.sourceText, 'source');
-    updateTextCounts(elements.translatedText, 'translated');
+    updateCharacterCount(elements.sourceText, 'source');
+    updateCharacterCount(elements.translatedText, 'translated');
     
     // 마크다운 변환이 활성화된 경우 번역 결과 포맷팅
     if (enableMarkdown) {
@@ -1826,12 +1916,12 @@ function setupShortcuts() {
     // 텍스트 입력 시 자동 저장
     elements.sourceText.addEventListener('input', (e) => {
         localStorage.setItem('savedText', e.target.value);
-        updateTextCounts(e.target, 'source');
+        updateCharacterCount(e.target, 'source');
     });
 
     elements.translatedText.addEventListener('input', () => {
         localStorage.setItem('lastTranslation', elements.translatedText.value);
-        updateTextCounts(elements.translatedText, 'translated');
+        updateCharacterCount(elements.translatedText, 'translated');
     });
 
     // 히스토리 토글 이벤트 리스너
@@ -1920,12 +2010,12 @@ function setupEventListeners() {
     // 텍스트 입력 시 자동 저장 및 카운터 업데이트
     elements.sourceText?.addEventListener('input', (e) => {
         localStorage.setItem('savedText', e.target.value);
-        updateTextCounts(e.target, 'source');
+        updateCharacterCount(e.target, 'source');
     });
 
     elements.translatedText?.addEventListener('input', (e) => {
         localStorage.setItem('lastTranslation', e.target.value);
-        updateTextCounts(e.target, 'translated');
+        updateCharacterCount(e.target, 'translated');
     });
 }
 
@@ -1977,12 +2067,12 @@ function restoreSettings() {
 function restoreTranslationData() {
     if (savedText) {
         elements.sourceText.value = savedText;
-        updateTextCounts(elements.sourceText, 'source');
+        updateCharacterCount(elements.sourceText, 'source');
     }
     
     if (lastTranslation) {
         elements.translatedText.value = lastTranslation;
-        updateTextCounts(elements.translatedText, 'translated');
+        updateCharacterCount(elements.translatedText, 'translated');
         updateFormattedResult();
     }
 }
