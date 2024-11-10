@@ -256,11 +256,6 @@ function initializeEventListeners() {
             }
         }
 
-        // Ctrl + D: 다크모드 토글
-        if (e.ctrlKey && e.key === 'd') {
-            e.preventDefault();
-            toggleTheme();
-        }
     });
 }
 
