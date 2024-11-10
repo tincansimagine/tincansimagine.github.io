@@ -29,6 +29,10 @@ let savedKoToEnTemplateName = localStorage.getItem('savedKoToEnTemplateName') ||
 let savedEnToKoTemplateName = localStorage.getItem('savedEnToKoTemplateName') || '';
 let toastTimeout;
 let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
+let autoSaveInterval = null;
+let lastSaveTime = 0;
+const AUTO_SAVE_DELAY = 10000; // 30초마다 자동 저장
+const SAVE_NOTIFICATION_COOLDOWN = 30000;
 // 파일 업로드 변수
 const ALLOWED_FILE_TYPES = {
     'text/plain': 'TXT',
@@ -163,8 +167,14 @@ marked.setOptions({
 
 function initializeEventListeners() {
     // 텍스트 입력 이벤트 리스너
-    if (elements.sourceText) {
-        elements.sourceText.addEventListener('input', updateCharacterCount);
+    if (elements.sourceText && elements.translatedText) {
+        elements.sourceText.addEventListener('input', debounce(() => {
+            saveContent();
+        }, 5000));
+
+        elements.translatedText.addEventListener('input', debounce(() => {
+            saveContent();
+        }, 5000));
     }
 
     // 복사 버튼 이벤트 리스너
@@ -189,6 +199,44 @@ function initializeEventListeners() {
                 elements.shortcutModal.style.display = 'none';
             }
         });
+    }
+
+    // 페이지 로드 시
+    window.addEventListener('load', () => {
+        restoreContent();
+    });
+
+    // 페이지 언로드 시
+    window.addEventListener('beforeunload', (e) => {
+        const sourceText = elements.sourceText.value;
+        const translatedText = elements.translatedText.value;
+        
+        if (sourceText || translatedText) {
+            e.preventDefault();
+            e.returnValue = '저장되지 않은 변경사항이 있습니다. 페이지를 나가시겠습니까?';
+        }
+    });
+
+    
+    // 입력 필드 변경 감지
+    elements.sourceText.addEventListener('input', debounce(() => {
+        saveContent();
+    }, 1000));
+    
+    elements.translatedText.addEventListener('input', debounce(() => {
+        saveContent();
+    }, 1000));
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     }
 
     // 글로벌 키보드 단축키
@@ -223,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Required elements not found');
         return;
     }
+    initializeEventListeners();
 
     // API 키 입력란 이벤트 리스너
     elements.togglePasswordBtns.forEach(btn => {
@@ -398,12 +447,91 @@ const elements = {
     clearHistory: document.getElementById('clearHistory'),
     exportHistory: document.getElementById('exportHistory'),
     boldColorInput: document.getElementById('boldColor'),
-    fontFamilySelect: document.getElementById('fontFamily')
+    fontFamilySelect: document.getElementById('fontFamily'),
+    autoSaveNotification: document.getElementById('autoSaveNotification'),
+    translatedText: document.getElementById('translatedText'),
+    sourceText: document.getElementById('sourceText'),
+    translatedText: document.getElementById('translatedText'),
+    autoSaveNotification: document.getElementById('autoSaveNotification')
 };
 
 /*********************************************
  * 3. 유틸리티 함수들
  *********************************************/
+function saveContent() {
+    if (!elements.sourceText || !elements.translatedText) {
+        return;
+    }
+
+    const sourceText = elements.sourceText.value;
+    const translatedText = elements.translatedText.value;
+    
+    if (sourceText || translatedText) {
+        try {
+            const saveData = {
+                sourceText,
+                translatedText,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('translatorAutoSave', JSON.stringify(saveData));
+            
+            // 마지막 알림 표시 후 일정 시간이 지났을 때만 알림 표시
+            const currentTime = Date.now();
+            if (currentTime - lastSaveTime >= SAVE_NOTIFICATION_COOLDOWN) {
+                showAutoSaveNotification();
+                lastSaveTime = currentTime;
+            }
+        } catch (error) {
+            // 에러 발생 시 조용히 실패
+        }
+    }
+}
+
+// 저장된 내용 복원 함수
+function restoreContent() {
+    try {
+        const savedData = localStorage.getItem('translatorAutoSave');
+        if (savedData) {
+            const { sourceText, translatedText, timestamp } = JSON.parse(savedData);
+            
+            if (sourceText || translatedText) {
+                const shouldRestore = confirm(
+                    `자동 저장된 내용이 있습니다. (${new Date(timestamp).toLocaleString()})\n복원하시겠습니까?`
+                );
+                
+                if (shouldRestore) {
+                    elements.sourceText.value = sourceText || '';
+                    elements.translatedText.value = translatedText || '';
+                    updateCharacterCount();
+                } else {
+                    localStorage.removeItem('translatorAutoSave');
+                }
+            }
+        }
+    } catch (error) {
+        // 에러 발생 시 조용히 실패
+    }
+}
+
+// 자동 저장 알림 표시 함수
+function showAutoSaveNotification() {
+    const notification = document.getElementById('autoSaveNotification');
+    if (notification) {
+        notification.style.display = 'block';
+        
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000);
+    }
+}
+
+function clearAutoSavedContent() {
+    localStorage.removeItem('autoSavedSource');
+    localStorage.removeItem('autoSavedTranslation');
+    localStorage.removeItem('autoSaveTimestamp');
+}
+
 // 토스트 메시지 표시
 function showToast(message, type = 'success', duration = 3000) {
     // 기존 토스트 제거
@@ -458,30 +586,26 @@ function getApiKey(provider) {
 }
 
 //* 텍스트 처리
-// 글자 수 업데이트
-// 글자 수와 단어 수를 업데이트하는 함수
+// 글자 수 계산 함수
 function updateCharacterCount() {
+    // 소스 텍스트 카운트
     const sourceText = elements.sourceText.value;
+    if (elements.sourceCharCount) {
+        elements.sourceCharCount.textContent = sourceText.length;
+    }
+    if (elements.sourceWordCount) {
+        const sourceWords = sourceText.trim() ? sourceText.trim().split(/\s+/).length : 0;
+        elements.sourceWordCount.textContent = sourceWords;
+    }
+
+    // 번역 결과 텍스트 카운트
     const translatedText = elements.translatedText.value;
-    
-    // 소스 텍스트 카운트 업데이트
-    const sourceCount = document.querySelector('#sourceCount');
-    const sourceWordCount = document.querySelector('#sourceWordCount');
-    if (sourceCount) {
-        sourceCount.textContent = sourceText.length;
+    if (elements.translatedCharCount) {
+        elements.translatedCharCount.textContent = translatedText.length;
     }
-    if (sourceWordCount) {
-        sourceWordCount.textContent = countWords(sourceText);
-    }
-    
-    // 번역된 텍스트 카운트 업데이트
-    const translatedCount = document.querySelector('#translatedCount');
-    const translatedWordCount = document.querySelector('#translatedWordCount');
-    if (translatedCount) {
-        translatedCount.textContent = translatedText.length;
-    }
-    if (translatedWordCount) {
-        translatedWordCount.textContent = countWords(translatedText);
+    if (elements.translatedWordCount) {
+        const translatedWords = translatedText.trim() ? translatedText.trim().split(/\s+/).length : 0;
+        elements.translatedWordCount.textContent = translatedWords;
     }
 }
 
@@ -591,6 +715,22 @@ function displayWordRules() {
         `;
         elements.rulesList.appendChild(ruleElement);
     });
+}
+
+function togglePasswordVisibility(button) {
+    const container = button.closest('.api-input-container');
+    const input = container.querySelector('input');
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
 }
 
 function savePrompt() {
@@ -1134,7 +1274,6 @@ function saveApiKeys() {
         }
         if (newCohereKey) {
             cohereApiKey = newCohereKey;
-            console.log('Saving cohereApiKey:', cohereApiKey);
             localStorage.setItem('cohereApiKey', cohereApiKey);
         }
         showToast('API 키가 저장되었습니다.');
@@ -1349,6 +1488,8 @@ async function translateText() {
         }, 500);  // 진행바가 100%에 도달하는 것을 보여주기 위해 약간의 지연
     }
 }
+
+
 
 // 진행바 업데이트 함수
 function updateProgress(percent) {
@@ -1971,19 +2112,16 @@ function setupShortcuts() {
     });
 }
 
-// 번역 취소 함수 추가
+// 번역 취소 함수
 function cancelTranslation() {
-    if (elements.loading.style.display === 'flex') {
-        elements.loading.style.display = 'none';
-        elements.translateBtn.disabled = false;
-        showToast('번역이 취소되었습니다.');
-        
-        // 현재 진행 중인 API 요청 취소
-        if (controller) {
-            controller.abort();
-            controller = null;
-        }
+    if (controller) {
+        controller.abort();
+        controller = null;
     }
+    isTranslating = false;
+    elements.translateBtn.disabled = false;
+    elements.loading.style.display = 'none';
+    showToast('번역이 취소되었습니다.', 'error');
 }
 
 // 이벤트 리스너 설정

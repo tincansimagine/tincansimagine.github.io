@@ -28,7 +28,7 @@
                     <label for="geminiApiKey">Google Gemini API Key</label>
                     <div class="api-input-container">
                         <input type="password" id="geminiApiKey" placeholder="Gemini API 키를 입력하세요">
-                        <button class="toggle-password" type="button">
+                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -37,7 +37,7 @@
                     <label for="openaiApiKey">OpenAI API Key</label>
                     <div class="api-input-container">
                         <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
-                        <button class="toggle-password" type="button">
+                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -46,7 +46,7 @@
                     <label for="anthropicApiKey">Anthropic API Key</label>
                     <div class="api-input-container">
                         <input type="password" id="anthropicApiKey" placeholder="Anthropic API 키를 입력하세요">
-                        <button class="toggle-password" type="button">
+                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -55,7 +55,7 @@
                     <label for="anthropicApiKey">Cohere API Key</label>
                     <div class="api-input-container">
                         <input type="password" id="cohereApiKey" placeholder="Cohere API Key">
-                        <button class="toggle-password" type="button">
+                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -248,6 +248,7 @@
                         <i class="fas fa-copy"></i>
                     </button>
                 </div>
+                <div id="autoSaveNotification" class="auto-save-notification">자동 저장되었습니다</div>
             </div>
         </div>
 

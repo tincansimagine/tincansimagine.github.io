@@ -5,6 +5,13 @@
     font-style: normal;
 }
 
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(20px); }
+    20% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+
 .roboto-slab-font {
     font-family: "Roboto Slab", serif;
     font-optical-sizing: auto;
@@ -869,6 +876,25 @@ kbd {
     white-space: nowrap;
 }
 
+.auto-save-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    z-index: 1000;
+    display: none;
+    animation: fadeInOut 2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .auto-save-notification {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+}
+
 /* 번역 방향 컨트롤 다크모드 스타일 */
 [data-theme="dark"] .translation-direction-controls {
     background-color: #363636;
@@ -1173,6 +1199,13 @@ kbd {
         flex-direction: column;
         gap: 1rem;
     }
+
+    .checkbox-option {
+        margin-left: 0; /* auto 제거 */
+        padding-right: 0; /* 오른쪽 여백 제거 */
+        align-self: flex-start; /* 왼쪽 정렬 추가 */
+    }
+    
     /* 번역 방향 컨트롤 모바일 스타일 */
     .translation-direction-controls {
         flex-direction: column;
