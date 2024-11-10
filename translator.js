@@ -15,7 +15,7 @@ let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
 let thoughtColor = localStorage.getItem('thoughtColor') || '#6B4C9A';
 let emphasisColor = localStorage.getItem('emphasisColor') || '#7B3B3B';
 let boldColor = localStorage.getItem('boldColor') || '#e39db9';
-let selectedFont = localStorage.getItem('selectedFont') || 'RIDIBatang';
+let selectedFont = localStorage.getItem('selectedFont') || 'Arial';
 let enableMarkdown = localStorage.getItem('enableMarkdown') !== 'false';
 let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
