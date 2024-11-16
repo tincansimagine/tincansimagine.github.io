@@ -64,10 +64,19 @@ body {
 }
 
 h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.version-tag {
+    font-size: 0.7rem;
+    color: #666;
+    font-weight: normal;
+    padding: 0.2rem 0.4rem;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    margin-left: 0.5rem;
 }
 
 /* API 섹션 스타일 */
@@ -349,6 +358,15 @@ textarea:focus {
     font-size: 0.9rem;
 }
 
+.translate-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 1rem 0;
+    position: relative;
+}
+
 .translate-btn {
     background-color: #4285f4;
     color: white;
@@ -358,14 +376,31 @@ textarea:focus {
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
-    width: auto;
     display: block;
-    margin: 0 auto;
 }
 
 .btn-small:hover,
 .translate-btn:hover {
     background-color: #3367d6;
+}
+
+.direction-switch-btn {
+    position: absolute;
+    left: 0;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.direction-switch-btn:hover {
+    background-color: #e0e0e0;
 }
 
 .copy-btn {
@@ -1025,6 +1060,15 @@ kbd {
     background-color: #5294ff;
 }
 
+[data-theme="dark"] .direction-switch-btn {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .direction-switch-btn:hover {
+    background-color: #404040;
+}
+
 [data-theme="dark"] .rule-item {
     background-color: #363636;
     border-color: #4a4a4a;
@@ -1158,6 +1202,11 @@ kbd {
 
 [data-theme="dark"] .section-header {
     border-bottom-color: #404040;
+}
+
+[data-theme="dark"] .version-tag {
+    background-color: #2d2d2d;
+    color: #aaa;
 }
 
 /* 애니메이션 */
@@ -1322,6 +1371,14 @@ kbd {
 
     .textarea-container {
         height: 300px; /* 모바일에서는 높이 줄임 */
+    }
+
+    .translate-controls {
+        padding: 0 1rem;
+    }
+    
+    .direction-switch-btn {
+        padding: 0.6rem;
     }
 
     /* 기타 모바일 최적화 */

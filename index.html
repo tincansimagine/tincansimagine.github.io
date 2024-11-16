@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241110f4">
+    <link rel="stylesheet" href="styles.css?v=241116f5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 깡갤 번역기</h1>
+            <h1>
+                🤖 깡갤 번역기
+                <span class="version-tag">v1.4.4</span>
+            </h1>
             <button id="themeToggle" class="theme-toggle">
                 <i class="fas fa-sun"></i>
             </button>
@@ -171,8 +174,8 @@
             </h3>
             <div id="historyContent" class="history-content collapsed">
                 <div class="history-filter">
-                    <button id="showAllHistory" class="btn-small active">전체</button>
-                    <button id="showBookmarked" class="btn-small">즐겨찾기</button>
+                    <button data-filter="all" id="showAllHistory" class="btn-small active">전체</button>
+                    <button data-filter="favorites" id="showBookmarked" class="btn-small">즐겨찾기</button>
                 </div>
                 <div class="history-controls">
                     <!-- 검색 입력 필드 추가 -->
@@ -181,7 +184,7 @@
                     </div>
                     <button id="clearHistory" class="btn-small">히스토리 비우기</button>
                     <button id="exportHistory" class="btn-small">히스토리 내보내기</button>
-                    <button id="importHistory" class="btn-small">히스토리 가져오기</button>
+                    <button id="importHistory" class="btn-small history-import-btn">히스토리 가져오기</button>
                     <input type="file" id="historyFileInput" accept=".json" style="display: none;">
                 </div>
                 <div class="history-list" id="historyList">
@@ -252,7 +255,15 @@
             </div>
         </div>
 
-        <button id="translateButton" class="translate-btn">번역하기</button>
+        <div class="translate-controls">
+            <button id="switchDirectionBtn" class="direction-switch-btn" title="번역 방향 전환">
+                <span>⇄</span>
+            </button>
+            <button id="translateBtn" class="translate-btn">
+                번역하기
+            </button>
+        </div>
+        
         <div id="loading" class="loading" style="display: none;">
             <div class="spinner"></div>
             <span>번역 중...</span>
@@ -286,6 +297,6 @@
             <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
         </div>
     </div>
-    <script src="translator.js?v=241115f4"></script>
+    <script src="translator.js?v=241116f5"></script>
 </body>
 </html>
