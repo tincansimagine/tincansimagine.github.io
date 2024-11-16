@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241116f6">
+    <link rel="stylesheet" href="styles.css?v=241116f7">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,11 +15,24 @@
 </head>
 <body>
     <div class="container">
+      <!-- 네비게이션 추가 -->
+      <nav class="nav-bar">
+        <button class="nav-btn active" data-page="main">
+          <i class="fas fa-language"></i> 번역
+        </button>
+        <button class="nav-btn" data-page="settings">
+          <i class="fas fa-cog"></i> 설정
+        </button>
+      </nav>
+  
+      <!-- 메인 페이지 컨테이너 -->
+      <div id="mainPage" class="page active">
+        <!-- 기존 번역 관련 요소들 이동 -->
         <div class="header">
             <h1>
                 🤖 깡갤 번역기
                 <span class="version-info">
-                    <span class="version-tag">v1.4.5</span>
+                    <span class="version-tag">v1.5.5</span>
                     <button class="changelog-btn" title="업데이트 내역">💡</button>
                 </span>
             </h1>
@@ -30,6 +43,13 @@
                     <button class="close-modal">&times;</button>
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.5.5 (2024-11-16)</h4>
+                            <ul>
+                                <li>SPA 방식으로 페이지 구현</li>
+                                <li>UI/UX 개선 (메인 및 번역 히스토리)</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <h4>v1.4.5 (2024-11-16)</h4>
                             <ul>
@@ -52,7 +72,141 @@
                 <i class="fas fa-sun"></i>
             </button>
         </div>
+        <div class="translation-direction-controls">
+            <div class="direction-btn-container">
+                <button id="koToEnBtn" class="direction-btn">
+                    <span class="direction-text">한 → 영</span>
+                    <small class="template-name">선택된 템플릿: 없음</small>
+                </button>
+                <button class="set-template-btn" data-direction="koToEn">템플릿 설정</button>
+            </div>
+            <div class="direction-btn-container">
+                <button id="enToKoBtn" class="direction-btn active">
+                    <span class="direction-text">영 → 한</span>
+                    <small class="template-name">선택된 템플릿: 없음</small>
+                </button>
+                <button class="set-template-btn" data-direction="enToKo">템플릿 설정</button>
+            </div>
+        </div>
+        <div class="translation-box">
+            <div class="input-group">
+                <label for="sourceText">입력 텍스트</label>
+                <div class="textarea-container">
+                    <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요"></textarea>
+                    <div class="text-counter">
+                        <span id="sourceCharCount">0</span> 글자
+                        <span id="sourceWordCount">0</span> 단어
+                    </div>
+                    <button class="copy-btn" id="copySource">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="translatedText">번역 결과</label>
+                <div class="textarea-container">
+                    <div id="formattedResult" class="formatted-result"></div>
+                    <textarea id="translatedText" placeholder="번역 결과가 여기에 표시됩니다"></textarea>
+                    <div class="text-counter">
+                        <span id="translatedCharCount">0</span> 글자
+                        <span id="translatedWordCount">0</span> 단어
+                    </div>
+                    <button class="copy-btn" id="copyTranslated">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div id="autoSaveNotification" class="auto-save-notification">자동 저장되었습니다</div>
+            </div>
+        </div>
+        <div class="translation-progress">
+            <div class="progress-steps">
+              <div class="step" data-step="1">
+                <div class="step-icon">1</div>
+                <div class="step-label">텍스트 분석</div>
+              </div>
+              <div class="step" data-step="2">
+                <div class="step-icon">2</div>
+                <div class="step-label">번역 중</div>
+              </div>
+              <div class="step" data-step="3">
+                <div class="step-icon">3</div>
+                <div class="step-label">검수</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+        <div class="translate-controls">
+            <button id="switchDirectionBtn" class="direction-switch-btn" title="번역 방향 전환">
+                <span>⇄</span>
+            </button>
+            <button id="translateBtn" class="translate-btn">
+                번역하기
+            </button>
+        </div>
+        <div class="prompt-section">
+            <label for="customPrompt">번역 프롬프트 설정</label>
+            <div class="prompt-controls">
+                <select id="promptTemplate">
+                    <option value="">템플릿 선택...</option>
+                    <option value="basicEnToKo">기본 번역 (영→한)</option>
+                    <option value="basicKoToEn">기본 번역(한→영)</option>
+                    <option value="natural">자연스러운 번역</option>
+                    <option value="formal">격식체 번역</option>
+                    <option value="casual">구어체 번역</option>
+                </select>
+                <button id="saveAsTemplate" class="btn-small">현재 프롬프트 저장</button>
+            </div>
+            <textarea id="customPrompt" rows="3"></textarea>
+            <button id="savePrompt" class="btn-small">프롬프트 저장</button>
+        </div>
+        <div class="source-text-controls">
+            <label for="file-upload" class="file-upload-btn">
+                <i class="fas fa-file-upload"></i> 파일 업로드
+            </label>
+            <input type="file" id="file-upload" accept=".txt,.doc,.docx,.pdf" hidden>
+            <div class="supported-formats">
+                지원 형식: TXT, DOC, DOCX, PDF (최대 30MB)
+            </div>
+        </div>
         
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <span>번역 중...</span>
+        </div>
+        <div id="errorMessage" class="error-message"></div>
+        
+        <div class="shortcut-help">
+            <button id="showShortcuts" class="btn-small">
+                <i class="fas fa-keyboard"></i> 단축키
+            </button>
+        </div>
+
+        <div id="shortcutModal" class="modal">
+            <div class="modal-content">
+                <h3>단축키 목록</h3>
+                <ul>
+                    <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> : 번역하기</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>S</kbd> : 프롬프트 저장</li>
+                    <li><kbd>Esc</kbd> : 번역 취소</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
+                    <li><kbd>Alt</kbd> + <kbd>1</kbd> : 한→영 전환</li>
+                <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
+                </ul>
+                <button class="close-modal">&times;</button>
+            </div>
+        </div>
+        <div id="toastContainer" class="toast-container"></div>
+        <div class="copyright">
+            <p>copyrightⓒ 2024 All rights reserved by <a href="https://github.com/tincansimagine" target="_blank">tincansimagine</a></p>
+            <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
+        </div>
+      </div>
+  
+      <!-- 설정 페이지 컨테이너 -->
+      <div id="settingsPage" class="page">
+        <!-- 기존 설정 관련 요소들 이동 -->
         <div class="api-section">
             <div class="api-keys">
                 <div class="input-group">
@@ -101,8 +255,6 @@
                 </select>
             </div>
         </div>
-
-        <!-- 데이터 관리 섹션 -->
         <div class="data-management-section">
             <h3>⚙️ 설정 관리</h3>
             <div class="data-controls">
@@ -117,39 +269,6 @@
                 <input type="file" id="importFile" accept=".json" style="display: none;">
             </div>
         </div>
-
-        <div class="prompt-section">
-            <label for="customPrompt">번역 프롬프트 설정</label>
-            <div class="prompt-controls">
-                <select id="promptTemplate">
-                    <option value="">템플릿 선택...</option>
-                    <option value="basicEnToKo">기본 번역 (영→한)</option>
-                    <option value="basicKoToEn">기본 번역(한→영)</option>
-                    <option value="natural">자연스러운 번역</option>
-                    <option value="formal">격식체 번역</option>
-                    <option value="casual">구어체 번역</option>
-                </select>
-                <button id="saveAsTemplate" class="btn-small">현재 프롬프트 저장</button>
-            </div>
-            <textarea id="customPrompt" rows="3"></textarea>
-            <button id="savePrompt" class="btn-small">프롬프트 저장</button>
-        </div>
-
-        <div class="word-rules-section">
-            <h3>
-                단어 변환 규칙
-                <button class="toggle-btn" id="toggleRules">▶</button>
-            </h3>
-            <div class="rules-content" id="rulesContent">
-                <div class="rule-input">
-                    <input type="text" id="sourceWord" placeholder="원본 단어">
-                    <input type="text" id="targetWord" placeholder="변환할 단어">
-                    <button id="addRule" class="btn-small">규칙 추가</button>
-                </div>
-                <div class="rules-list" id="rulesList"></div>
-            </div>
-        </div>
-
         <div class="style-settings">
             <h3>텍스트 스타일 설정</h3>
             <div class="style-options">
@@ -194,7 +313,20 @@
                 </div>
             </div>
         </div>
-
+        <div class="word-rules-section">
+            <h3>
+                단어 변환 규칙
+                <button class="toggle-btn" id="toggleRules">▶</button>
+            </h3>
+            <div class="rules-content" id="rulesContent">
+                <div class="rule-input">
+                    <input type="text" id="sourceWord" placeholder="원본 단어">
+                    <input type="text" id="targetWord" placeholder="변환할 단어">
+                    <button id="addRule" class="btn-small">규칙 추가</button>
+                </div>
+                <div class="rules-list" id="rulesList"></div>
+            </div>
+        </div>
         <div class="translation-history-section">
             <h3>
                 번역 히스토리
@@ -218,113 +350,11 @@
                 <div class="history-list" id="historyList">
                     <!-- 히스토리 아이템들이 여기에 추가됨 -->
                 </div>
-                <div id="translationProgress" class="progress-bar" style="display: none;">
-                    <div class="progress-fill"></div>
-                    <span class="progress-text">0%</span>
                 </div>
             </div>
         </div>
-
-        <div class="translation-direction-controls">
-            <div class="direction-btn-container">
-                <button id="koToEnBtn" class="direction-btn">
-                    <span class="direction-text">한 → 영</span>
-                    <small class="template-name">선택된 템플릿: 없음</small>
-                </button>
-                <button class="set-template-btn" data-direction="koToEn">템플릿 설정</button>
-            </div>
-            <div class="direction-btn-container">
-                <button id="enToKoBtn" class="direction-btn active">
-                    <span class="direction-text">영 → 한</span>
-                    <small class="template-name">선택된 템플릿: 없음</small>
-                </button>
-                <button class="set-template-btn" data-direction="enToKo">템플릿 설정</button>
-            </div>
-        </div>
-        
-        <div class="source-text-controls">
-            <label for="file-upload" class="file-upload-btn">
-                <i class="fas fa-file-upload"></i> 파일 업로드
-            </label>
-            <input type="file" id="file-upload" accept=".txt,.doc,.docx,.pdf" hidden>
-            <div class="supported-formats">
-                지원 형식: TXT, DOC, DOCX, PDF (최대 30MB)
-            </div>
-        </div>
-
-        <div class="translation-box">
-            <div class="input-group">
-                <label for="sourceText">입력 텍스트</label>
-                <div class="textarea-container">
-                    <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요"></textarea>
-                    <div class="text-counter">
-                        <span id="sourceCharCount">0</span> 글자
-                        <span id="sourceWordCount">0</span> 단어
-                    </div>
-                    <button class="copy-btn" id="copySource">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="input-group">
-                <label for="translatedText">번역 결과</label>
-                <div class="textarea-container">
-                    <div id="formattedResult" class="formatted-result"></div>
-                    <textarea id="translatedText" placeholder="번역 결과가 여기에 표시됩니다"></textarea>
-                    <div class="text-counter">
-                        <span id="translatedCharCount">0</span> 글자
-                        <span id="translatedWordCount">0</span> 단어
-                    </div>
-                    <button class="copy-btn" id="copyTranslated">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-                <div id="autoSaveNotification" class="auto-save-notification">자동 저장되었습니다</div>
-            </div>
-        </div>
-
-        <div class="translate-controls">
-            <button id="switchDirectionBtn" class="direction-switch-btn" title="번역 방향 전환">
-                <span>⇄</span>
-            </button>
-            <button id="translateBtn" class="translate-btn">
-                번역하기
-            </button>
-        </div>
-        
-        <div id="loading" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <span>번역 중...</span>
-        </div>
-        <div id="errorMessage" class="error-message"></div>
-        
-        <div class="shortcut-help">
-            <button id="showShortcuts" class="btn-small">
-                <i class="fas fa-keyboard"></i> 단축키
-            </button>
-        </div>
-
-        <div id="shortcutModal" class="modal">
-            <div class="modal-content">
-                <h3>단축키 목록</h3>
-                <ul>
-                    <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> : 번역하기</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>S</kbd> : 프롬프트 저장</li>
-                    <li><kbd>Esc</kbd> : 번역 취소</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
-                    <li><kbd>Alt</kbd> + <kbd>1</kbd> : 한→영 전환</li>
-                <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
-                </ul>
-                <button class="close-modal">&times;</button>
-            </div>
-        </div>
-
-        <div id="toastContainer" class="toast-container"></div>
-        <div class="copyright">
-            <p>copyrightⓒ 2024 All rights reserved by <a href="https://github.com/tincansimagine" target="_blank">tincansimagine</a></p>
-            <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
-        </div>
+      </div>
     </div>
-    <script src="translator.js?v=241116f6"></script>
-</body>
+    <script src="translator.js?v=241116f7"></script>
+  </body>
 </html>

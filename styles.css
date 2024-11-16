@@ -694,8 +694,7 @@ kbd {
 }
 
 .history-content {
-    display: block;
-    transition: all 0.3s ease;
+    padding: 1rem;
 }
 
 .history-content.collapsed {
@@ -724,61 +723,141 @@ kbd {
 
 .history-item {
     background-color: white;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
 }
 
-/* 히스토리 아이템 헤더 스타일 수정 */
+.history-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 히스토리 아이템 헤더 */
 .history-item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    color: #666;
-    position: relative;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 /* 왼쪽 영역 (날짜 + 즐겨찾기) */
 .history-info-left {
     display: flex;
     align-items: center;
-    gap: 0.8rem; /* 간격을 0.5rem에서 0.8rem으로 살짝 증가 */
+    gap: 1rem;
 }
 
 /* 히스토리 타임스탬프 스타일 */
 .history-timestamp {
+    font-size: 0.9rem;
+    color: #666;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+}
+
+.history-timestamp i {
+    color: #4285f4;
 }
 
 /* 모델 정보 스타일 */
 .history-model {
-    margin-left: auto; /* 오른쪽 정렬 */
+    font-size: 0.85rem;
+    padding: 0.2rem 0.6rem;
+    background-color: #e8f0fe;
+    color: #4285f4;
+    border-radius: 12px;
+    font-weight: 500;
 }
 
 .history-text {
-    margin: 0.5rem 0;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    line-height: 1.6;
 }
 
-.history-source, .history-translated {
-    padding: 0.5rem;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
+.history-text:hover {
+    background-color: #f0f0f0;
+}
+
+.history-source,
+.history-translated {
+    max-height: 120px;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
     white-space: pre-wrap;
-    overflow-wrap: break-word;
-    max-height: 100px;
     overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* 입력 텍스트(원문) 스타일 */
+.history-source {
+    background-color: #f8f9fa;
+    border-left: 4px solid #4285f4; /* 파란색 왼쪽 테두리 추가 */
+    position: relative;
+}
+
+.history-source::before {
+    content: '원문';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    color: #666;
+    background-color: #f0f0f0;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* 번역 결과 스타일 */
+.history-translated {
+    background-color: #f0f4ff; /* 연한 파란색 배경 */
+    border-left: 4px solid #34a853; /* 초록색 왼쪽 테두리 추가 */
+    position: relative;
+}
+
+.history-translated::before {
+    content: '번역';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    color: #666;
+    background-color: #e8f0fe;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* 호버 효과 */
+.history-source:hover,
+.history-translated:hover {
+    background-color: #f0f0f0;
 }
 
 .history-actions {
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    border-top: 1px solid #f0f0f0;
     display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    justify-content: flex-start; /* 왼쪽 정렬 */
+    gap: 0.75rem;
+}
+
+.history-actions button {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
 .history-actions .btn-small {
@@ -836,32 +915,6 @@ kbd {
     background-color: #4285f4;
     color: white;
     font-weight: bold;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 1rem 0;
-    position: relative;
-}
-
-.progress-fill {
-    width: 0%;
-    height: 100%;
-    background-color: #4285f4;
-    transition: width 0.3s ease;
-}
-
-.progress-text {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: #000;
-    font-size: 0.8rem;
 }
 
 .copyright {
@@ -989,6 +1042,151 @@ kbd {
     display: none;
     animation: fadeInOut 2s ease-in-out;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 탭 네비게이션 컨테이너 */
+.nav-bar {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 2rem;
+    padding: 0;
+    background: none;
+}
+
+/* 탭 버튼 기본 스타일 */
+.nav-btn {
+    position: relative;
+    padding: 1rem 2rem;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* 활성화된 탭 스타일 */
+.nav-btn.active {
+    color: #4285f4;
+    background: none;
+}
+
+/* 밑줄 애니메이션 */
+.nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4285f4;
+    transition: all 0.3s ease;
+}
+
+/* 호버 효과 */
+.nav-btn:hover {
+    color: #4285f4;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.translation-progress {
+  display: none;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 60%;
+  width: 80%;
+  height: 2px;
+  background-color: #e0e0e0;
+}
+
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+  background-color: #4285f4;
+  color: white;
+}
+
+.step.completed .step-icon {
+  background-color: #34a853;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* 다크모드 지원 */
+[data-theme="dark"] .translation-progress {
+  background-color: #363636;
+}
+
+[data-theme="dark"] .step:not(:last-child)::after {
+  background-color: #404040;
+}
+
+[data-theme="dark"] .step-icon {
+  background-color: #404040;
+}
+
+[data-theme="dark"] .step-label {
+  color: #aaa;
+}
+
+[data-theme="dark"] .nav-bar {
+    border-bottom-color: #404040;
+}
+
+[data-theme="dark"] .nav-btn {
+    color: #999;
+}
+
+[data-theme="dark"] .nav-btn.active {
+    color: #8ab4f8;
+}
+
+[data-theme="dark"] .nav-btn.active::after {
+    background-color: #8ab4f8;
 }
 
 [data-theme="dark"] .auto-save-notification {
@@ -1186,10 +1384,27 @@ kbd {
 
 [data-theme="dark"] .history-item {
     background-color: #2d2d2d;
+    border-color: #404040;
 }
 
-[data-theme="dark"] .history-source,
 [data-theme="dark"] .history-translated {
+    background-color: #2a2f3a;
+    border-left-color: #34a853;
+}
+
+[data-theme="dark"] .history-source {
+    background-color: #2d2d2d;
+    border-left-color: #4285f4;
+}
+
+[data-theme="dark"] .history-source::before,
+[data-theme="dark"] .history-translated::before {
+    color: #ffffff;
+    background-color: #404040;
+}
+
+[data-theme="dark"] .history-source:hover,
+[data-theme="dark"] .history-translated:hover {
     background-color: #363636;
 }
 
@@ -1198,6 +1413,27 @@ kbd {
 [data-theme="dark"] .history-model {
     color: #cccccc;  /* 히스토리 헤더 텍스트 색상 수정 */
 }
+
+[data-theme="dark"] .history-item-header {
+    border-bottom-color: #404040;
+}
+
+[data-theme="dark"] .history-text {
+    background-color: #363636;
+}
+
+[data-theme="dark"] .history-text:hover {
+    background-color: #404040;
+}
+
+[data-theme="dark"] .history-model {
+    background-color: #1a3c6d;
+}
+
+[data-theme="dark"] .history-actions {
+    border-top-color: #404040;
+}
+
 [data-theme="dark"] .history-search-input {
     background-color: #2d2d2d;
     border-color: #404040;
@@ -1208,7 +1444,9 @@ kbd {
     color: #888;
 }
 
-[data-theme="dark"] .progress-bar {
+[data-theme="dark"] .history-text,
+[data-theme="dark"] .history-source,
+[data-theme="dark"] .history-translated {
     background-color: #363636;
 }
 
@@ -1425,12 +1663,6 @@ kbd {
         text-align: center;
         padding: 0.6rem 0.5rem;
         font-size: 0.9rem;
-    }
-
-    .progress-bar {
-        width: 80%;
-        height: 16px;
-        bottom: 55px; /* 모바일에서의 위치 조정 */
     }
     
     .progress-text {

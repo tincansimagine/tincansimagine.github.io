@@ -32,6 +32,29 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
+const router = {
+    currentPage: 'main',
+    
+    navigate(page) {
+      // 모든 페이지 숨기기
+      document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+      });
+      
+      // 네비게이션 버튼 상태 업데이트
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // 선택된 페이지 표시
+      document.getElementById(`${page}Page`).classList.add('active');
+      document.querySelector(`[data-page="${page}"]`).classList.add('active');
+      
+      // 현재 페이지 저장
+      this.currentPage = page;
+      localStorage.setItem('currentPage', page);
+    }
+  };
 const AUTO_SAVE_DELAY = 10000; // 30초마다 자동 저장
 const SAVE_NOTIFICATION_COOLDOWN = 30000;
 // 파일 업로드
@@ -318,6 +341,17 @@ function initializeEventListeners() {
     if (importBtn) {
         importBtn.addEventListener('click', importHistory);
     }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const page = btn.dataset.page;
+          router.navigate(page);
+        });
+      });
+    
+      // 마지막으로 본 페이지 복원
+      const lastPage = localStorage.getItem('currentPage') || 'main';
+      router.navigate(lastPage);
 }
 
 // DOM이 로드된 후 실행되도록 이벤트 리스너 추가
@@ -1523,27 +1557,21 @@ async function translateText() {
         return;
     }
 
+    // 진행 상태 표시 초기화
+    const progressElement = document.querySelector('.translation-progress');
+    progressElement.style.display = 'block';
+    
     elements.loading.style.display = 'flex';
     elements.errorMessage.style.display = 'none';
     elements.translateBtn.disabled = true;
-    
-    const progressBar = document.getElementById('translationProgress');
-    if (progressBar) {
-        progressBar.style.display = 'block';
-        updateProgress(0);
-    }
-
-    let progressInterval;
-    let currentProgress = 0;
 
     try {
-        progressInterval = setInterval(() => {
-            if (currentProgress < 90) {
-                currentProgress += 1;
-                updateProgress(currentProgress);
-            }
-        }, 150);
-
+        // 단계 1: 텍스트 분석
+        updateProgress(1);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // 단계 2: 번역 중
+        updateProgress(2);
         let translatedText;
         switch(modelProvider) {
             case 'gemini':
@@ -1562,52 +1590,54 @@ async function translateText() {
                 throw new Error('지원하지 않는 모델입니다.');
         }
 
-        clearInterval(progressInterval);
-        updateProgress(100);
+        // 단계 3: 검수
+        updateProgress(3);
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         if (translatedText) {
             translatedText = applyWordRules(translatedText);
             elements.translatedText.value = translatedText;
             updateFormattedResult();
-
-            // 히스토리 저장 함수 호출
             saveToHistory(sourceText, translatedText, selectedModel);
-            
             localStorage.setItem('lastTranslation', translatedText);
             showToast('번역이 완료되었습니다.');
         }
     } catch (error) {
-        clearInterval(progressInterval);
         console.error('Translation error:', error);
         showToast('번역 중 오류가 발생했습니다: ' + error.message, 'error');
         elements.errorMessage.style.display = 'block';
         elements.errorMessage.textContent = error.message;
     } finally {
-        clearInterval(progressInterval);
-        
+        // 진행 상태 표시 초기화 및 숨기기
         setTimeout(() => {
+            progressElement.style.display = 'none';
+            resetProgress();
             elements.loading.style.display = 'none';
             elements.translateBtn.disabled = false;
-            if (progressBar) {
-                progressBar.style.display = 'none';
-                updateProgress(0);
-            }
-        }, 500);
+        }, 1000);
     }
 }
 
-// 진행바 업데이트 함수
-function updateProgress(percent) {
-    const progressBar = document.getElementById('translationProgress');
-    if (!progressBar) return;
-    
-    const progressFill = progressBar.querySelector('.progress-fill');
-    const progressText = progressBar.querySelector('.progress-text');
-    
-    if (progressFill && progressText) {
-        progressFill.style.width = `${percent}%`;
-        progressText.textContent = `${percent}%`;
+function updateProgress(step) {
+  const steps = document.querySelectorAll('.step');
+  steps.forEach((stepElement, index) => {
+    if (index + 1 < step) {
+      stepElement.classList.add('completed');
+      stepElement.classList.remove('active');
+    } else if (index + 1 === step) {
+      stepElement.classList.add('active');
+      stepElement.classList.remove('completed');
+    } else {
+      stepElement.classList.remove('completed', 'active');
     }
+  });
+}
+
+function resetProgress() {
+  const steps = document.querySelectorAll('.step');
+  steps.forEach(step => {
+    step.classList.remove('completed', 'active');
+  });
 }
 
 // 히스토리 필터 상태 관리 함수 수정
