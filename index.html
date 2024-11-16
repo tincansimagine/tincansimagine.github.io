@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241116f5">
+    <link rel="stylesheet" href="styles.css?v=241116f6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,36 @@
         <div class="header">
             <h1>
                 🤖 깡갤 번역기
-                <span class="version-tag">v1.4.4</span>
+                <span class="version-info">
+                    <span class="version-tag">v1.4.5</span>
+                    <button class="changelog-btn" title="업데이트 내역">💡</button>
+                </span>
             </h1>
+            
+            <!-- 업데이트 내역 모달 추가 -->
+            <div id="changelogModal" class="modal changelog-modal">
+                <div class="modal-content changelog-content">
+                    <button class="close-modal">&times;</button>
+                    <h3>💡 업데이트 내역</h3>
+                    <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.4.5 (2024-11-16)</h4>
+                            <ul>
+                                <li>번역 히스토리 복원시 사용자 지정 텍스트 색상으로 변경되도록 개선</li>
+                                <li>버전 업데이트 내역 알림 추가</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <h4>v1.4.4 (2024-11-16)</h4>
+                            <ul>
+                                <li>헤더 옆에 버전 표시 추가</li>
+                                <li>번역 히스토리 버그 픽스</li>
+                                <li>모바일용 영한 순서 전환 단축키 추가</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <button id="themeToggle" class="theme-toggle">
                 <i class="fas fa-sun"></i>
             </button>
@@ -297,6 +325,6 @@
             <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
         </div>
     </div>
-    <script src="translator.js?v=241116f5"></script>
+    <script src="translator.js?v=241116f6"></script>
 </body>
 </html>

@@ -442,6 +442,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const changelogBtn = document.querySelector('.changelog-btn');
+    const changelogModal = document.getElementById('changelogModal');
+    const closeModalBtn = changelogModal.querySelector('.close-modal');
+
+    changelogBtn.addEventListener('click', () => {
+        changelogModal.style.display = 'block';
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        changelogModal.style.display = 'none';
+    });
+
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener('click', (e) => {
+        if (e.target === changelogModal) {
+            changelogModal.style.display = 'none';
+        }
+    });
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && changelogModal.style.display === 'block') {
+            changelogModal.style.display = 'none';
+        }
+    });
 });
 
 /*********************************************
@@ -1697,21 +1723,33 @@ function restoreTranslation(id) {
     const historyItem = history.find(item => item.id === id);
     
     if (historyItem) {
-        // 원본 텍스트와 번역 결과 모두 복원
+        // 원본 텍스트 복원
         elements.sourceText.value = historyItem.source;
+        
+        // 번역 결과 복원 및 스타일 적용
         elements.translatedText.value = historyItem.translated;
+        elements.translatedText.style.color = isDarkMode ? baseColor : '#000000';
+        
+        // 포맷팅된 결과가 있는 경우 스타일 적용
+        if (enableMarkdown) {
+            const formattedResult = document.getElementById('formattedResult');
+            if (formattedResult) {
+                let formatted = marked.parse(historyItem.translated);
+                
+                // 색상 스타일 적용
+                formatted = formatted.replace(/"([^"]+)"/g, `<span style="color: ${quoteColor}">\"$1\"</span>`);
+                formatted = formatted.replace(/'([^']+)'/g, `<span style="color: ${thoughtColor}">\'$1\'</span>`);
+                formatted = formatted.replace(/_([^_]+)_/g, `<span style="color: ${emphasisColor}">_$1_</span>`);
+                formatted = formatted.replace(/\*\*([^\*]+)\*\*/g, `<span style="color: ${boldColor}">**$1**</span>`);
+                
+                formattedResult.innerHTML = formatted;
+                formattedResult.style.color = isDarkMode ? baseColor : '#000000';
+                formattedResult.style.display = 'block';
+            }
+        }
         
         // 글자 수 업데이트
         updateCharacterCount();
-        
-        // 마크다운 변환 시도 (오류가 발생해도 계속 진행)
-        try {
-            if (enableMarkdown) {
-                updateFormattedResult();
-            }
-        } catch (error) {
-            console.warn('마크다운 처리 중 오류:', error);
-        }
         
         showToast('번역 내용이 복원되었습니다.');
     } else {

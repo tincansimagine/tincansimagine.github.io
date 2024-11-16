@@ -79,6 +79,72 @@ h1 {
     margin-left: 0.5rem;
 }
 
+.version-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.changelog-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.changelog-btn:hover {
+    transform: scale(1.1);
+}
+
+.changelog-modal .modal-content {
+    max-width: 600px;
+    width: 90%;
+}
+
+.changelog-content {
+    padding: 2rem;
+}
+
+.changelog-list {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.changelog-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.changelog-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.changelog-item h4 {
+    color: #4285f4;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.changelog-item ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin: 0;
+}
+
+.changelog-item li {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
 /* API 섹션 스타일 */
 .api-section {
     margin-bottom: 1.5rem;
@@ -1207,6 +1273,14 @@ kbd {
 [data-theme="dark"] .version-tag {
     background-color: #2d2d2d;
     color: #aaa;
+}
+
+[data-theme="dark"] .changelog-item {
+    border-bottom-color: #404040;
+}
+
+[data-theme="dark"] .changelog-item h4 {
+    color: #8ab4f8;
 }
 
 /* 애니메이션 */
