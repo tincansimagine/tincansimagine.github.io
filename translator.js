@@ -15,7 +15,7 @@ let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
 let thoughtColor = localStorage.getItem('thoughtColor') || '#6B4C9A';
 let emphasisColor = localStorage.getItem('emphasisColor') || '#7B3B3B';
 let boldColor = localStorage.getItem('boldColor') || '#e39db9';
-let selectedFont = localStorage.getItem('selectedFont') || 'Arial';
+let selectedFont = localStorage.getItem('selectedFont') || 'RIDIBatang';
 let enableMarkdown = localStorage.getItem('enableMarkdown') !== 'false';
 let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
@@ -759,7 +759,7 @@ if (elements.boldColorInput) {
     elements.boldColorInput.addEventListener('change', (e) => {
         boldColor = e.target.value;
         localStorage.setItem('boldColor', boldColor);
-        updateFormattedText();
+        formattedResult();
     });
 }
 
@@ -783,32 +783,23 @@ function formatText(text) {
 
     // 기본 텍스트 색상 설정
     elements.formattedResult.style.color = baseColor;
-
+    
     // 특수 문자 이스케이프
     text = text.replace(/[<>]/g, char => ({
         '<': '&lt;',
         '>': '&gt;'
     })[char]);
 
-    // 축약어를 임시 토큰으로 변경
-    const escapedContractions = contractions.map(c => c.replace(/'/g, "\\'"));
-    const contractionsPattern = new RegExp(escapedContractions.join('|'), 'g');
-    text = text.replace(contractionsPattern, match => `###${match}###`);
-
-    // 따옴표와 이텔릭체를 위한 변환
+    // 따옴표와 이텔릭체를 위한 임시 태그로 변환
     text = text
-        .replace(/"([^"]+)"/g, '<span style="color: ' + quoteColor + ';">"$1"</span>')
-        .replace(/'([^']+)'/g, '<span style="color: ' + thoughtColor + ';">\'$1\'</span>')
-        .replace(/_([^_]+)_/g, '<em style="color: ' + emphasisColor + ';">$1</em>')
-        .replace(/\*([^*]+)\*/g, '<em style="color: ' + emphasisColor + ';">$1</em>')
-        .replace(/\*\*([^*]+)\*\*/g, `<strong style="color: ${boldColor}">$1</strong>`);
-
-    // 임시 토큰을 다시 축약어로 복원
-    text = text.replace(/###(.*?)###/g, '$1');
+        .replace(/"([^"]+)"/g, `<span style="color: ${quoteColor};">"$1"</span>`)
+        .replace(/'([^']+)'/g, `<span style="color: ${thoughtColor};">'$1'</span>`)
+        .replace(/\*\*([^*]+)\*\*/g, `<strong style="color: ${boldColor};">$1</strong>`)
+        .replace(/\*([^*]+)\*/g, `<em style="color: ${emphasisColor};">$1</em>`);
 
     // 마크다운 변환
     let formatted = marked.parse(text);
-
+    
     elements.formattedResult.style.display = 'block';
     elements.translatedText.style.display = 'none';
     elements.formattedResult.style.fontFamily = selectedFont;
@@ -1335,14 +1326,14 @@ function handleColorChange(e) {
             break;
     }
     
-    updateFormattedResult();
+    formattedResult();
 }
 
 // 마크다운 토글 처리
 function handleMarkdownToggle(e) {
     enableMarkdown = e.target.checked;
     localStorage.setItem('enableMarkdown', enableMarkdown);
-    updateFormattedResult();
+    formattedResult();
 }
 
 // 모델 변경 처리
@@ -1424,7 +1415,7 @@ function toggleTheme() {
         if (!localStorage.getItem('baseColor')) {
             baseColor = '#ffffff';
             elements.baseColorInput.value = baseColor;
-            updateFormattedResult();
+            formattedResult();
         }
     } else {
         document.documentElement.setAttribute('data-theme', 'light');
@@ -1432,7 +1423,7 @@ function toggleTheme() {
         if (!localStorage.getItem('baseColor')) {
             baseColor = '#333333';
             elements.baseColorInput.value = baseColor;
-            updateFormattedResult();
+            formattedResult();
         }
     }
 }
@@ -1467,20 +1458,46 @@ function saveAsTemplate() {
 }
 
 // 포맷된 결과 업데이트
-function updateFormattedResult() {
-    const translatedText = elements.translatedText.value;
-    const formattedResult = document.getElementById('formattedResult');
-    
-    if (!formattedResult || !enableMarkdown) return;
-
-    try {
-        const formatted = marked.parse(translatedText);
-        formattedResult.innerHTML = formatted;
-        formattedResult.style.display = 'block';
-    } catch (error) {
-        console.error('마크다운 변환 중 오류 발생:', error);
-        formattedResult.textContent = translatedText;
+function formattedResult() {
+    if (!enableMarkdown) {
+        elements.formattedResult.style.display = 'none';
+        elements.translatedText.style.display = 'block';
+        return;
     }
+
+    const text = elements.translatedText.value;
+    
+    // 먼저 마크다운을 HTML로 변환
+    let formatted = marked.parse(text);
+    
+    // HTML 파서를 사용하여 DOM 요소로 변환
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(formatted, 'text/html');
+    
+    // 스타일 적용
+    doc.querySelectorAll('p').forEach(p => {
+        // 기본 텍스트 색상 적용
+        p.style.color = baseColor;
+        
+        // 따옴표로 둘러싸인 텍스트 찾기
+        p.innerHTML = p.innerHTML
+            .replace(/"([^"]+)"/g, `<span style="color: ${quoteColor};">\"$1\"</span>`)
+            .replace(/'([^']+)'/g, `<span style="color: ${thoughtColor};">\'$1\'</span>`);
+    });
+    
+    // 강조 텍스트 스타일 적용
+    doc.querySelectorAll('em').forEach(em => {
+        em.style.color = emphasisColor;
+    });
+    
+    // 굵은 텍스트 스타일 적용
+    doc.querySelectorAll('strong').forEach(strong => {
+        strong.style.color = boldColor;
+    });
+
+    elements.formattedResult.style.display = 'block';
+    elements.translatedText.style.display = 'none';
+    elements.formattedResult.innerHTML = doc.body.innerHTML;
 }
 
 //* 단어 규칙 관리
@@ -1597,7 +1614,7 @@ async function translateText() {
         if (translatedText) {
             translatedText = applyWordRules(translatedText);
             elements.translatedText.value = translatedText;
-            updateFormattedResult();
+            formattedResult();
             saveToHistory(sourceText, translatedText, selectedModel);
             localStorage.setItem('lastTranslation', translatedText);
             showToast('번역이 완료되었습니다.');
