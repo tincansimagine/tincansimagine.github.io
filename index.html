@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241117f8">
+    <link rel="stylesheet" href="styles.css?v=241117f9">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +43,12 @@
                     <button class="close-modal">&times;</button>
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.5.7 (2024-11-17) pm 12:41</h4>
+                            <ul>
+                                <li>설정 페이지 토스트 메시지 누락 수정</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <h4>v1.5.6 (2024-11-17) pm 12:33</h4>
                             <ul>
@@ -203,7 +209,6 @@
                 <button class="close-modal">&times;</button>
             </div>
         </div>
-        <div id="toastContainer" class="toast-container"></div>
         <div class="copyright">
             <p>copyrightⓒ 2024 All rights reserved by <a href="https://github.com/tincansimagine" target="_blank">tincansimagine</a></p>
             <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
@@ -358,9 +363,10 @@
                 </div>
                 </div>
             </div>
-        </div>
+      </div>
+      <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=241117f8"></script>
+    <script src="translator.js?v=241117f9"></script>
   </body>
 </html>
