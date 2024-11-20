@@ -212,12 +212,16 @@ function initializeEventListeners() {
         }, 5000));
     }
 
-    // 복사 버튼 이벤트 리스너
     if (elements.copySource) {
-        elements.copySource.addEventListener('click', () => copyText(elements.sourceText));
+        elements.copySource.addEventListener('click', () => {
+            copyText(elements.sourceText);
+        });
     }
+    
     if (elements.copyTranslated) {
-        elements.copyTranslated.addEventListener('click', () => copyText(elements.translatedText));
+        elements.copyTranslated.addEventListener('click', () => {
+            copyText(elements.translatedText);
+        });
     }
 
     // 단축키 모달 이벤트 리스너
@@ -742,15 +746,13 @@ function countWords(text) {
 }
 
 // 텍스트 복사
-async function copyText(element) {
+async function copyText(textElement) {
     try {
-        const textToCopy = element === elements.translatedText && enableMarkdown ? 
-            elements.formattedResult.innerText : 
-            element.value;
-        await navigator.clipboard.writeText(textToCopy);
-        showToast('텍스트가 클립보드에 복사되었습니다.');
+        await navigator.clipboard.writeText(textElement.value);
+        showToast('텍스트가 클립보드에 복사되었습니다.', 'success');
     } catch (err) {
-        showToast('복사에 실패했습니다.', 'error');
+        showToast('복사 중 오류가 발생했습니다.', 'error');
+        console.error('복사 실패:', err);
     }
 }
 
