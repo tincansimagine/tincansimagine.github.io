@@ -1119,13 +1119,20 @@ kbd {
 }
 
 .step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 20px;
-  left: 60%;
-  width: 80%;
-  height: 2px;
-  background-color: #e0e0e0;
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 60%;
+    width: 80%;
+    height: 2px;
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .step:not(:last-child)::after {
+        width: 60%; /* 모바일에서는 연결선 길이 축소 */
+        left: 70%; /* 시작 위치 조정 */
+    }
 }
 
 .step-icon {
@@ -1667,6 +1674,11 @@ kbd {
     
     .progress-text {
         font-size: 0.7rem;
+    }
+
+    .step:not(:last-child)::after {
+        width: 60%;
+        left: 70%;
     }
 
     /* 번역 박스 모바일 스타일 개선 */
