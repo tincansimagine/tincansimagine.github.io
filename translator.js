@@ -115,6 +115,7 @@ const modelOptions = [
         group: 'OpenAI GPT-4o',
         options: [
             { value: 'gpt-4o', label: 'GPT-4o' },
+            { value: 'gpt-4o-2024-11-20', label: 'GPT-4o-2024-11-20' },
             { value: 'gpt-4o-2024-08-06', label: 'GPT-4o-2024-08-06' },
             { value: 'gpt-4o-2024-05-13', label: 'GPT-4o-2024-05-13' },
             { value: 'chatgpt-4o-latest', label: 'chatgpt-4o-latest' },
