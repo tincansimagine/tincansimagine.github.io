@@ -2408,8 +2408,8 @@ function setupShortcuts() {
             toggleTheme('light');
         }
 
-        // Ctrl + A: 아보카도 테마
-        if (e.ctrlKey && e.key.toLowerCase() === 'a') {
+        // Ctrl + I: 아보카도 테마
+        if (e.ctrlKey && e.key.toLowerCase() === 'i') {
             e.preventDefault();
             toggleTheme('avocado');
         }
