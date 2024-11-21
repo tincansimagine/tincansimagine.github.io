@@ -1302,7 +1302,8 @@ kbd {
 }
 
 [data-theme="avocado"] input,
-[data-theme="avocado"] textarea {
+[data-theme="avocado"] textarea,
+[data-theme="avocado"] .formatted-result {
     background-color: #FAFDEA;
     color: var(--text-color);
     border: 1px solid var(--border-color);
