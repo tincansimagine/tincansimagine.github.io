@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241117f9">
+    <link rel="stylesheet" href="styles.css?v=241121f1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,8 +32,11 @@
             <h1>
                 🤖 깡갤 번역기
                 <span class="version-info">
-                    <span class="version-tag">v1.6.0</span>
-                    <button class="changelog-btn" title="업데이트 내역">💡</button>
+                    <span class="version-tag">v1.6.1</span>
+                    <button class="changelog-btn" title="업데이트 내역">
+                        💡
+                        <span class="update-notification" id="updateNotification">1</span>
+                    </button>
                 </span>
             </h1>
             
@@ -43,6 +46,12 @@
                     <button class="close-modal">&times;</button>
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.6.1 (2024-11-21) pm 5:53</h4>
+                            <ul>
+                                <li>페이지가 다시 로드되더라도 사용자 지정 폰트 유지되도록 개선 & 텍스트 입력/결과창 폰트 사이즈 사용자가 지정할 수 있도록 텍스트 스타일 설정 추가</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <h4>v1.6.0 (2024-11-21) pm 4:18</h4>
                             <ul>
@@ -65,34 +74,6 @@
                             <h4>v1.5.7 (2024-11-17) pm 12:41</h4>
                             <ul>
                                 <li>설정 페이지 토스트 메시지 누락 수정</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.5.6 (2024-11-17) pm 12:33</h4>
-                            <ul>
-                                <li>마크다운, 텍스트 색상 적용 안 되는 버그 픽스중</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.5.5 (2024-11-16)</h4>
-                            <ul>
-                                <li>SPA 방식으로 페이지 구현</li>
-                                <li>UI/UX 개선 (메인 및 번역 히스토리)</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.4.5 (2024-11-16)</h4>
-                            <ul>
-                                <li>번역 히스토리 복원할 시 사용자 지정 텍스트 색상으로 변경되도록 개선</li>
-                                <li>버전 업데이트 내역 알림 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.4.4 (2024-11-16)</h4>
-                            <ul>
-                                <li>헤더 옆에 버전 표시 추가</li>
-                                <li>번역 히스토리 버그 픽스</li>
-                                <li>모바일용 영한 순서 전환 단축키 추가</li>
                             </ul>
                         </div>
                     </div>
@@ -321,6 +302,26 @@
                     <label for="boldColor">볼드체 색상:</label>
                     <input type="color" id="boldColor" value="#FF0000">
                 </div>
+                <div class="font-size-controls">
+                    <div class="font-size-input">
+                        <label>입력창 폰트 크기:</label>
+                        <input type="number" 
+                               id="sourceFontSize" 
+                               min="8" 
+                               max="32" 
+                               value="16">
+                        <span>px</span>
+                    </div>
+                    <div class="font-size-input">
+                        <label>결과창 폰트 크기:</label>
+                        <input type="number" 
+                               id="resultFontSize" 
+                               min="8" 
+                               max="32" 
+                               value="16">
+                        <span>px</span>
+                    </div>
+                </div>
                 <div class="font-selector">
                     <label for="fontFamily">글꼴 선택:</label>
                     <select id="fontFamily">
@@ -385,6 +386,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=241121f8"></script>
+    <script src="translator.js?v=241121f9"></script>
   </body>
 </html>

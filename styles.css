@@ -85,7 +85,23 @@ h1 {
     gap: 0.5rem;
 }
 
+/* 업데이트 알림 스타일 */
+.update-notification {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4444;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: none; /* 기본적으로 숨김 */
+    animation: pulse 2s infinite;
+}
+
 .changelog-btn {
+    position: relative;
     background: none;
     border: none;
     cursor: pointer;
@@ -304,8 +320,8 @@ h1 {
 
 .style-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
     margin-top: 1rem;
 }
 
@@ -321,6 +337,39 @@ h1 {
     height: 25px;
     border: none;
     border-radius: 4px;
+}
+
+.font-size-controls {
+    /* 그리드 한 열 전체 사용 */
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.font-size-input {
+    display: grid;
+    grid-template-columns: auto 80px 30px;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.font-size-input label {
+    font-size: 0.9rem;
+    color: black;
+}
+
+.font-size-input input[type="number"] {
+    width: 100%;
+    padding: 0.3rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.font-size-input span {
+    color: #666;
 }
 
 .font-selector {
@@ -1353,7 +1402,6 @@ kbd {
     color: #ffffff;
 }
 
-/* 다크모드에서의 스타일 */
 [data-theme="dark"] .text-counter {
     color: #ffffff;
     background: rgba(0, 0, 0, 0.7);
@@ -1494,7 +1542,6 @@ kbd {
     background-color: #404040;
 }
 
-/* 다크모드에서의 히스토리 필터 버튼 스타일 */
 [data-theme="dark"] .history-filter button {
     background-color: #2d2d2d;
     color: #cccccc;
@@ -1528,6 +1575,21 @@ kbd {
     color: #8ab4f8;
 }
 
+[data-theme="dark"] .font-size-input input[type="number"] {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .font-size-input span {
+    color: #aaa;
+}
+
+[data-theme="dark"] .update-notification {
+    background-color: #ff6b6b;
+    color: white;
+}
+
 /* 애니메이션 */
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -1556,7 +1618,30 @@ kbd {
     }
 }
 
+/* 깜빡이는 애니메이션 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(255, 68, 68, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+    }
+}
+
 /* 반응형 디자인 */
+
+@media (max-width: 1200px) {
+    .style-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .translation-box,
     .api-section {
@@ -1564,8 +1649,11 @@ kbd {
     }
     
     .style-options {
-        flex-direction: column;
-        gap: 1rem;
+        grid-template-columns: 1fr;
+    }
+    
+    .font-size-input {
+        grid-template-columns: 120px 80px 30px;
     }
 
     .checkbox-option {
