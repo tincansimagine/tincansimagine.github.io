@@ -837,14 +837,30 @@ kbd {
 
 .history-source,
 .history-translated {
-    max-height: 120px;
+    max-height: 200px;
     padding: 1rem;
     border-radius: 8px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     white-space: pre-wrap;
     overflow-y: auto;
     font-size: 0.95rem;
     line-height: 1.6;
+    position: relative;
+}
+
+/* 태그 스타일 ('번역', '원문') */
+.history-source::before,
+.history-translated::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: #f0f0f0; 
+    color: #666;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    z-index: 1;
 }
 
 /* 입력 텍스트(원문) 스타일 */
@@ -854,37 +870,11 @@ kbd {
     position: relative;
 }
 
-.history-source::before {
-    content: '원문';
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
-    color: #666;
-    background-color: #f0f0f0;
-    border-bottom-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
 /* 번역 결과 스타일 */
 .history-translated {
     background-color: #f0f4ff; /* 연한 파란색 배경 */
     border-left: 4px solid #34a853; /* 초록색 왼쪽 테두리 추가 */
     position: relative;
-}
-
-.history-translated::before {
-    content: '번역';
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
-    color: #666;
-    background-color: #e8f0fe;
-    border-bottom-left-radius: 8px;
-    border-top-right-radius: 8px;
 }
 
 /* 호버 효과 */
@@ -920,6 +910,18 @@ kbd {
 
 .history-actions .btn-small:hover {
     background-color: #e0e0e0;
+}
+
+/* 번역 히스토리 스크롤바 커스터마이징 */
+.history-source::-webkit-scrollbar,
+.history-translated::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-source::-webkit-scrollbar-thumb,
+.history-translated::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
 }
 
 /* 북마크 버튼 스타일 */
@@ -1609,13 +1611,18 @@ kbd {
 
 [data-theme="dark"] .history-source::before,
 [data-theme="dark"] .history-translated::before {
-    color: #ffffff;
-    background-color: #404040;
+    background-color: #2d2d2d;
+    color: #fff;
 }
 
 [data-theme="dark"] .history-source:hover,
 [data-theme="dark"] .history-translated:hover {
     background-color: #363636;
+}
+
+[data-theme="dark"] .history-source::-webkit-scrollbar-thumb,
+[data-theme="dark"] .history-translated::-webkit-scrollbar-thumb {
+    background-color: #555;
 }
 
 [data-theme="dark"] .history-item-header,
@@ -1875,6 +1882,11 @@ kbd {
     .translation-history-section {
         margin-bottom: 2rem;
         padding: 0.75rem;
+    }
+
+    .history-source,
+    .history-translated {
+        max-height: 220px;
     }
 
     .history-controls {
