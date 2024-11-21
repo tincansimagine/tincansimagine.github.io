@@ -1224,13 +1224,6 @@ kbd {
     background-color: #e0e0e0;
 }
 
-@media (max-width: 768px) {
-    .step:not(:last-child)::after {
-        width: 60%; /* 모바일에서는 연결선 길이 축소 */
-        left: 70%; /* 시작 위치 조정 */
-    }
-}
-
 .step-icon {
   width: 40px;
   height: 40px;
@@ -1261,11 +1254,11 @@ kbd {
 
 /* 아보카도 테마 */
 [data-theme="avocado"] {
-    --background-color: #E3ECD1; /* 연한 아보카도 그린 (채도 조정) */
-    --text-color: #4B3A20; /* 짙은 갈색 (조금 더 따뜻한 느낌) */
-    --primary-color: #7DAE58; /* 짙은 아보카도 그린 (채도 낮춤) */
-    --secondary-color: #F7E8A1; /* 옅은 노란색 (더 부드럽게) */
-    --border-color: #C8D9A8; /* 보조 그린 (더 자연스럽게) */
+    --background-color: #E3ECD1;
+    --text-color: #4B3A20;
+    --primary-color: #7DAE58;
+    --secondary-color: #F7E8A1;
+    --border-color: #C8D9A8;
 }
 
 [data-theme="avocado"] body {
@@ -1274,7 +1267,7 @@ kbd {
 }
 
 [data-theme="avocado"] .container {
-    background-color: #FFFFFF; /* 흰색 컨테이너 */
+    background-color: #FFFFFF;
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -1292,7 +1285,7 @@ kbd {
 
 [data-theme="avocado"] .btn-small:hover,
 [data-theme="avocado"] .translate-btn:hover {
-    background-color: #74A15A; /* 어두운 아보카도 */
+    background-color: #74A15A;
 }
 
 [data-theme="avocado"] .update-notification {
@@ -1308,25 +1301,25 @@ kbd {
 
 [data-theme="avocado"] input,
 [data-theme="avocado"] textarea {
-    background-color: #FAFDEA; /* 밝은 크림색 */
-    color: var(--text-color); /* 텍스트 색상 */
-    border: 1px solid var(--border-color); /* 기본 테두리 */
+    background-color: #FAFDEA;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 0.5rem;
+    padding: 1rem;
     font-size: 0.9rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 [data-theme="avocado"] input:focus,
 [data-theme="avocado"] textarea:focus {
-    border-color: var(--primary-color); /* 테두리 색상 변경 */
-    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5); /* 부드러운 그림자 효과 */
-    outline: none; /* 기본 브라우저 포커스 제거 */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5);
+    outline: none;
 }
 
 [data-theme="avocado"] input:hover,
 [data-theme="avocado"] textarea:hover {
-    border-color: var(--primary-color); /* 테두리 색상 변경 */
+    border-color: var(--primary-color);
 }
 
 [data-theme="avocado"] .toast {
