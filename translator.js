@@ -34,6 +34,8 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
+const CURRENT_VERSION = '1.6.2'; 
+const UPDATE_NOTIFICATIONS = 3;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
     
@@ -673,31 +675,55 @@ function clearAutoSavedContent() {
     localStorage.removeItem('autoSaveTimestamp');
 }
 
-// 업데이트 알림 상태 관리
+// 업데이트 알림 상태 관리 함수
 function checkUpdateNotification() {
-    const lastVersion = localStorage.getItem('lastSeenVersion');
-    const currentVersion = '1.6.1'; // 현재 버전
+    const lastSeenVersion = localStorage.getItem('lastSeenVersion');
     const updateNotification = document.getElementById('updateNotification');
     
-    if (lastVersion !== currentVersion) {
+    // 업데이트 알림 동적 표시
+    if (lastSeenVersion !== CURRENT_VERSION) {
         updateNotification.style.display = 'block';
+        updateNotification.textContent = UPDATE_NOTIFICATIONS; // 알림 개수 동적 삽입
     } else {
         updateNotification.style.display = 'none';
     }
 }
 
-// 업데이트 내역 확인 시 알림 제거
+// 버전 및 알림 초기화 함수
+function initializeVersionInfo() {
+    const versionTag = document.getElementById('versionTag');
+    const updateNotification = document.getElementById('updateNotification');
+
+    // 버전 정보 동적 삽입
+    if (versionTag) {
+        versionTag.textContent = `v${CURRENT_VERSION}`;
+    }
+
+    // 업데이트 알림 초기화
+    if (updateNotification) {
+        checkUpdateNotification();
+    }
+}
+
+// 업데이트 내역 확인 클릭 이벤트
 document.querySelector('.changelog-btn').addEventListener('click', () => {
-    const currentVersion = '1.6.1';
-    localStorage.setItem('lastSeenVersion', currentVersion);
-    document.getElementById('updateNotification').style.display = 'none';
-    
-    // 기존의 changelog 모달 표시 로직
-    changelogModal.style.display = 'block';
+    localStorage.setItem('lastSeenVersion', CURRENT_VERSION); // 현재 버전을 기록
+    const updateNotification = document.getElementById('updateNotification');
+    if (updateNotification) {
+        updateNotification.style.display = 'none'; // 알림 제거
+    }
+
+    // 기존 changelog 모달 표시 로직
+    const changelogModal = document.getElementById('changelogModal');
+    if (changelogModal) {
+        changelogModal.style.display = 'block';
+    }
 });
 
-// 페이지 로드 시 업데이트 알림 체크
-document.addEventListener('DOMContentLoaded', checkUpdateNotification);
+// 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded', () => {
+    initializeVersionInfo();
+});
 
 // 토스트 메시지 표시
 function showToast(message, type = 'success', duration = 3000) {
@@ -1517,27 +1543,10 @@ function saveApiKeys() {
     }
 }
 // 테마 관리
-function toggleTheme() {
-    isDarkMode = !isDarkMode;
-    localStorage.setItem('darkMode', isDarkMode);
-    
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        if (!localStorage.getItem('baseColor')) {
-            baseColor = '#ffffff';
-            elements.baseColorInput.value = baseColor;
-            formattedResult();
-        }
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        if (!localStorage.getItem('baseColor')) {
-            baseColor = '#333333';
-            elements.baseColorInput.value = baseColor;
-            formattedResult();
-        }
-    }
+function toggleTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('selectedTheme', theme);
+    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : '아보카도 모드'}가 적용되었습니다.`);
 }
 
 //* 프롬프트 관리
@@ -2309,25 +2318,33 @@ async function translateWithCohere(text, apiKey) {
 /*********************************************
  * 8. 초기화 관련 함수들
  *********************************************/
-//* 개별 초기화 함수들
-// 테마 초기화
-function initializeTheme() {
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        if (!localStorage.getItem('baseColor')) {
-            baseColor = '#ffffff';
-            elements.baseColorInput.value = baseColor;
-        }
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        if (!localStorage.getItem('baseColor')) {
-            baseColor = '#333333';
-            elements.baseColorInput.value = baseColor;
-        }
-    }
+// 테마 저장 및 적용 함수
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('selectedTheme', theme);
 }
+
+// 설정 페이지 테마 버튼 초기화
+function initializeThemeButtons() {
+    const themeButtons = document.querySelectorAll('.theme-toggle');
+    const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+    toggleTheme(savedTheme);
+
+    applyTheme(savedTheme); // 저장된 테마 적용
+
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const selectedTheme = button.getAttribute('data-theme');
+            applyTheme(selectedTheme);
+            showToast(`"${selectedTheme}" 테마가 적용되었습니다.`);
+        });
+    });
+}
+
+// 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded', () => {
+    initializeThemeButtons();
+});
 
 // 모델 선택 옵션 초기화
 function initializeModelSelect() {
@@ -2384,6 +2401,17 @@ function setupShortcuts() {
         if (e.ctrlKey && e.key === 's') {
             e.preventDefault();
             saveCustomPrompt();
+        }
+        // Ctrl + L: 라이트 모드
+        if (e.ctrlKey && e.key.toLowerCase() === 'l') {
+            e.preventDefault();
+            toggleTheme('light');
+        }
+
+        // Ctrl + A: 아보카도 테마
+        if (e.ctrlKey && e.key.toLowerCase() === 'a') {
+            e.preventDefault();
+            toggleTheme('avocado');
         }
 
         // Ctrl + D: 다크모드 토글
@@ -2563,7 +2591,6 @@ function initializeWordRules() {
 //* 메인 초기화 함수
 function initialize() {
     // 1. UI 초기화
-    initializeTheme();
     initializeModelSelect();
     updatePromptTemplateOptions();
     

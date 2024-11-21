@@ -60,29 +60,29 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-h1 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.version-tag {
-    font-size: 0.7rem;
-    color: #666;
-    font-weight: normal;
-    padding: 0.2rem 0.4rem;
-    background-color: #f0f0f0;
-    border-radius: 4px;
-    margin-left: 0.5rem;
+.header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: var(--text-color);
+    flex: 1; /* 제목이 남은 공간을 차지 */
 }
 
 .version-info {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+.version-tag {
+    font-size: 0.8rem;
+    color: #666;
+    background-color: #f0f0f0;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
 }
 
 /* 업데이트 알림 스타일 */
@@ -179,27 +179,41 @@ h1 {
 }
 
 .api-input-container {
-    position: relative;
+    position: relative; /* 입력 필드와 아이콘을 상대적으로 배치 */
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
+/* 입력 필드 스타일 */
 .api-input-container input {
-    width: 100%;
-    padding: 0.5rem;
+    width: 100%; /* 입력 필드가 컨테이너 전체를 차지 */
+    padding-right: 2.5rem; /* 아이콘 공간 확보 */
+    padding-left: 0.5rem; /* 좌측 여백 */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     border: 2px solid #e0e0e0;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    box-sizing: border-box; /* 패딩과 너비 포함 */
+}
+
+.api-input-container label {
+    font-size: 0.9rem;
+    color: #666;
 }
 
 .toggle-password {
     position: absolute;
-    right: 10px;
+    right: 0.8rem; 
+    top: 50%; 
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
     color: #666;
-    padding: 5px;
+    font-size: 1rem;
+    padding: 0.5rem;
 }
 
 .toggle-password:hover {
@@ -679,21 +693,6 @@ kbd {
     color: #666;
 }
 
-/* 테마 토글 버튼 스타일 */
-.theme-toggle {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #666;
-    padding: 0.5rem;
-    transition: color 0.3s ease;
-}
-
-.theme-toggle:hover {
-    color: #333;
-}
-
 .translation-history-section {
     margin-bottom: 2rem;
     padding: 1rem;
@@ -1079,6 +1078,55 @@ kbd {
     white-space: nowrap;
 }
 
+/* 공통 섹션 스타일 */
+.settings-section {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+/* 섹션 제목 스타일 */
+.settings-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+/* 테마 설정 버튼 스타일 */
+.theme-toggle-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.theme-toggle {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+}
+
+.api-settings {
+    display: grid;
+    gap: 1rem;
+}
+
 .auto-save-notification {
     position: fixed;
     bottom: 20px;
@@ -1132,7 +1180,6 @@ kbd {
     transition: all 0.3s ease;
 }
 
-/* 호버 효과 */
 .nav-btn:hover {
     color: #4285f4;
 }
@@ -1212,7 +1259,122 @@ kbd {
   color: #666;
 }
 
+/* 아보카도 테마 */
+[data-theme="avocado"] {
+    --background-color: #E3ECD1; /* 연한 아보카도 그린 (채도 조정) */
+    --text-color: #4B3A20; /* 짙은 갈색 (조금 더 따뜻한 느낌) */
+    --primary-color: #7DAE58; /* 짙은 아보카도 그린 (채도 낮춤) */
+    --secondary-color: #F7E8A1; /* 옅은 노란색 (더 부드럽게) */
+    --border-color: #C8D9A8; /* 보조 그린 (더 자연스럽게) */
+}
+
+[data-theme="avocado"] body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .container {
+    background-color: #FFFFFF; /* 흰색 컨테이너 */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="avocado"] .header h1 {
+    color: var(--primary-color);
+}
+
+[data-theme="avocado"] .btn-small,
+[data-theme="avocado"] .translate-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+[data-theme="avocado"] .btn-small:hover,
+[data-theme="avocado"] .translate-btn:hover {
+    background-color: #74A15A; /* 어두운 아보카도 */
+}
+
+[data-theme="avocado"] .update-notification {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .modal-content {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] input,
+[data-theme="avocado"] textarea {
+    background-color: #FAFDEA; /* 밝은 크림색 */
+    color: var(--text-color); /* 텍스트 색상 */
+    border: 1px solid var(--border-color); /* 기본 테두리 */
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="avocado"] input:focus,
+[data-theme="avocado"] textarea:focus {
+    border-color: var(--primary-color); /* 테두리 색상 변경 */
+    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5); /* 부드러운 그림자 효과 */
+    outline: none; /* 기본 브라우저 포커스 제거 */
+}
+
+[data-theme="avocado"] input:hover,
+[data-theme="avocado"] textarea:hover {
+    border-color: var(--primary-color); /* 테두리 색상 변경 */
+}
+
+[data-theme="avocado"] .toast {
+    background-color: var(--primary-color);
+    color: white;
+}
+
 /* 다크모드 지원 */
+[data-theme="dark"] .settings-section {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: 1px solid #404040;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .api-settings {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: 1px solid #404040;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .api-input-container input {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #404040;
+}
+
+[data-theme="dark"] .api-input-container input::placeholder {
+    color: #888888;
+}
+
+[data-theme="dark"] .api-settings button {
+    background-color: #404040;
+    color: #ffffff;
+    border: 1px solid #606060;
+}
+
+[data-theme="dark"] .api-settings button:hover {
+    background-color: #505050;
+    border-color: #707070;
+}
+
+[data-theme="dark"] .settings-section h2 {
+    border-bottom: 2px solid #505050;
+    color: #ffffff;
+}
+
 [data-theme="dark"] .translation-progress {
   background-color: #363636;
 }
@@ -1643,6 +1805,26 @@ kbd {
 }
 
 @media (max-width: 768px) {
+    .settings-section {
+        padding: 1rem;
+    }
+    .header h1 {
+        font-size: 1.6rem;
+    }
+
+    .theme-toggle-container {
+        gap: 0.5rem;
+    }
+
+    .theme-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    .api-input-container input {
+        font-size: 0.8rem;
+    }
+
     .translation-box,
     .api-section {
         grid-template-columns: 1fr;

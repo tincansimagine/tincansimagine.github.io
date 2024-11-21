@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241121f1">
+    <link rel="stylesheet" href="styles.css?v=241121f5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,23 +29,30 @@
       <div id="mainPage" class="page active">
         <!-- 기존 번역 관련 요소들 이동 -->
         <div class="header">
-            <h1>
-                🤖 깡갤 번역기
-                <span class="version-info">
-                    <span class="version-tag">v1.6.1</span>
-                    <button class="changelog-btn" title="업데이트 내역">
-                        💡
-                        <span class="update-notification" id="updateNotification">1</span>
-                    </button>
-                </span>
-            </h1>
-            
+            <h1>🤖 깡갤 번역기</h1>
+            <div class="version-info">
+                <span class="version-tag" id="versionTag"></span>
+                <button class="changelog-btn" title="업데이트 내역">
+                    💡
+                    <span class="update-notification" id="updateNotification"></span>
+                </button>
+            </div>
+                    
             <!-- 업데이트 내역 모달 추가 -->
             <div id="changelogModal" class="modal changelog-modal">
                 <div class="modal-content changelog-content">
                     <button class="close-modal">&times;</button>
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.6.2 (2024-11-21) pm 8:23</h4>
+                            <ul>
+                                <li>업데이트 알림 표시 구현 로직 수정</li>
+                                <li>아보카도 테마 추가 / 테마 선택을 설정 페이지로 이동</li>
+                                <li>라이트 모드, 아보카도 모드 단축키 추가</li>
+                                <li>기타 UI/UX 개편</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <h4>v1.6.1 (2024-11-21) pm 5:53</h4>
                             <ul>
@@ -79,9 +86,6 @@
                     </div>
                 </div>
             </div>
-            <button id="themeToggle" class="theme-toggle">
-                <i class="fas fa-sun"></i>
-            </button>
         </div>
         <div class="translation-direction-controls">
             <div class="direction-btn-container">
@@ -201,6 +205,8 @@
                     <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> : 번역하기</li>
                     <li><kbd>Ctrl</kbd> + <kbd>S</kbd> : 프롬프트 저장</li>
                     <li><kbd>Esc</kbd> : 번역 취소</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>A</kbd> : 아보카도 모드 토글</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>L</kbd> : 라이트 모드 토글</li>
                     <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
                     <li><kbd>Alt</kbd> + <kbd>1</kbd> : 한→영 전환</li>
                 <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
@@ -217,46 +223,57 @@
       <!-- 설정 페이지 컨테이너 -->
       <div id="settingsPage" class="page">
         <!-- 기존 설정 관련 요소들 이동 -->
-        <div class="api-section">
-            <div class="api-keys">
-                <div class="input-group">
-                    <label for="geminiApiKey">Google Gemini API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="geminiApiKey" placeholder="Gemini API 키를 입력하세요">
-                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="openaiApiKey">OpenAI API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
-                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="anthropicApiKey">Anthropic API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="anthropicApiKey" placeholder="Anthropic API 키를 입력하세요">
-                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="anthropicApiKey">Cohere API Key</label>
-                    <div class="api-input-container">
-                        <input type="password" id="cohereApiKey" placeholder="Cohere API Key">
-                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button id="saveApiKeys" class="btn-small">API 키 저장</button>
+        <div class="settings-section">
+            <h2>테마 설정</h2>
+            <div class="theme-toggle-container">
+                <button class="theme-toggle" data-theme="light" title="라이트 모드">☀️</button>
+                <button class="theme-toggle" data-theme="dark" title="다크 모드">🌙</button>
+                <button class="theme-toggle" data-theme="avocado" title="아보카도 모드">🥑</button>
             </div>
+        </div>
+        <div class="settings-section">
+            <h2>API키 설정</h2>
+            <div class="api-section">
+                <div class="api-keys">
+                    <div class="input-group">
+                        <label for="geminiApiKey">Google Gemini API Key</label>
+                        <div class="api-input-container">
+                            <input type="password" id="geminiApiKey" placeholder="Gemini API 키를 입력하세요">
+                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="openaiApiKey">OpenAI API Key</label>
+                        <div class="api-input-container">
+                            <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
+                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="anthropicApiKey">Anthropic API Key</label>
+                        <div class="api-input-container">
+                            <input type="password" id="anthropicApiKey" placeholder="Anthropic API 키를 입력하세요">
+                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="anthropicApiKey">Cohere API Key</label>
+                        <div class="api-input-container">
+                            <input type="password" id="cohereApiKey" placeholder="Cohere API 키를 입력하세요">
+                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="saveApiKeys" class="btn-small">API 키 저장</button>
+                </div>
+        </div>
             
             <div class="model-select">
                 <label for="modelSelect">번역 모델 선택</label>
@@ -386,6 +403,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=241121f9"></script>
+    <script src="translator.js?v=241121g5"></script>
   </body>
 </html>
