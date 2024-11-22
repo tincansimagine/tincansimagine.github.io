@@ -1288,6 +1288,10 @@ kbd {
   color: #666;
 }
 
+.history-import-btn {
+    margin-bottom: 0.5rem;
+}
+
 .translation-history-section,
 .word-rules-section,
 .data-management-section {

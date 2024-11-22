@@ -324,3 +324,63 @@
     background-color: var(--accent-color);
     border-radius: 1px;
 }
+
+[data-theme="dark-avocado"] .history-list {
+    background-color: var(--section-bg);
+    border-radius: 8px;
+}
+
+[data-theme="dark-avocado"] .history-item {
+    background-color: #2A321F;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark-avocado"] .history-item-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] .history-timestamp {
+    color: var(--muted-text);
+}
+
+[data-theme="dark-avocado"] .history-model {
+    background-color: #3D4832;
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .bookmark-btn {
+    color: #4A5D3D;
+}
+
+[data-theme="dark-avocado"] .bookmark-btn.active {
+    color: #C4D5A6;
+}
+
+[data-theme="dark-avocado"] .history-text {
+    background-color: var(--section-bg);
+}
+
+[data-theme="dark-avocado"] .history-source,
+[data-theme="dark-avocado"] .history-translated {
+    background-color: #2F3824;
+    color: var(--text-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+[data-theme="dark-avocado"] .history-source::before,
+[data-theme="dark-avocado"] .history-translated::before {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .history-actions .btn-small {
+    background-color: #3D4832;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] .history-actions .btn-small:hover {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
