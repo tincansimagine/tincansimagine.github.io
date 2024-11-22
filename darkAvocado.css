@@ -1,0 +1,319 @@
+[data-theme="dark-avocado"] {
+    --background-color: #1E2418;
+    --text-color: #EBF2E3;
+    --primary-color: #5B8A4B;
+    --secondary-color: #A6C77B;
+    --border-color: #32402A;
+    --hover-color: #6B9A5B;
+    --input-bg: #262F1D;
+    --section-bg: #23291B;
+    --section-border: #374230;
+    --accent-color: #C4D5A6;
+    --muted-text: #A8B596;
+}
+
+[data-theme="dark-avocado"] body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .container {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark-avocado"] .header h1 {
+    color: var(--accent-color);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark-avocado"] .btn-small {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark-avocado"] .translate-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark-avocado"] .btn-small:hover,
+[data-theme="dark-avocado"] .translate-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark-avocado"] .update-notification {
+    background-color: var(--accent-color);
+    color: #1E2418;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .modal-content {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+
+[data-theme="dark-avocado"] input,
+[data-theme="dark-avocado"] textarea,
+[data-theme="dark-avocado"] .formatted-result {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] input:focus,
+[data-theme="dark-avocado"] textarea:focus,
+[data-theme="dark-avocado"] .formatted-result:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 138, 75, 0.2);
+}
+
+[data-theme="dark-avocado"] .toast {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .settings-section {
+    background-color: var(--section-bg);
+    border: 1px solid var(--section-border);
+    border-radius: 6px;
+}
+
+[data-theme="dark-avocado"] .settings-section h2,
+[data-theme="dark-avocado"] .api-section h2 {
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] select option {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .nav-bar {
+    border-bottom: 2px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] .nav-btn {
+    color: var(--muted-text);
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark-avocado"] .nav-btn:hover {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .nav-btn.active {
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .translation-direction-controls {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+[data-theme="dark-avocado"] .direction-btn {
+    background-color: var(--input-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .direction-btn:hover {
+    background-color: var(--hover-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark-avocado"] .direction-btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px rgba(166, 199, 123, 0.2);
+}
+
+[data-theme="dark-avocado"] .template-name {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .translation-progress {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+[data-theme="dark-avocado"] .step-icon {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+}
+
+[data-theme="dark-avocado"] .step.active .step-icon {
+    background-color: var(--primary-color);
+    border-color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .step.completed .step-icon {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .progress-bar {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .progress-fill {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .file-upload-btn {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark-avocado"] .file-upload-btn:hover {
+    background-color: var(--hover-color);
+    border-color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .supported-formats {
+    color: var(--muted-text);
+}
+
+[data-theme="dark-avocado"] .file-upload-btn i {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .api-settings,
+[data-theme="dark-avocado"] .api-section,
+[data-theme="dark-avocado"] .prompt-section,
+[data-theme="dark-avocado"] .word-rules-section,
+[data-theme="dark-avocado"] .style-settings,
+[data-theme="dark-avocado"] .data-management-section,
+[data-theme="dark-avocado"] .translation-history-section {
+    background-color: var(--section-bg);
+    border: 1px solid var(--section-border);
+    color: var(--text-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark-avocado"] .api-section h2,
+[data-theme="dark-avocado"] .prompt-section h2,
+[data-theme="dark-avocado"] .word-rules-section h2,
+[data-theme="dark-avocado"] .style-settings h2,
+[data-theme="dark-avocado"] .data-management-section h2,
+[data-theme="dark-avocado"] .translation-history-section h2 {
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark-avocado"] .api-section input,
+[data-theme="dark-avocado"] .prompt-section input,
+[data-theme="dark-avocado"] .word-rules-section input {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+[data-theme="dark-avocado"] .api-section input:focus,
+[data-theme="dark-avocado"] .prompt-section input:focus,
+[data-theme="dark-avocado"] .word-rules-section input:focus,
+[data-theme="dark-avocado"] .style-settings input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 138, 75, 0.2);
+    outline: none;
+}
+
+[data-theme="dark-avocado"] .api-section label,
+[data-theme="dark-avocado"] .prompt-section label,
+[data-theme="dark-avocado"] .word-rules-section label,
+[data-theme="dark-avocado"] .style-settings label {
+    color: var(--muted-text);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+[data-theme="dark-avocado"] .api-section select,
+[data-theme="dark-avocado"] .prompt-section select,
+[data-theme="dark-avocado"] .word-rules-section select,
+[data-theme="dark-avocado"] .style-settings select {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+[data-theme="dark-avocado"] .api-section select:focus,
+[data-theme="dark-avocado"] .prompt-section select:focus,
+[data-theme="dark-avocado"] .word-rules-section select:focus,
+[data-theme="dark-avocado"] .style-settings select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 138, 75, 0.2);
+    outline: none;
+}
+
+[data-theme="dark-avocado"] .set-template-btn {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark-avocado"] .set-template-btn:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark-avocado"] .set-template-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+[data-theme="dark-avocado"] .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+    border-radius: 1px;
+}

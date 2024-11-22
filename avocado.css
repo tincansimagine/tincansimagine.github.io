@@ -1,0 +1,75 @@
+/* 아보카도 테마 */
+[data-theme="avocado"] {
+    --background-color: #E3ECD1;
+    --text-color: #4B3A20;
+    --primary-color: #7DAE58;
+    --secondary-color: #F7E8A1;
+    --border-color: #C8D9A8;
+}
+
+[data-theme="avocado"] body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .container {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="avocado"] .header h1 {
+    color: var(--primary-color);
+}
+
+[data-theme="avocado"] .btn-small,
+[data-theme="avocado"] .translate-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+[data-theme="avocado"] .btn-small:hover,
+[data-theme="avocado"] .translate-btn:hover {
+    background-color: #74A15A;
+}
+
+[data-theme="avocado"] .update-notification {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .modal-content {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] input,
+[data-theme="avocado"] textarea,
+[data-theme="avocado"] .formatted-result {
+    background-color: #FAFDEA;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="avocado"] input:focus,
+[data-theme="avocado"] textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5);
+    outline: none;
+}
+
+[data-theme="avocado"] input:hover,
+[data-theme="avocado"] textarea:hover {
+    border-color: var(--primary-color);
+}
+
+[data-theme="avocado"] .toast {
+    background-color: var(--primary-color);
+    color: white;
+}

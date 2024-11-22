@@ -34,8 +34,8 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.6.2'; 
-const UPDATE_NOTIFICATIONS = 3;  // 업데이트 알림 개수
+const CURRENT_VERSION = '1.6.3'; 
+const UPDATE_NOTIFICATIONS = 4;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
     
@@ -274,6 +274,71 @@ function initializeEventListeners() {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    }
+
+    if (elements.sourceText) {
+        // focus 이벤트
+        elements.sourceText.addEventListener('focus', () => {
+            const copyBtn = elements.sourceText.parentElement.querySelector('.copy-btn');
+            if (copyBtn) {
+                copyBtn.innerHTML = '<i class="fas fa-times"></i>';
+                copyBtn.classList.add('clear-btn');
+                copyBtn.classList.remove('copy-btn');
+                
+                // 기존의 모든 이벤트 리스너 제거
+                const newBtn = copyBtn.cloneNode(true);
+                copyBtn.parentNode.replaceChild(newBtn, copyBtn);
+                
+                // 새로운 클릭 이벤트 핸들러 추가
+                newBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    elements.sourceText.value = '';
+                    elements.sourceText.focus();
+                    if (typeof updateCharCount === 'function') {
+                        updateCharCount();
+                    }
+                };
+            }
+        });
+    
+        // blur 이벤트 
+        elements.sourceText.addEventListener('blur', () => {
+            setTimeout(() => {
+                if (!elements.sourceText.matches(':focus')) {
+                    const clearBtn = elements.sourceText.parentElement.querySelector('.clear-btn');
+                    if (clearBtn) {
+                        
+                        // 기존 버튼의 모든 이벤트 리스너 제거
+                        const newCopyBtn = clearBtn.cloneNode(true);
+                        clearBtn.parentNode.replaceChild(newCopyBtn, clearBtn);
+                        
+                        newCopyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                        newCopyBtn.classList.add('copy-btn');
+                        newCopyBtn.classList.remove('clear-btn');
+                        
+                        // 새로운 복사 기능 이벤트 리스너 추가
+                        newCopyBtn.onclick = () => copyText(elements.sourceText);
+                    }
+                }
+            }, 300);
+        });
+        // 전체 삭제 단축키
+        elements.sourceText.addEventListener('keydown', (e) => {
+            // Ctrl + E 키 감지 (e.key === 'e' 또는 'E')
+            if (e.ctrlKey && (e.key === 'e' || e.key === 'E')) {
+                e.preventDefault(); // 기본 동작 방지
+                
+                // 텍스트 초기화
+                elements.sourceText.value = '';
+                elements.sourceText.focus();
+                
+                // 글자 수 카운터 업데이트 (있는 경우)
+                if (typeof updateCharCount === 'function') {
+                    updateCharCount();
+                }
+            }
+        });
     }
 
     // 글로벌 키보드 단축키
@@ -1547,7 +1612,7 @@ function saveApiKeys() {
 function toggleTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('selectedTheme', theme);
-    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : '아보카도 모드'}가 적용되었습니다.`);
+    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : theme === 'avocado' ? '아보카도 모드' : '다크 아보카도 모드'}가 적용되었습니다.`);
 }
 
 //* 프롬프트 관리
@@ -2418,7 +2483,7 @@ function setupShortcuts() {
         // Ctrl + D: 다크모드 토글
         if (e.ctrlKey && e.key === 'd') {
             e.preventDefault();
-            toggleTheme();
+            toggleTheme('dark');
         }
 
         // Esc: 번역 취소 또는 모달 닫기

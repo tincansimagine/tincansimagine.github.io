@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241121f8">
+    <link rel="stylesheet" href="styles.css?v=241122a1">
+    <link rel="stylesheet" href="darkAvocado.css?v=241122a2">
+    <link rel="stylesheet" href="avocado.css?v=241122a1">
+    <link rel="stylesheet" href="darkTheme.css?v=241122a1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,6 +48,15 @@
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
                         <div class="changelog-item">
+                            <h4>v1.6.３ (2024-11-22) pm 6:00</h4>
+                            <ul>
+                                <li>다크 아보카도 테마 추가</li>
+                                <li>입력창 포커스 되면 복사 버튼 대신 X (전체 텍스트 삭제) 버튼 등장하도록 개선</li>
+                                <li>PC에서도 편하게 지우도록 단축키 Ctrl+E로 사용 가능</li>
+                                <li>아보카도 테마 버그 픽스</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
                             <h4>v1.6.2 -2 (2024-11-22) am 8:32</h4>
                             <ul>
                                 <li>아보카도 테마 번역 결과창 라이트 모드로 돌아가는 문제 수정</li>
@@ -76,18 +88,6 @@
                             <h4>v1.5.9 (2024-11-21) am 4:55</h4>
                             <ul>
                                 <li>영한/한영 기본 프롬프트 개선, 번역 품질 향상 목적</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.5.8 (2024-11-21) am 4:21</h4>
-                            <ul>
-                                <li>클립보드 중복 복사 버그 수정</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.5.7 (2024-11-17) pm 12:41</h4>
-                            <ul>
-                                <li>설정 페이지 토스트 메시지 누락 수정</li>
                             </ul>
                         </div>
                     </div>
@@ -216,7 +216,8 @@
                     <li><kbd>Ctrl</kbd> + <kbd>L</kbd> : 라이트 모드 토글</li>
                     <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
                     <li><kbd>Alt</kbd> + <kbd>1</kbd> : 한→영 전환</li>
-                <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
+                    <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>E</kbd> : 입력 텍스트 전체 삭제 (단, 입력 텍스트 창이 눌린 상태에서만 동작)</li>
                 </ul>
                 <button class="close-modal">&times;</button>
             </div>
@@ -236,6 +237,7 @@
                 <button class="theme-toggle" data-theme="light" title="라이트 모드">☀️</button>
                 <button class="theme-toggle" data-theme="dark" title="다크 모드">🌙</button>
                 <button class="theme-toggle" data-theme="avocado" title="아보카도 모드">🥑</button>
+                <button class="theme-toggle" data-theme="dark-avocado" title="다크 아보카도 모드">🥑</button>
             </div>
         </div>
         <div class="settings-section">
@@ -281,7 +283,6 @@
                     <button id="saveApiKeys" class="btn-small">API 키 저장</button>
                 </div>
         </div>
-            
             <div class="model-select">
                 <label for="modelSelect">번역 모델 선택</label>
                 <select id="modelSelect">
@@ -289,81 +290,85 @@
                 </select>
             </div>
         </div>
-        <div class="data-management-section">
-            <h3>⚙️ 설정 관리</h3>
-            <div class="data-controls">
-                <button id="exportData" class="btn-small">
-                    <span>💾 설정 내보내기</span>
-                    <small>모든 설정 파일로 저장</small>
-                </button>
-                <button id="importData" class="btn-small">
-                    <span>📂 설정 가져오기</span>
-                    <small>저장된 설정 복원</small>
-                </button>
-                <input type="file" id="importFile" accept=".json" style="display: none;">
+        <div class="settings-section">
+            <div class="data-management-section">
+                <h3>⚙️ 설정 관리</h3>
+                <div class="data-controls">
+                    <button id="exportData" class="btn-small">
+                        <span>💾 설정 내보내기</span>
+                        <small>모든 설정 파일로 저장</small>
+                    </button>
+                    <button id="importData" class="btn-small">
+                        <span>📂 설정 가져오기</span>
+                        <small>저장된 설정 복원</small>
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
             </div>
         </div>
-        <div class="style-settings">
-            <h3>텍스트 스타일 설정</h3>
-            <div class="style-options">
-                <div class="color-picker">
-                    <label for="baseColor">기본 텍스트 색상:</label>
-                    <input type="color" id="baseColor" value="#333333">
-                </div>
-                <div class="color-picker">
-                    <label for="quoteColor">대사 색상 (쌍따옴표):</label>
-                    <input type="color" id="quoteColor" value="#2E5CB8">
-                </div>
-                <div class="color-picker">
-                    <label for="thoughtColor">생각 색상 (홑따옴표):</label>
-                    <input type="color" id="thoughtColor" value="#6B4C9A">
-                </div>
-                <div class="color-picker">
-                    <label for="emphasisColor">이텔릭체 색상:</label>
-                    <input type="color" id="emphasisColor" value="#7B3B3B">
-                </div>
-                <div class="color-picker">
-                    <label for="boldColor">볼드체 색상:</label>
-                    <input type="color" id="boldColor" value="#FF0000">
-                </div>
-                <div class="font-size-controls">
-                    <div class="font-size-input">
-                        <label>입력창 폰트 크기:</label>
-                        <input type="number" 
-                               id="sourceFontSize" 
-                               min="8" 
-                               max="32" 
-                               value="16">
-                        <span>px</span>
+        <div class="settings-section">
+            <div class="style-settings">
+                <h3>텍스트 스타일 설정</h3>
+                <div class="style-options">
+                    <div class="color-picker">
+                        <label for="baseColor">기본 텍스트 색상:</label>
+                        <input type="color" id="baseColor" value="#333333">
                     </div>
-                    <div class="font-size-input">
-                        <label>결과창 폰트 크기:</label>
-                        <input type="number" 
-                               id="resultFontSize" 
-                               min="8" 
-                               max="32" 
-                               value="16">
-                        <span>px</span>
+                    <div class="color-picker">
+                        <label for="quoteColor">대사 색상 (쌍따옴표):</label>
+                        <input type="color" id="quoteColor" value="#2E5CB8">
                     </div>
-                </div>
-                <div class="font-selector">
-                    <label for="fontFamily">글꼴 선택:</label>
-                    <select id="fontFamily">
-                        <option value="Arial">Arial</option>
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Courier New">Courier New</option>
-                        <option value="Georgia">Georgia</option>
-                        <option value="Verdana">Verdana</option>
-                        <option value="Roboto Slab">Roboto Slab</option>
-                        <option value="Roboto Slab">Noto Serif Telugu</option>
-                        <option value="Nanum Gothic">나눔고딕</option>
-                        <option value="Malgun Gothic">맑은고딕</option>
-                        <option value="RIDIBatang">RIDI 바탕</option>
-                    </select>
-                </div>
-                <div class="checkbox-option">
-                    <input type="checkbox" id="enableMarkdown" checked>
-                    <label for="enableMarkdown">마크다운 변환 사용</label>
+                    <div class="color-picker">
+                        <label for="thoughtColor">생각 색상 (홑따옴표):</label>
+                        <input type="color" id="thoughtColor" value="#6B4C9A">
+                    </div>
+                    <div class="color-picker">
+                        <label for="emphasisColor">이텔릭체 색상:</label>
+                        <input type="color" id="emphasisColor" value="#7B3B3B">
+                    </div>
+                    <div class="color-picker">
+                        <label for="boldColor">볼드체 색상:</label>
+                        <input type="color" id="boldColor" value="#FF0000">
+                    </div>
+                    <div class="font-size-controls">
+                        <div class="font-size-input">
+                            <label>입력창 폰트 크기:</label>
+                            <input type="number" 
+                                   id="sourceFontSize" 
+                                   min="8" 
+                                   max="32" 
+                                   value="16">
+                            <span>px</span>
+                        </div>
+                        <div class="font-size-input">
+                            <label>결과창 폰트 크기:</label>
+                            <input type="number" 
+                                   id="resultFontSize" 
+                                   min="8" 
+                                   max="32" 
+                                   value="16">
+                            <span>px</span>
+                        </div>
+                    </div>
+                    <div class="font-selector">
+                        <label for="fontFamily">글꼴 선택:</label>
+                        <select id="fontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Roboto Slab">Roboto Slab</option>
+                            <option value="Roboto Slab">Noto Serif Telugu</option>
+                            <option value="Nanum Gothic">나눔고딕</option>
+                            <option value="Malgun Gothic">맑은고딕</option>
+                            <option value="RIDIBatang">RIDI 바탕</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="enableMarkdown" checked>
+                        <label for="enableMarkdown">마크다운 변환 사용</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -416,6 +421,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=241121g9"></script>
+    <script src="translator.js?v=241122a1"></script>
   </body>
 </html>
