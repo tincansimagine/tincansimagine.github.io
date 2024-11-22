@@ -406,6 +406,8 @@
     color: #8ab4f8;
 }
 
+[data-theme="dark"] .translation-history-section,
+[data-theme="dark"] .word-rules-section,
 [data-theme="dark"] .data-management-section {
     border: 1px solid #444444;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);

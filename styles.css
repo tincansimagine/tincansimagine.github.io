@@ -221,14 +221,9 @@ body {
 }
 
 /* 데이터 관리 섹션 스타일 */
-
 .data-management-section {
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e0e0e0;
 }
 
 .data-controls {
@@ -1113,8 +1108,6 @@ kbd {
     border: 1px solid #e0e0e0;
 }
 
-
-
 /* 섹션 제목 스타일 */
 .settings-section h2 {
     font-size: 1.2rem;
@@ -1293,6 +1286,15 @@ kbd {
 .step-label {
   font-size: 0.9rem;
   color: #666;
+}
+
+.translation-history-section,
+.word-rules-section,
+.data-management-section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f8f8f8;
 }
 
 /* 애니메이션 */
