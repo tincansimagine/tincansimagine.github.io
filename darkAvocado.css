@@ -217,13 +217,20 @@
 [data-theme="dark-avocado"] .prompt-section,
 [data-theme="dark-avocado"] .word-rules-section,
 [data-theme="dark-avocado"] .style-settings,
-[data-theme="dark-avocado"] .data-management-section,
 [data-theme="dark-avocado"] .translation-history-section {
     background-color: var(--section-bg);
     border: 1px solid var(--section-border);
     color: var(--text-color);
     border-radius: 6px;
     padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark-avocado"] .data-management-section {
+    background-color: var(--section-bg);
+    border: 1px solid var(--section-border);
+    color: var(--text-color);
+    border-radius: 6px;
     margin-bottom: 1rem;
 }
 

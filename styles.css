@@ -225,8 +225,10 @@ body {
 .data-management-section {
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
 }
 
 .data-controls {
@@ -1110,6 +1112,8 @@ kbd {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
 }
+
+
 
 /* 섹션 제목 스타일 */
 .settings-section h2 {
