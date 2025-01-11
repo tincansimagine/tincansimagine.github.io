@@ -34,7 +34,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.6.5'; 
+const CURRENT_VERSION = '1.6.6'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -78,9 +78,9 @@ const modelOptions = [
     {
         group: 'Google Gemini',
         options: [
+            { value: 'gemini-2.0-flash-thinking-exp-1219', label: 'Gemini 2.0 Flash Thinking Experimental' },
             { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash Experimental' },
             { value: 'gemini-exp-1206', label: 'Gemini Experimental 1206' },
-            { value: 'gemini-exp-1121', label: 'Gemini Experimental 1121' },
             { value: 'gemini-exp-1114', label: 'Gemini Experimental 1114' },
             { value: 'gemini-1.5-pro-002', label: 'Gemini 1.5 Pro (Latest)' },
             { value: 'gemini-1.5-pro-001', label: 'Gemini 1.5 Pro (Stable)' },
@@ -2265,7 +2265,11 @@ async function translateWithGemini(text, apiKey) {
 
     if (!response.ok) throw new Error('Gemini API 요청 실패');
     const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
+    if (data.candidates[0].content.parts.length > 1) {
+        return data.candidates[0].content.parts[1].text;
+    } else {
+        return data.candidates[0].content.parts[0].text;
+    }
 }
 
 // OpenAI로 번역
