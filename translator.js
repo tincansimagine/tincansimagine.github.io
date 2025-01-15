@@ -34,7 +34,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.6.6'; 
+const CURRENT_VERSION = '1.6.7'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -81,7 +81,6 @@ const modelOptions = [
             { value: 'gemini-2.0-flash-thinking-exp-1219', label: 'Gemini 2.0 Flash Thinking Experimental' },
             { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash Experimental' },
             { value: 'gemini-exp-1206', label: 'Gemini Experimental 1206' },
-            { value: 'gemini-exp-1114', label: 'Gemini Experimental 1114' },
             { value: 'gemini-1.5-pro-002', label: 'Gemini 1.5 Pro (Latest)' },
             { value: 'gemini-1.5-pro-001', label: 'Gemini 1.5 Pro (Stable)' },
             { value: 'gemini-1.5-flash-002', label: 'Gemini 1.5 Flash (Latest)' },
@@ -2241,6 +2240,28 @@ elements.setTemplateButtons.forEach((button, index) => {
 
 // Gemini로 번역
 async function translateWithGemini(text, apiKey) {
+    const baseSafetySettings = [
+        'HARM_CATEGORY_DEROGATORY',
+        'HARM_CATEGORY_TOXICITY',
+        'HARM_CATEGORY_VIOLENCE',
+        'HARM_CATEGORY_SEXUAL',
+        'HARM_CATEGORY_MEDICAL',
+        'HARM_CATEGORY_DANGEROUS'
+    ];
+
+    let safetySettings;
+    if (selectedModel === 'gemini-2.0-flash-exp') {
+        safetySettings = baseSafetySettings.map(category => ({
+            category: category,
+            threshold: 'OFF',
+        }));
+    } else {
+        safetySettings = baseSafetySettings.map(category => ({
+            category: category,
+            threshold: 'BLOCK_NONE',
+        }));
+    }
+
     const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`,
         {
@@ -2258,18 +2279,15 @@ async function translateWithGemini(text, apiKey) {
                     temperature: 0.2,
                     topK: 40,
                     topP: 0.8,
-                }
+                },
+                safetySettings: safetySettings,
             })
         }
     );
 
     if (!response.ok) throw new Error('Gemini API 요청 실패');
     const data = await response.json();
-    if (data.candidates[0].content.parts.length > 1) {
-        return data.candidates[0].content.parts[1].text;
-    } else {
-        return data.candidates[0].content.parts[0].text;
-    }
+    return data.candidates[0].content.parts[0].text;
 }
 
 // OpenAI로 번역
