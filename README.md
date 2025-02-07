@@ -59,4 +59,8 @@ V 1.6.3
 V 1.6.7
 - gemini safety settings 값 변경
 
+V 1.6.8
+- 제미나이 2.0 pro exp 및 기타 새모델 추가
+- 제미나이 플래시 모델에 대한 세이프티 설정 조정정
+
 ![CC 라이선스이미지](https://files.catbox.moe/1d3xez.png)
