@@ -34,7 +34,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.6.8'; 
+const CURRENT_VERSION = '1.6.9'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -76,6 +76,12 @@ let controller = null;  // AbortController를 위한 변수
 // 모델 옵션 정의
 const modelOptions = [
     {
+        group: 'Google Gemini 2.5',
+        options: [
+            { value: 'gemini-2.5-pro-exp-03-25', label: 'Gemini 2.5 Pro Experimental 2025-03-25'},
+        ]
+    },
+    {
         group: 'Google Gemini 2.0',
         options: [
             { value: 'gemini-2.0-pro-exp', label: 'Gemini 2.0 Pro Experimental'},
@@ -113,7 +119,8 @@ const modelOptions = [
             { value: 'gpt-4-0125-preview', label: 'GPT-4 Turbo 0125' },
             { value: 'gpt-4-1106-preview', label: 'GPT-4 Turbo 1106' },
             { value: 'gpt-4', label: 'GPT-4' },
-            { value: 'gpt-4-32k', label: 'GPT-4 32K' }
+            { value: 'gpt-4-32k', label: 'GPT-4 32K' },
+            { value: 'gpt-4.5-preview-2025-02-27', label: 'GPT-4.5 Preview 2025-02-27' }
         ]
     },
     {
@@ -134,7 +141,15 @@ const modelOptions = [
             { value: 'o1-preview', label: 'o1-preview' },
             { value: 'o1-preview-2024-09-12', label: 'o1-preview-2024-09-12' },
             { value: 'o1-mini', label: 'o1-mini' },
-            { value: 'o1-mini-2024-09-12', label: 'o1-mini-2024-09-12' }
+            { value: 'o1-mini-2024-09-12', label: 'o1-mini-2024-09-12' },
+            { value: 'o1-mini-2025-01-31', label: 'o1-mini-2025-01-31' },
+            { value: 'o1-pro-2025-03-19', label: 'o1-pro-2025-03-19' }
+        ]
+    },
+    {
+        group: 'Claude 3.7',
+        options: [
+            { value: 'claude-3-7-sonnet-20250219', label: 'Claude 3.7 Sonnet 2025-02-19' },
         ]
     },
     {
@@ -163,6 +178,7 @@ const modelOptions = [
     {
         group: 'Cohere',
         options: [
+            { value: 'command-a-03-2025', label: 'Command-A 03-2025' },
             { value: 'c4ai-aya-expanse-8b', label: 'Aya Expanse 8B' },
             { value: 'c4ai-aya-expanse-32b', label: 'Aya Expanse 32B' },
             { value: 'command-r', label: 'Command-R' },
@@ -672,7 +688,8 @@ const elements = {
     historyFilterButtons: document.querySelectorAll('.history-filter button'),
     bookmarkButtons: document.querySelectorAll('.bookmark-btn'),
     deleteButtons: document.querySelectorAll('.delete-btn'),
-    restoreButtons: document.querySelectorAll('.restore-btn')
+    restoreButtons: document.querySelectorAll('.restore-btn'),
+    downloadTranslated: document.getElementById('downloadTranslated')
 };
 
 /*********************************************
@@ -996,11 +1013,11 @@ function formatText(text) {
     // 유니코드 따옴표 매칭 및 색상 변경
     text = text
         // 더블 쿼트 (ASCII " 및 유니코드 “ ”)
-        .replace(/["“”]([^"“”]+)["“”]/g, (match, p1) => {
+        .replace(/[""]([^""]+)[""]/g, (match, p1) => {
             return `<span style="color: ${quoteColor};">"${p1}"</span>`;
         })
         // 싱글 쿼트 (ASCII ' 및 유니코드 ‘ ’)
-        .replace(/(?<![\w])['‘’]((?:[^'‘’]|(?<=\w)['‘’](?=\w))+?)['‘’](?![\w])/g, (match, p1) => {
+        .replace(/(?<![\w])['']((?:[^'']|(?<=\w)[''](?=\w))+?)[''](?![\w])/g, (match, p1) => {
             return `<span style="color: ${thoughtColor};">'${p1}'</span>`;
         })
         // 굵게 처리 (** 텍스트 **)
@@ -2614,6 +2631,7 @@ function setupEventListeners() {
     elements.enableMarkdownInput?.addEventListener('change', handleMarkdownToggle);
     elements.copySource?.addEventListener('click', () => copyText(elements.sourceText));
     elements.copyTranslated?.addEventListener('click', () => copyText(elements.translatedText));
+    elements.downloadTranslated?.addEventListener('click', downloadTranslatedText);
     elements.themeToggle?.addEventListener('click', toggleTheme);
     elements.showShortcutsBtn?.addEventListener('click', () => elements.shortcutModal.style.display = 'block');
     elements.closeModalBtn?.addEventListener('click', () => elements.shortcutModal.style.display = 'none');
@@ -2717,3 +2735,27 @@ function initialize() {
  *********************************************/
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', initialize);
+
+// 번역 결과를 텍스트 파일로 다운로드하는 함수
+function downloadTranslatedText() {
+    const text = elements.translatedText.value;
+    if (!text) {
+        showToast('다운로드할 번역 결과가 없습니다.', 'error');
+        return;
+    }
+    
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const currentDate = new Date();
+    const fileName = `translation_${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}_${currentDate.getHours().toString().padStart(2, '0')}${currentDate.getMinutes().toString().padStart(2, '0')}.txt`;
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('번역 결과가 다운로드되었습니다.', 'success');
+}

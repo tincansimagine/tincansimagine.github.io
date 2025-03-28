@@ -544,7 +544,7 @@ textarea:focus {
 }
 
 .copy-btn:hover {
-    color: #333;
+    background-color: var(--button-hover);
 }
 
 /* 복사/삭제 버튼 전환 애니메이션 */
@@ -1516,7 +1516,8 @@ kbd {
     }
 
     .translate-controls {
-        padding: 0 1rem;
+        padding: 0 3rem; /* 버튼 위치를 위한 패딩 증가 */
+        position: relative;
     }
     
     .direction-switch-btn {
@@ -1562,12 +1563,32 @@ kbd {
         text-align: center;
         margin-bottom: 0.5rem;
     }
-}
 
-/* 더 작은 모바일 화면을 위한 추가 최적화 */
-@media (max-width: 480px) {
-    .direction-text {
+    /* 번역 박스 모바일 스타일 개선 */
+    .translation-box {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .textarea-container {
+        height: 310px; /* 모바일에서는 높이 줄임 */
+    }
+    
+    .result-bottom-controls {
+        margin-top: 5px;
+        justify-content: flex-end;
+    }
+    
+    .download-btn {
+        padding: 0.6rem;
         font-size: 0.9rem;
+        background-color: transparent;
+        box-shadow: none;
+        color: var(--text-color);
+    }
+    
+    .download-btn i {
+        font-size: 1rem;
     }
 
     .template-name {
@@ -1605,4 +1626,36 @@ kbd {
         padding: 0.5rem;
         font-size: 0.85rem;
     }
+}
+
+.result-bottom-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+    position: relative;
+}
+
+.download-btn {
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0;
+}
+
+.download-btn i {
+    font-size: 1.2rem;
+}
+
+.download-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
