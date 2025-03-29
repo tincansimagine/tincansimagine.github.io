@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=241122a6">
-    <link rel="stylesheet" href="darkAvocado.css?v=241122a6">
-    <link rel="stylesheet" href="avocado.css?v=241122a4">
-    <link rel="stylesheet" href="darkTheme.css?v=241122a4">
+    <link rel="stylesheet" href="styles.css?v=241122a7">
+    <link rel="stylesheet" href="darkAvocado.css?v=241122a7">
+    <link rel="stylesheet" href="avocado.css?v=241122a6">
+    <link rel="stylesheet" href="darkTheme.css?v=241122a6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,6 +47,17 @@
                     <button class="close-modal">&times;</button>
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.7.0 (2025-04-15) am 9:30</h4>
+                            <ul>
+                                <li>용어집/사전 기능 추가: 이전 단어 변환 규칙 기능을 대체하며 맥락별 용어 관리 가능</li>
+                                <li>배치 번역 기능 추가: 여러 텍스트를 한 번에 번역하고 결과 관리 가능</li>
+                                <li>다양한 한글 웹 폰트 추가: RIDIBatang, Pretendard, SUIT 등 30여 가지 폰트 지원</li>
+                                <li>용어집 맥락별 필터링 및 검색 기능 추가</li>
+                                <li>용어집 내보내기/가져오기 기능 추가</li>
+                                <li>배치 번역 결과 복사 및 다운로드 기능 추가</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <h4>v1.6.9 (2025-03-29) am 6:00</h4>
                             <ul>
@@ -231,6 +242,75 @@
             <textarea id="customPrompt" rows="3"></textarea>
             <button id="savePrompt" class="btn-small">프롬프트 저장</button>
         </div>
+        
+        <!-- 번역에 적용할 용어집 카테고리 선택 -->
+        <div class="glossary-category-section">
+            <label for="translationGlossaryContext">번역에 적용할 용어집 카테고리</label>
+            <select id="translationGlossaryContext" class="glossary-select">
+                <option value="all">모든 카테고리</option>
+                <option value="general">일반</option>
+                <option value="tech">기술/IT</option>
+                <option value="med">의학</option>
+                <option value="law">법률</option>
+                <option value="biz">비즈니스</option>
+                <option value="acad">학술</option>
+            </select>
+        </div>
+        
+        <!-- 배치 번역 섹션을 메인 페이지로 이동 -->
+        <div class="batch-translation-section">
+            <h3>
+                배치 번역
+                <button class="toggle-btn" id="toggleBatch"><i class="fas fa-chevron-down"></i></button>
+            </h3>
+            <div class="batch-content" id="batchContent">
+                <div class="batch-controls">
+                    <div class="batch-input">
+                        <textarea id="batchInput" placeholder="여러 텍스트를 입력하세요. 빈 줄이나 @@@를 구분자로 사용할 수 있습니다."></textarea>
+                    </div>
+                    <div class="batch-options">
+                        <label>
+                            <input type="checkbox" id="useSeparator" checked>
+                            구분자 사용
+                        </label>
+                        <label>
+                            <input type="radio" name="separatorType" id="useEmptyLine" checked>
+                            빈 줄
+                        </label>
+                        <label>
+                            <input type="radio" name="separatorType" id="useTripleAt">
+                            @@@
+                        </label>
+                        <label>
+                            <input type="checkbox" id="applyGlossary" checked>
+                            용어집 적용
+                        </label>
+                        <label>
+                            <input type="checkbox" id="saveToHistory" checked>
+                            히스토리에 저장
+                        </label>
+                        <button id="startBatchTranslation" class="btn-small">배치 번역 시작</button>
+                    </div>
+                </div>
+                <div class="batch-results" id="batchResults">
+                    <div class="batch-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="batchProgressFill"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="batchProgressText">0/0</span> 완료
+                        </div>
+                    </div>
+                    <div class="batch-result-list" id="batchResultList"></div>
+                    <div class="batch-result-actions">
+                        <button id="copyAllResults" class="btn-small">모든 결과 복사</button>
+                        <button id="downloadResults" class="btn-small">결과 다운로드</button>
+                        <button id="clearBatchResults" class="btn-small">결과 초기화</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="source-text-controls">
             <label for="file-upload" class="file-upload-btn">
                 <i class="fas fa-file-upload"></i> 파일 업로드
@@ -405,10 +485,38 @@
                             <option value="Georgia">Georgia</option>
                             <option value="Verdana">Verdana</option>
                             <option value="Roboto Slab">Roboto Slab</option>
-                            <option value="Roboto Slab">Noto Serif Telugu</option>
+                            <option value="Noto Serif Telugu">Noto Serif Telugu</option>
                             <option value="Nanum Gothic">나눔고딕</option>
                             <option value="Malgun Gothic">맑은고딕</option>
                             <option value="RIDIBatang">RIDI 바탕</option>
+                            <option value="Pretendard-Regular">프리텐다드</option>
+                            <option value="SUIT-Regular">수트</option>
+                            <option value="Chosunilbo_myungjo">조선일보명조</option>
+                            <option value="ChosunSm">조선신명조</option>
+                            <option value="ChosunGu">조선굴림</option>
+                            <option value="ChosunSg">조선가는고딕</option>
+                            <option value="NotoSerifKR">본명조</option>
+                            <option value="GangwonEdu_OTFBoldA">강원도교육체</option>
+                            <option value="MaruBuriSemiBold">마루부리</option>
+                            <option value="SunBatang-Light">순바탕</option>
+                            <option value="GowunDodum-Regular">고운돋움</option>
+                            <option value="S-CoreDream-3Light">에스코어드림</option>
+                            <option value="KyoboHandwriting2020A">교보손글씨 2020 박도연</option>
+                            <option value="Ownglyph_corncorn-Rg">온글잎 콘콘체</option>
+                            <option value="Ownglyph_wiseelist-Rg">온글잎 위씨리스트</option>
+                            <option value="Ownglyph_ParkDaHyun">온글잎 박다현체</option>
+                            <option value="Uiyeun">온글잎 의연체</option>
+                            <option value="Yoonwoo">온글잎 윤우체</option>
+                            <option value="Ownglyph_ryuttung-Rg">온글잎 류뚱체</option>
+                            <option value="SDKukdetopokki">국대떡볶이</option>
+                            <option value="SF_HambakSnow">SF함박눈</option>
+                            <option value="MapoGoldenPier">마포금빛나루</option>
+                            <option value="Iropke Batang">이롭게바탕</option>
+                            <option value="Jeju Myeongjo">제주명조</option>
+                            <option value="Father_loveletter">아빠의 연애편지</option>
+                            <option value="KyoboHand">교보손글씨 2019</option>
+                            <option value="Danjo-bold-Regular">단조</option>
+                            <option value="LeeSeoyun">이서윤</option>
                         </select>
                     </div>
                     <div class="checkbox-option">
@@ -418,24 +526,51 @@
                 </div>
             </div>
         </div>
-        <div class="word-rules-section">
+        <div class="glossary-section">
             <h3>
-                단어 변환 규칙
-                <button class="toggle-btn" id="toggleRules">▶</button>
+                용어집/사전 기능
+                <button class="toggle-btn" id="toggleGlossary"><i class="fas fa-chevron-down"></i></button>
             </h3>
-            <div class="rules-content" id="rulesContent">
-                <div class="rule-input">
-                    <input type="text" id="sourceWord" placeholder="원본 단어">
-                    <input type="text" id="targetWord" placeholder="변환할 단어">
-                    <button id="addRule" class="btn-small">규칙 추가</button>
+            <div class="glossary-content" id="glossaryContent">
+                <div class="glossary-input">
+                    <input type="text" id="sourceTerm" placeholder="원본 용어">
+                    <input type="text" id="targetTerm" placeholder="번역된 용어">
+                    <select id="termContext" class="term-context">
+                        <option value="all">모든 맥락</option>
+                        <option value="general">일반</option>
+                        <option value="tech">기술/IT</option>
+                        <option value="med">의학</option>
+                        <option value="law">법률</option>
+                        <option value="biz">비즈니스</option>
+                        <option value="acad">학술</option>
+                    </select>
+                    <button id="addTerm" class="btn-small">용어 추가</button>
                 </div>
-                <div class="rules-list" id="rulesList"></div>
+                <div class="glossary-search">
+                    <input type="text" id="searchTerm" placeholder="용어 검색...">
+                    <select id="filterContext" class="filter-context">
+                        <option value="all">모든 맥락</option>
+                        <option value="general">일반</option>
+                        <option value="tech">기술/IT</option>
+                        <option value="med">의학</option>
+                        <option value="law">법률</option>
+                        <option value="biz">비즈니스</option>
+                        <option value="acad">학술</option>
+                    </select>
+                </div>
+                <div class="glossary-controls">
+                    <button id="exportGlossary" class="btn-small">용어집 내보내기</button>
+                    <button id="importGlossary" class="btn-small">용어집 가져오기</button>
+                    <input type="file" id="glossaryFileInput" accept=".json,.csv,.xlsx" style="display: none;">
+                </div>
+                <div class="glossary-list" id="glossaryList"></div>
             </div>
         </div>
+        
         <div class="translation-history-section">
             <h3>
                 번역 히스토리
-            <button id="toggleHistory" class="toggle-btn">▶</button>
+                <button id="toggleHistory" class="toggle-btn"><i class="fas fa-chevron-down"></i></button>
             </h3>
             <div id="historyContent" class="history-content collapsed">
                 <div class="history-filter">
@@ -449,7 +584,7 @@
                     </div>
                     <button id="clearHistory" class="btn-small">히스토리 비우기</button>
                     <button id="exportHistory" class="btn-small">히스토리 내보내기</button>
-                    <button id="importHistory" class="btn-small history-import-btn">히스토리 가져오기</button>
+                    <button id="importHistory" class="btn-small">히스토리 가져오기</button>
                     <input type="file" id="historyFileInput" accept=".json" style="display: none;">
                 </div>
                 <div class="history-list" id="historyList">
@@ -467,6 +602,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=250208a4"></script>
+    <script src="translator.js?v=250208a6"></script>
   </body>
 </html>

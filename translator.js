@@ -8,6 +8,7 @@ let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
 let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
 let cohereApiKey = localStorage.getItem('cohereApiKey') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
+let glossaryTerms = JSON.parse(localStorage.getItem('glossaryTerms')) || []; // 용어집을 위한 배열 추가
 let selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
 let customPrompt = localStorage.getItem('customPrompt') || "# Translation Task Definition\nYou are a professional English-Korean translator specializing in roleplaying content. Your task is to translate English text into natural, fluent Korean while preserving the original tone, context, and cultural nuances. Focus particularly on translating both dialogue and action descriptions in roleplay scenarios.\n\n# Translation Requirements\n\n## Core Translation Principles\n1. Maintain the original meaning and intent\n2. Choose appropriate Korean honorific levels\n3. Convert English expressions to natural Korean equivalents\n4. Keep character personalities consistent through appropriate speech levels\n5. Apply Korean cultural context while preserving original story elements\n\n## Technical Guidelines\n\n### For Dialogue Translation\n- Select appropriate Korean honorific levels based on context:\n  * Formal situations → 합쇼체 (-ㅂ니다/습니다)\n  * Polite casual → 해요체 (-아/어요)\n  * Informal between friends/close relations → 반말 (-아/어)\n  * Professional settings → 존댓말 with proper honorific markers\n\n- Handle English dialogue features:\n  * Convert direct English expressions into natural Korean patterns\n  * Add appropriate sentence-final particles (요, 네, 군요, etc.)\n  * Consider speaker-listener relationship for proper honorifics\n  * Include context-appropriate Korean discourse markers\n\n### For Action Description Translation\n- Transform English action descriptions into natural Korean flow:\n  * Convert SVO (Subject-Verb-Object) to SOV (Subject-Object-Verb) structure\n  * Use appropriate Korean action descriptors and auxiliaries\n  * Add proper Korean particles (조사) based on context\n  * Incorporate Korean-style onomatopoeia and mimetic words\n\n### Cultural Elements\n- Adapt English titles and forms of address to Korean equivalents\n- Use appropriate Korean relationship terms (언니, 오빠, 선배 etc.)\n- Convert Western gestures to Korean cultural equivalents\n- Apply proper level of formality in different situations\n\n## Specific Instructions\n\n1. Initial Analysis\n- Understand the overall context and relationship between characters\n- Identify the appropriate speech levels for each character\n- Note any cultural references that need adaptation\n\n2. Translation Process\n- First pass: Basic translation maintaining core meaning\n- Second pass: Apply proper Korean grammar and particles\n- Final pass: Refine for natural Korean flow and proper honorifics\n\n3. Quality Checks\n- Verify honorific consistency\n- Check particle usage accuracy\n- Confirm natural Korean expression\n- Validate cultural appropriateness\n\n# Format Specifications\n\nInput Format:\n```\n[English text]\n```\n\nOutput Format:\n```\n[Korean translation only]\n```\n\n# Response Rules\n- Provide ONLY the Korean translation\n- Do not offer multiple options or explanations\n- Do not include commentary about the translation choices\n- Do not include the original English text\n- Do not ask questions or suggest alternatives\n- Do not explain honorific choices or grammar points\n\nExample:\n\nInput:\n```\n\"Hello everyone,\" she said with a bright smile. She bowed politely to the group.\n```\n\nOutput:\n```\n\"안녕하세요,\" 그녀가 밝은 미소를 지으며 말했다. 그녀는 일행들에게 공손히 인사를 했다.\n```\n\n## Honorific System Guidelines\n- Business/Formal: \n  * \"Could you please...\" → \"~해 주시겠습니까?\"\n  * \"I would like to...\" → \"~하고 싶습니다\"\n\n- Casual Polite:\n  * \"Can you...\" → \"~할 수 있으세요?\"\n  * \"I think...\" → \"~인 것 같아요\"\n\n- Informal:\n  * \"Hey, do this\" → \"야, 이거 해\"\n  * \"What's up\" → \"뭐 해?\"\n\n## Tense and Aspect Guidelines\n\n### Present Tense\n- Simple present → \"-ㄴ다/는다\" or \"-아/어요\"\n- Present continuous → \"-고  있다\" or \"-고 있어요\"\n- Present habits → \"-ㄴ다/는다\" or relevant time markers\n\n### Past Tense\n- Simple past → \"-았/었다\" or \"-았/ 었어요\"\n- Past perfect → \"-았/었었다\" or \"-았/었었어요\"\n- Past continuous → \"-고 있었다\" or \"-고 있었어요\"\n\n### Future Tense\n- Will/Shall → \"-ㄹ/을 거예요\" or \"-ㄹ/을 것입니다\"\n- Going to → \"-려고 해요\" or \"-기로 했어요\"\n- Future plans → \"-ㄹ/을 예정이다\"\n\n## Style Adaptation\n- Convert English emphasis to Korean particles and endings\n- Adapt English idiomatic expressions to Korean equivalents\n- Maintain character voice through consistent speech patterns\n- Use appropriate Korean discourse markers and fillers\n\n## Common Translation Patterns\n\n### Action Descriptions\nEnglish: \"He slowly walks towards the door\"\nKorean: \"그가 천천히 문쪽으로 걸어간다\"\n\n### Emotional Expressions\nEnglish: \"I'm so excited!\"\nKorean: \"정말 신나요!\" or \"너무 설레요!\"\n\n### Requests\nEnglish: \"Could you help me with this?\"\nKorean: \"이것 좀 도와 주시겠어요?\"\n\n# Error Prevention\n- Avoid awkward literal translations\n- Maintain proper particle usage\n- Keep honorific levels consistent\n- Preserve emotional nuances\n\n# Examples with Context\n\nFormal Business Setting:\n```\n[English]\nChecks the document carefully\n\"I apologize for the delay in processing your request.\"\n\n[Korean]\n서류를 세심히 확인한다\n\"요청하신 건의 처리가 지연되어 대단히 죄송합니다.\"\n```\n\nCasual Friend Setting:\n```\n[English]\nWaves excitedly\n\"Hey! I missed you so much!\"\n\n[Korean]\n신나서 손을 흔든다\n\"야! 너무 보고 싶었어!\"\n```\n\nRemember: Focus on creating natural Korean expressions that convey the same meaning and feeling as the original English text, while appropriately adapting to Korean cultural and linguistic norms.\n\n# Your Translation Task\n\nNow, following all the guidelines above, please translate the following English text into natural, fluent Korean. Consider the context, use appropriate honorific levels, and ensure natural expression; Here is it:";
 let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
@@ -34,8 +35,8 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.6.9'; 
-const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
+const CURRENT_VERSION = '1.7.0'; 
+const UPDATE_NOTIFICATIONS = 2;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
     
@@ -72,6 +73,11 @@ const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB 제한
 const CHUNK_SIZE = 1000; // 청크 크기 설정
 let isTranslating = false;
 let controller = null;  // AbortController를 위한 변수
+// 배치 번역 관련 변수
+let isBatchTranslating = false;
+let batchTranslationQueue = [];
+let batchTranslationResults = [];
+let batchTranslationAbort = false; // 번역 중단 플래그 추가
 
 // 모델 옵션 정의
 const modelOptions = [
@@ -689,7 +695,22 @@ const elements = {
     bookmarkButtons: document.querySelectorAll('.bookmark-btn'),
     deleteButtons: document.querySelectorAll('.delete-btn'),
     restoreButtons: document.querySelectorAll('.restore-btn'),
-    downloadTranslated: document.getElementById('downloadTranslated')
+    downloadTranslated: document.getElementById('downloadTranslated'),
+    // 용어집 관련 DOM 요소 추가
+    sourceTerm: document.getElementById('sourceTerm'),
+    targetTerm: document.getElementById('targetTerm'),
+    termContext: document.getElementById('termContext'),
+    addTerm: document.getElementById('addTerm'),
+    searchTerm: document.getElementById('searchTerm'),
+    filterContext: document.getElementById('filterContext'),
+    toggleGlossary: document.getElementById('toggleGlossary'),
+    glossaryContent: document.getElementById('glossaryContent'),
+    glossaryList: document.getElementById('glossaryList'),
+    exportGlossary: document.getElementById('exportGlossary'),
+    importGlossary: document.getElementById('importGlossary'),
+    glossaryFileInput: document.getElementById('glossaryFileInput'),
+    // 번역에 적용할 용어집 카테고리 선택 요소 추가
+    translationGlossaryContext: document.getElementById('translationGlossaryContext')
 };
 
 /*********************************************
@@ -1044,16 +1065,104 @@ function formatText(text) {
 //* 단어 규칙 관련
 // 단어 규칙 적용
 function applyWordRules(text) {
+    if (!text) return text;
+    
     let result = text;
-    wordRules.forEach(rule => {
-        try {
-            const regex = new RegExp(rule.source, 'gi');
-            result = result.replace(regex, rule.target);
-        } catch (error) {
-            console.error('Invalid regex in rule:', rule, error);
+    console.log('변환 전 원본 텍스트:', text);
+    
+    // 0. 하위 호환성을 위해 기존 wordRules 처리
+    if (wordRules && wordRules.length > 0) {
+        console.log('기존 단어 규칙 적용:', wordRules.length, '개');
+        wordRules.forEach(rule => {
+            try {
+                const regex = new RegExp(rule.source, 'gi');
+                result = result.replace(regex, rule.target);
+            } catch (error) {
+                console.error('단어 규칙 적용 오류:', rule, error);
+            }
+        });
+    }
+    
+    // 1. 선택된 카테고리 확인
+    const selectedContext = elements.translationGlossaryContext?.value || 'all';
+    console.log('적용할 용어집 카테고리:', selectedContext);
+    
+    // 2. 용어집 적용 (모든 용어집이 제대로 로드되었는지 확인)
+    console.log('용어집 전체 개수:', glossaryTerms.length);
+    
+    // 카테고리로 필터링
+    let termsToApply = [];
+    
+    // 먼저 '모든 맥락(all)' 카테고리에 해당하는 용어를 추가
+    const allContextTerms = glossaryTerms.filter(term => term.context === 'all');
+    termsToApply = [...allContextTerms];
+    console.log(`'모든 맥락' 카테고리의 용어 ${allContextTerms.length}개 추가`);
+    
+    // 선택된 특정 카테고리가 있으면 그 용어들도 추가
+    if (selectedContext !== 'all') {
+        const specificTerms = glossaryTerms.filter(term => term.context === selectedContext);
+        termsToApply = [...termsToApply, ...specificTerms];
+        console.log(`카테고리 '${selectedContext}'의 용어 ${specificTerms.length}개 추가`);
+    } else {
+        // '모든 맥락'이 선택되었을 경우 모든 용어 적용
+        termsToApply = glossaryTerms;
+        console.log(`모든 카테고리 적용: ${termsToApply.length}개 용어`);
+    }
+    
+    // 적용할 용어 없으면 원본 반환
+    if (!termsToApply.length) {
+        console.log('적용할 용어가 없습니다.');
+        return result;
+    }
+    
+    // 3. 길이순 정렬 (길이가 긴 용어부터 치환)
+    termsToApply = termsToApply.sort((a, b) => b.source.length - a.source.length);
+    
+    // 4. 일괄 치환 (정규식 없이 간단한 방식)
+    for (const term of termsToApply) {
+        // 확실한 체크: 원본 텍스트에 용어가 포함되어 있는지 확인
+        if (result.includes(term.source)) {
+            console.log(`용어 발견: '${term.source}' -> '${term.target}' (카테고리: ${term.context || '일반'})`);
+            
+            // 단순 전역 치환 방식
+            let startPos = 0;
+            let tempResult = '';
+            let changed = false;
+            
+            // 모든 일치 항목 찾기
+            while (startPos < result.length) {
+                const foundPos = result.indexOf(term.source, startPos);
+                if (foundPos === -1) {
+                    // 더 이상 일치 항목이 없으면 나머지 텍스트 추가하고 종료
+                    tempResult += result.substring(startPos);
+                    break;
+                }
+                
+                // 일치 항목 앞의 텍스트 추가
+                tempResult += result.substring(startPos, foundPos);
+                
+                // 용어 치환
+                tempResult += term.target;
+                changed = true;
+                
+                // 다음 검색 위치 설정
+                startPos = foundPos + term.source.length;
+            }
+            
+            if (changed) {
+                result = tempResult;
+                console.log(`용어 '${term.source}'를 '${term.target}'로 변환함 (카테고리: ${term.context || '일반'})`);
+            }
         }
-    });
+    }
+    
+    console.log('변환 후 텍스트:', result);
     return result;
+}
+
+// 정규식 특수문자 이스케이프 함수
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // 단어 규칙 표시
@@ -1690,33 +1799,78 @@ function formattedResult() {
 //* 단어 규칙 관리
 // 단어 규칙 섹션 토글
 function toggleRules() {
-    const rulesContent = document.getElementById('rulesContent');
-    const toggleBtn = document.getElementById('toggleRules');
+    toggleGlossary();
+}
+
+// 용어집 섹션 토글
+function toggleGlossary() {
+    if (!elements.glossaryContent || !elements.toggleGlossary) return;
     
-    if (rulesContent.style.display === 'none' || rulesContent.style.display === '') {
-        rulesContent.style.display = 'block';
-        toggleBtn.textContent = '▼';
+    if (elements.glossaryContent.style.display === 'none' || elements.glossaryContent.style.display === '') {
+        elements.glossaryContent.style.display = 'block';
+        elements.toggleGlossary.innerHTML = '<i class="fas fa-chevron-up"></i>';
     } else {
-        rulesContent.style.display = 'none';
-        toggleBtn.textContent = '▶';
+        elements.glossaryContent.style.display = 'none';
+        elements.toggleGlossary.innerHTML = '<i class="fas fa-chevron-down"></i>';
     }
 }
 
-// 단어 규칙 추가
-function addWordRule(sourceWord, targetWord) {
-    const rule = { source: sourceWord, target: targetWord };
-    wordRules.push(rule);
-    localStorage.setItem('wordRules', JSON.stringify(wordRules));
-    displayWordRules();
-    showToast('단어 변환 규칙이 추가되었습니다.');
+// 용어 추가 함수
+function addGlossaryTerm(sourceTerm, targetTerm, context = 'all') {
+    if (!sourceTerm || !targetTerm) {
+        showToast('원본 용어와 번역된 용어를 모두 입력해주세요.', 'error');
+        return false;
+    }
+    
+    // 기존 용어 확인 및 업데이트
+    const existingIndex = glossaryTerms.findIndex(term => 
+        term.source.toLowerCase() === sourceTerm.toLowerCase() && 
+        term.context === context
+    );
+    
+    if (existingIndex !== -1) {
+        glossaryTerms[existingIndex].target = targetTerm;
+        showToast('기존 용어가 업데이트되었습니다.');
+    } else {
+        const term = { 
+            source: sourceTerm, 
+            target: targetTerm, 
+            context: context,
+            timestamp: Date.now()
+        };
+        
+        glossaryTerms.push(term);
+        showToast('새 용어가 추가되었습니다.');
+    }
+    
+    localStorage.setItem('glossaryTerms', JSON.stringify(glossaryTerms));
+    displayGlossaryTerms();
+    return true;
 }
 
-// 단어 규칙 삭제
-function removeRule(index) {
-    wordRules.splice(index, 1);
-    localStorage.setItem('wordRules', JSON.stringify(wordRules));
-    displayWordRules();
-    showToast('단어 변환 규칙이 삭제되었습니다.');
+// 용어 삭제 함수
+function removeGlossaryTerm(index) {
+    glossaryTerms.splice(index, 1);
+    localStorage.setItem('glossaryTerms', JSON.stringify(glossaryTerms));
+    displayGlossaryTerms();
+    showToast('용어가 삭제되었습니다.');
+}
+
+// 용어 수정 함수
+function editGlossaryTerm(index) {
+    const term = glossaryTerms[index];
+    if (!term) return;
+    
+    // 현재 값을 입력 필드에 설정
+    document.getElementById('sourceTerm').value = term.source;
+    document.getElementById('targetTerm').value = term.target;
+    document.getElementById('termContext').value = term.context || 'all';
+    
+    // 해당 항목 삭제
+    removeGlossaryTerm(index);
+    
+    // 입력 필드에 포커스
+    document.getElementById('sourceTerm').focus();
 }
 
 /*********************************************
@@ -1805,7 +1959,9 @@ async function translateText() {
                 return match.replace(/^```|```$/g, '').trim();
             });
             
-            // 단어 규칙 적용
+            // 용어집 적용
+            console.log('카테고리 선택:', elements.translationGlossaryContext ? elements.translationGlossaryContext.value : 'elements.translationGlossaryContext가 없음');
+            console.log('용어집 개수:', glossaryTerms ? glossaryTerms.length : 0);
             translatedText = applyWordRules(translatedText);
         
             // 번역 결과 저장
@@ -2560,7 +2716,9 @@ function setupShortcuts() {
     // 히스토리 토글 이벤트 리스너
     elements.toggleHistory?.addEventListener('click', () => {
         elements.historyContent.classList.toggle('collapsed');
-        elements.toggleHistory.textContent = elements.historyContent.classList.contains('collapsed') ? '▶' : '▼ ';
+        elements.toggleHistory.innerHTML = elements.historyContent.classList.contains('collapsed') 
+            ? '<i class="fas fa-chevron-down"></i>' 
+            : '<i class="fas fa-chevron-up"></i>';
     });
 
     // 단축키 모달 관련
@@ -2648,6 +2806,52 @@ function setupEventListeners() {
         localStorage.setItem('lastTranslation', e.target.value);
         updateCharacterCount(e.target, 'translated');
     });
+
+    // 용어집 관련 이벤트 리스너
+    document.getElementById('toggleGlossary')?.addEventListener('click', toggleGlossary);
+    // document.getElementById('addTerm')?.addEventListener('click', () => {
+    //     const sourceTerm = document.getElementById('sourceTerm')?.value.trim();
+    //     const targetTerm = document.getElementById('targetTerm')?.value.trim();
+    //     const context = document.getElementById('termContext')?.value;
+    //     
+    //     if (sourceTerm && targetTerm) {
+    //         addGlossaryTerm(sourceTerm, targetTerm, context);
+    //         document.getElementById('sourceTerm').value = '';
+    //         document.getElementById('targetTerm').value = '';
+    //     } else {
+    //         showToast('원본 용어와 번역된 용어를 모두 입력해주세요.', 'error');
+    //     }
+    // });
+    
+    document.getElementById('searchTerm')?.addEventListener('input', debounce((e) => {
+        const searchTerm = e.target.value.trim();
+        const contextFilter = document.getElementById('filterContext')?.value || 'all';
+        displayGlossaryTerms(searchTerm, contextFilter);
+    }, 300));
+    
+    document.getElementById('filterContext')?.addEventListener('change', (e) => {
+        const contextFilter = e.target.value;
+        const searchTerm = document.getElementById('searchTerm')?.value.trim() || '';
+        displayGlossaryTerms(searchTerm, contextFilter);
+    });
+    
+    document.getElementById('exportGlossary')?.addEventListener('click', exportGlossary);
+    
+    document.getElementById('importGlossary')?.addEventListener('click', () => {
+        document.getElementById('glossaryFileInput')?.click();
+    });
+    
+    document.getElementById('glossaryFileInput')?.addEventListener('change', (e) => {
+        importGlossary(e.target.files[0]);
+        e.target.value = '';
+    });
+    
+    // 배치 번역 관련 이벤트 리스너
+    document.getElementById('toggleBatch')?.addEventListener('click', toggleBatch);
+    document.getElementById('startBatchTranslation')?.addEventListener('click', startBatchTranslation);
+    document.getElementById('copyAllResults')?.addEventListener('click', copyAllBatchResults);
+    document.getElementById('downloadResults')?.addEventListener('click', downloadBatchResults);
+    document.getElementById('clearBatchResults')?.addEventListener('click', clearBatchResults);
 }
 
     elements.showShortcutsBtn?.addEventListener('click', () => {
@@ -2715,7 +2919,7 @@ function initialize() {
     setupShortcuts();
     setupPasswordToggles();
     setupDataManagement();
-
+    
     // 3. API 키 및 기본 설정 복원
     restoreApiKeys();
     restoreSettings();
@@ -2723,11 +2927,115 @@ function initialize() {
     // 4. 번역 관련 데이터 복원
     restoreTranslationData();
     
-    // 5. 단어 규칙 초기화
-    initializeWordRules();
+    // 5. 단어 규칙 초기화 대신 용어집 초기화
+    initializeGlossary();
 
     // 6. 히스토리 목록 초기 표시
     updateHistoryList();
+}
+
+// 용어집 초기화 함수
+function initializeGlossary() {
+    // 기존 단어 규칙 로드 (하위 호환성)
+    const savedWordRules = localStorage.getItem('wordRules');
+    if (savedWordRules) {
+        try {
+            wordRules = JSON.parse(savedWordRules);
+        } catch (e) {
+            console.error('단어 규칙 로드 오류:', e);
+            wordRules = [];
+        }
+    }
+    
+    // 용어집 로드
+    const savedGlossaryTerms = localStorage.getItem('glossaryTerms');
+    if (savedGlossaryTerms) {
+        try {
+            glossaryTerms = JSON.parse(savedGlossaryTerms);
+            console.log('용어집 로드 완료:', glossaryTerms.length, '개의 용어 로드됨');
+        } catch (e) {
+            console.error('용어집 로드 오류:', e);
+            glossaryTerms = [];
+        }
+    } else if (wordRules.length > 0) {
+        // 기존 wordRules에서 glossaryTerms로 마이그레이션
+        glossaryTerms = wordRules.map(rule => ({
+            source: rule.source,
+            target: rule.target,
+            context: 'all',
+            timestamp: Date.now()
+        }));
+        localStorage.setItem('glossaryTerms', JSON.stringify(glossaryTerms));
+        console.log('기존 단어 규칙에서 마이그레이션 완료');
+    }
+    
+    // 번역에 적용할 용어집 카테고리 선택 요소의 이벤트 리스너 등록
+    if (elements.translationGlossaryContext) {
+        console.log('translationGlossaryContext 요소 찾음:', elements.translationGlossaryContext);
+        elements.translationGlossaryContext.addEventListener('change', function() {
+            console.log('용어집 카테고리 변경:', this.value);
+        });
+    } else {
+        console.error('translationGlossaryContext 요소를 찾을 수 없음');
+    }
+    
+    // 용어집 UI 이벤트 리스너 등록
+    if (elements.addTerm) {
+        elements.addTerm.addEventListener('click', function() {
+            const sourceTerm = elements.sourceTerm.value.trim();
+            const targetTerm = elements.targetTerm.value.trim();
+            const context = elements.termContext.value;
+            
+            // 추가 성공 시만 입력 필드 초기화
+            if (addGlossaryTerm(sourceTerm, targetTerm, context)) {
+                elements.sourceTerm.value = '';
+                elements.targetTerm.value = '';
+                // 새 용어가 추가된 후 목록 갱신
+                displayGlossaryTerms(elements.searchTerm.value, elements.filterContext.value);
+            }
+        });
+    }
+    
+    if (elements.searchTerm) {
+        elements.searchTerm.addEventListener('input', function() {
+            displayGlossaryTerms(this.value, elements.filterContext.value);
+        });
+    }
+    
+    if (elements.filterContext) {
+        elements.filterContext.addEventListener('change', function() {
+            displayGlossaryTerms(elements.searchTerm.value, this.value);
+        });
+    }
+    
+    if (elements.toggleGlossary) {
+        elements.toggleGlossary.addEventListener('click', toggleGlossary);
+    }
+    
+    if (elements.exportGlossary) {
+        elements.exportGlossary.addEventListener('click', exportGlossary);
+    }
+    
+    if (elements.importGlossary && elements.glossaryFileInput) {
+        elements.importGlossary.addEventListener('click', function() {
+            elements.glossaryFileInput.click();
+        });
+        
+        elements.glossaryFileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                importGlossary(this.files[0]);
+                this.value = ''; // 파일 선택 초기화
+            }
+        });
+    }
+    
+    // 용어집 기본 상태 설정 (닫힌 상태)
+    if (elements.glossaryContent) {
+        elements.glossaryContent.style.display = 'none';
+    }
+    
+    // 용어집 표시
+    displayGlossaryTerms();
 }
 
 /*********************************************
@@ -2758,4 +3066,663 @@ function downloadTranslatedText() {
     URL.revokeObjectURL(url);
     
     showToast('번역 결과가 다운로드되었습니다.', 'success');
+}
+
+// 용어집 내보내기 함수
+function exportGlossary() {
+    if (glossaryTerms.length === 0) {
+        showToast('내보낼 용어가 없습니다.', 'error');
+        return;
+    }
+    
+    const exportData = {
+        version: '1.0',
+        timestamp: Date.now(),
+        terms: glossaryTerms
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `glossary_export_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('용어집이 성공적으로 내보내졌습니다.');
+}
+
+// 용어집 가져오기 함수
+function importGlossary(file) {
+    if (!file) {
+        showToast('파일을 선택해주세요.', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            
+            if (data.terms && Array.isArray(data.terms)) {
+                // 기존 용어집과 병합
+                const newTerms = data.terms.filter(newTerm => {
+                    return !glossaryTerms.some(existingTerm => 
+                        existingTerm.source === newTerm.source && 
+                        existingTerm.context === newTerm.context
+                    );
+                });
+                
+                glossaryTerms = [...glossaryTerms, ...newTerms];
+                localStorage.setItem('glossaryTerms', JSON.stringify(glossaryTerms));
+                displayGlossaryTerms();
+                
+                showToast(`성공적으로 ${newTerms.length}개의 새 용어를 가져왔습니다.`);
+            } else {
+                throw new Error('유효하지 않은 용어집 파일 형식입니다.');
+            }
+        } catch (error) {
+            console.error('용어집 가져오기 오류:', error);
+            showToast('용어집 가져오기에 실패했습니다: ' + error.message, 'error');
+        }
+    };
+    
+    reader.onerror = function() {
+        showToast('파일 읽기 오류가 발생했습니다.', 'error');
+    };
+    
+    reader.readAsText(file);
+}
+
+// 배치 번역 관련 함수
+// 배치 섹션 토글 함수
+function toggleBatch() {
+    const toggleBtn = document.getElementById('toggleBatch');
+    const batchContent = document.getElementById('batchContent');
+    
+    if (batchContent.style.display === 'none' || batchContent.style.display === '') {
+        batchContent.style.display = 'block';
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    } else {
+        batchContent.style.display = 'none';
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+    }
+}
+
+// 배치 번역 시작 함수
+async function startBatchTranslation() {
+    console.log("배치 번역 시작 함수 호출됨");
+    
+    // 이미 진행 중이면 중복 실행 방지
+    if (isBatchTranslating) {
+        console.log("이미 배치 번역 진행 중");
+        showToast('이미 배치 번역이 진행 중입니다.', 'error');
+        return;
+    }
+    
+    const batchInput = document.getElementById('batchInput').value.trim();
+    if (!batchInput) {
+        showToast('번역할 텍스트를 입력해주세요.', 'error');
+        return;
+    }
+    
+    const useSeparator = document.getElementById('useSeparator').checked;
+    const useEmptyLine = document.getElementById('useEmptyLine').checked;
+    const useTripleAt = document.getElementById('useTripleAt').checked;
+    const applyGlossaryOption = document.getElementById('applyGlossary').checked;
+    const saveToHistoryOption = document.getElementById('saveToHistory').checked;
+    
+    // 입력 텍스트를 배치로 분할
+    let textItems = [];
+    
+    if (useSeparator) {
+        if (useEmptyLine) {
+            // 빈 줄로 구분된 항목들
+            const sections = batchInput.split(/\n\s*\n/);
+            textItems = sections.filter(section => section.trim());
+        } else if (useTripleAt) {
+            // @@@ 구분자로 구분된 항목들
+            const sections = batchInput.split('@@@');
+            textItems = sections.filter(section => section.trim());
+        }
+    } else {
+        // 각 줄을 개별 항목으로 처리
+        textItems = batchInput.split('\n').filter(line => line.trim());
+    }
+    
+    if (textItems.length === 0) {
+        showToast('번역할 텍스트가 없습니다.', 'error');
+        return;
+    }
+    
+    // 번역 대기열 설정
+    batchTranslationQueue = [...textItems];
+    batchTranslationAbort = false; // 중단 플래그 초기화
+    
+    // 상태 플래그 설정 (중요: 이 시점에서 true로 설정)
+    isBatchTranslating = true;
+    
+    // 진행 상태 초기화
+    updateBatchProgress(0, textItems.length);
+    
+    // 배치 번역 UI 준비
+    const startBtn = document.getElementById('startBatchTranslation');
+    if (startBtn) {
+        startBtn.textContent = '번역 중지';
+        // 이벤트 핸들러 제거 후 새로 설정
+        startBtn.removeEventListener('click', startBatchTranslation);
+        startBtn.addEventListener('click', cancelBatchTranslation);
+    }
+    
+    let successCount = 0;
+    
+    try {
+        console.log(`배치 번역 시작: 총 ${textItems.length}개 항목`);
+        
+        for (let i = 0; i < textItems.length; i++) {
+            // 중단 요청 확인
+            if (batchTranslationAbort) {
+                console.log('사용자 요청으로 배치 번역 중단');
+                break;
+            }
+            
+            try {
+                console.log(`항목 ${i+1}/${textItems.length} 번역 중...`);
+                const sourceText = textItems[i];
+                
+                // 번역 실행
+                let translatedText = await translateSingleBatchItem(sourceText);
+                
+                // 중단 요청 재확인 (번역 후)
+                if (batchTranslationAbort) {
+                    console.log('번역 후 중단 확인됨, 루프 종료');
+                    break;
+                }
+                
+                // 용어집 적용
+                if (applyGlossaryOption && translatedText) {
+                    translatedText = applyWordRules(translatedText);
+                }
+                
+                // 결과 추가 및 표시
+                batchTranslationResults.push({
+                    source: sourceText,
+                    translated: translatedText
+                });
+                
+                // 히스토리에 저장
+                if (saveToHistoryOption) {
+                    saveToHistory(sourceText, translatedText, selectedModel);
+                }
+                
+                // 진행 상황 업데이트
+                successCount++;
+                updateBatchProgress(i + 1, textItems.length);
+                displayBatchResults();
+                console.log(`항목 ${i+1} 번역 완료, 진행률: ${i+1}/${textItems.length}`);
+                
+                // 서버 부하 방지를 위한 딜레이
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (error) {
+                console.error(`항목 ${i+1} 번역 오류:`, error);
+                // 개별 항목 오류 시에도 계속 진행
+                batchTranslationResults.push({
+                    source: textItems[i],
+                    translated: `[번역 오류: ${error.message}]`
+                });
+                updateBatchProgress(i + 1, textItems.length);
+                displayBatchResults();
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+        
+        if (!batchTranslationAbort) {
+            showToast(`배치 번역이 완료되었습니다. (${successCount}/${textItems.length} 성공)`);
+            console.log('배치 번역 성공적으로 완료됨');
+        }
+    } catch (error) {
+        console.error('배치 번역 전체 오류:', error);
+        showToast('배치 번역 중 오류가 발생했습니다: ' + error.message, 'error');
+    } finally {
+        // 번역 상태 초기화
+        console.log('배치 번역 상태 초기화...');
+        resetBatchTranslationState();
+    }
+}
+
+// 배치 번역 취소 함수
+function cancelBatchTranslation() {
+    console.log('배치 번역 취소 요청됨');
+    batchTranslationAbort = true; // 중단 플래그 설정
+    showToast('배치 번역이 취소되었습니다.');
+    
+    // 즉시 UI 업데이트
+    resetBatchTranslationState();
+}
+
+// 배치 번역 상태 초기화 함수 (공통 로직 분리)
+function resetBatchTranslationState() {
+    console.log('배치 번역 상태 초기화 중...');
+    // 플래그 초기화
+    isBatchTranslating = false;
+    batchTranslationAbort = false;
+    
+    // 진행 바 초기화 (결과는 유지)
+    updateBatchProgress(0, 0);
+    
+    // UI 업데이트
+    const startBtn = document.getElementById('startBatchTranslation');
+    if (startBtn) {
+        startBtn.textContent = '배치 번역 시작';
+        // 이벤트 핸들러 제거 후 새로 설정
+        startBtn.removeEventListener('click', cancelBatchTranslation);
+        startBtn.addEventListener('click', startBatchTranslation);
+    }
+}
+
+// 배치 진행 상황 업데이트
+function updateBatchProgress(current, total) {
+    const progressFill = document.getElementById('batchProgressFill');
+    const progressText = document.getElementById('batchProgressText');
+    
+    if (!progressFill || !progressText) return;
+    
+    const percentage = total > 0 ? (current / total) * 100 : 0;
+    progressFill.style.width = `${percentage}%`;
+    progressText.textContent = `${current}/${total}`;
+}
+
+// 배치 결과 표시 함수
+function displayBatchResults() {
+    const resultList = document.getElementById('batchResultList');
+    if (!resultList) return;
+    
+    // 기존 결과를 초기화하는 대신, 없는 결과만 추가
+    const existingResults = resultList.querySelectorAll('.batch-result-item');
+    const existingCount = existingResults.length;
+    
+    console.log(`기존 결과 항목: ${existingCount}, 전체 결과: ${batchTranslationResults.length}`);
+    
+    // HTML 이스케이프 함수
+    const escapeHTML = (text) => {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
+    // 코드 블록 마커 제거 함수
+    const removeCodeBlockMarkers = (text) => {
+        if (!text) return '';
+        // 텍스트에서 ``` 마커만 제거 (내용은 유지)
+        return text.replace(/```/g, '');
+    };
+    
+    // 새로운 결과만 추가
+    for (let i = existingCount; i < batchTranslationResults.length; i++) {
+        const result = batchTranslationResults[i];
+        const resultItem = document.createElement('div');
+        resultItem.className = 'batch-result-item';
+        
+        // 코드 블록 마커 제거 후 HTML 이스케이프
+        const cleanedText = removeCodeBlockMarkers(result.translated);
+        
+        resultItem.innerHTML = `
+            <div class="batch-source">${escapeHTML(result.source)}</div>
+            <div class="batch-translated">${escapeHTML(cleanedText)}</div>
+            <div class="batch-item-actions">
+                <button class="copy-item-btn btn-small" data-index="${i}">
+                    <i class="fas fa-copy"></i> 복사
+                </button>
+            </div>
+        `;
+        
+        resultList.appendChild(resultItem);
+    }
+    
+    // 복사 버튼에 이벤트 리스너 추가 (모든 버튼에 적용)
+    document.querySelectorAll('.copy-item-btn').forEach(button => {
+        // 이미 이벤트가 등록된 버튼은 건너뛰기
+        if (button.hasEventListener) return;
+        
+        // 이벤트 리스너 등록 및 표시
+        button.hasEventListener = true;
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            if (isNaN(index) || index < 0 || index >= batchTranslationResults.length) return;
+            
+            // 복사할 때도 코드 블록 마커 제거
+            const textToCopy = removeCodeBlockMarkers(batchTranslationResults[index].translated);
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => showToast('번역 결과가 복사되었습니다.'))
+                .catch(err => {
+                    console.error('클립보드 복사 오류:', err);
+                    showToast('결과 복사에 실패했습니다.', 'error');
+                });
+        });
+    });
+}
+
+// 배치 결과 초기화 함수
+function clearBatchResults() {
+    if (batchTranslationResults.length === 0) {
+        showToast('초기화할 결과가 없습니다.', 'info');
+        return;
+    }
+    
+    batchTranslationResults = [];
+    const resultList = document.getElementById('batchResultList');
+    if (resultList) {
+        resultList.innerHTML = '';
+    }
+    
+    // 진행 바 초기화
+    updateBatchProgress(0, 0);
+    showToast('배치 번역 결과가 초기화되었습니다.');
+}
+
+// 단일 배치 항목 번역 함수
+async function translateSingleBatchItem(sourceText) {
+    if (!sourceText.trim()) return '';
+    
+    const modelProvider = getModelProvider(selectedModel);
+    const apiKey = getApiKey(modelProvider);
+    
+    if (!apiKey) {
+        throw new Error(`선택한 모델(${modelProvider})의 API 키가 없습니다.`);
+    }
+    
+    try {
+        let translatedText;
+        switch(modelProvider) {
+            case 'gemini':
+                translatedText = await translateWithGemini(sourceText, apiKey);
+                break;
+            case 'openai':
+                translatedText = await translateWithOpenAI(sourceText, apiKey);
+                break;
+            case 'anthropic':
+                translatedText = await translateWithAnthropic(sourceText, apiKey);
+                break;
+            case 'cohere':
+                translatedText = await translateWithCohere(sourceText, apiKey);
+                break;
+            default:
+                throw new Error('지원하지 않는 모델입니다.');
+        }
+        
+        return translatedText || '';
+    } catch (error) {
+        console.error('항목 번역 오류:', error);
+        return `[번역 오류: ${error.message}]`;
+    }
+}
+
+// 배치 번역 취소 함수
+function cancelBatchTranslation() {
+    console.log('배치 번역 취소 요청됨');
+    batchTranslationAbort = true; // 중단 플래그 설정
+    showToast('배치 번역이 취소되었습니다.');
+    
+    // 즉시 UI 업데이트
+    resetBatchTranslationState();
+}
+
+// 배치 진행 상황 업데이트
+function updateBatchProgress(current, total) {
+    const progressFill = document.getElementById('batchProgressFill');
+    const progressText = document.getElementById('batchProgressText');
+    
+    if (!progressFill || !progressText) return;
+    
+    const percentage = total > 0 ? (current / total) * 100 : 0;
+    progressFill.style.width = `${percentage}%`;
+    progressText.textContent = `${current}/${total}`;
+}
+
+// 배치 결과 표시 함수
+function displayBatchResults() {
+    const resultList = document.getElementById('batchResultList');
+    if (!resultList) return;
+    
+    // 기존 결과를 초기화하는 대신, 없는 결과만 추가
+    const existingResults = resultList.querySelectorAll('.batch-result-item');
+    const existingCount = existingResults.length;
+    
+    console.log(`기존 결과 항목: ${existingCount}, 전체 결과: ${batchTranslationResults.length}`);
+    
+    // HTML 이스케이프 함수
+    const escapeHTML = (text) => {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
+    // 코드 블록 마커 제거 함수
+    const removeCodeBlockMarkers = (text) => {
+        if (!text) return '';
+        // 텍스트에서 ``` 마커만 제거 (내용은 유지)
+        return text.replace(/```/g, '');
+    };
+    
+    // 새로운 결과만 추가
+    for (let i = existingCount; i < batchTranslationResults.length; i++) {
+        const result = batchTranslationResults[i];
+        const resultItem = document.createElement('div');
+        resultItem.className = 'batch-result-item';
+        
+        // 코드 블록 마커 제거 후 HTML 이스케이프
+        const cleanedText = removeCodeBlockMarkers(result.translated);
+        
+        resultItem.innerHTML = `
+            <div class="batch-source">${escapeHTML(result.source)}</div>
+            <div class="batch-translated">${escapeHTML(cleanedText)}</div>
+            <div class="batch-item-actions">
+                <button class="copy-item-btn btn-small" data-index="${i}">
+                    <i class="fas fa-copy"></i> 복사
+                </button>
+            </div>
+        `;
+        
+        resultList.appendChild(resultItem);
+    }
+    
+    // 복사 버튼에 이벤트 리스너 추가 (모든 버튼에 적용)
+    document.querySelectorAll('.copy-item-btn').forEach(button => {
+        // 이미 이벤트가 등록된 버튼은 건너뛰기
+        if (button.hasEventListener) return;
+        
+        // 이벤트 리스너 등록 및 표시
+        button.hasEventListener = true;
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            if (isNaN(index) || index < 0 || index >= batchTranslationResults.length) return;
+            
+            // 복사할 때도 코드 블록 마커 제거
+            const textToCopy = removeCodeBlockMarkers(batchTranslationResults[index].translated);
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => showToast('번역 결과가 복사되었습니다.'))
+                .catch(err => {
+                    console.error('클립보드 복사 오류:', err);
+                    showToast('결과 복사에 실패했습니다.', 'error');
+                });
+        });
+    });
+}
+
+// 모든 배치 결과 복사
+function copyAllBatchResults() {
+    if (batchTranslationResults.length === 0) {
+        showToast('복사할 결과가 없습니다.', 'error');
+        return;
+    }
+    
+    const combinedText = batchTranslationResults
+        .map(result => {
+            // 코드 블록 마커 제거
+            return result.translated.replace(/```/g, '');
+        })
+        .join('\n\n');
+        
+    navigator.clipboard.writeText(combinedText)
+        .then(() => showToast('모든 번역 결과가 복사되었습니다.'))
+        .catch(err => {
+            console.error('클립보드 복사 오류:', err);
+            showToast('결과 복사에 실패했습니다.', 'error');
+        });
+}
+
+// 배치 결과 다운로드
+function downloadBatchResults() {
+    if (batchTranslationResults.length === 0) {
+        showToast('다운로드할 결과가 없습니다.', 'error');
+        return;
+    }
+    
+    // 다운로드 형식: 원문과 번역 텍스트 모두 포함
+    let content = '';
+    batchTranslationResults.forEach((result, index) => {
+        // 코드 블록 마커 제거
+        const cleanedText = result.translated.replace(/```/g, '');
+        
+        content += `[원문 ${index + 1}]\n${result.source}\n\n`;
+        content += `[번역 ${index + 1}]\n${cleanedText}\n\n`;
+        content += '-'.repeat(40) + '\n\n';
+    });
+    
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `batch_translation_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('배치 번역 결과가 다운로드되었습니다.');
+}
+
+// 데이터 초기화 함수
+function initializeData() {
+    // ... existing code ...
+    
+    // 기존 단어 규칙 로드 (하위 호환성)
+    const savedWordRules = localStorage.getItem('wordRules');
+    if (savedWordRules) {
+        try {
+            wordRules = JSON.parse(savedWordRules);
+        } catch (e) {
+            console.error('단어 규칙 로드 오류:', e);
+            wordRules = [];
+        }
+    }
+    
+    // 용어집 로드
+    const savedGlossaryTerms = localStorage.getItem('glossaryTerms');
+    if (savedGlossaryTerms) {
+        try {
+            glossaryTerms = JSON.parse(savedGlossaryTerms);
+        } catch (e) {
+            console.error('용어집 로드 오류:', e);
+            glossaryTerms = [];
+        }
+    } else if (wordRules.length > 0) {
+        // 기존 wordRules에서 glossaryTerms로 마이그레이션
+        glossaryTerms = wordRules.map(rule => ({
+            source: rule.source,
+            target: rule.target,
+            context: 'all',
+            timestamp: Date.now()
+        }));
+        localStorage.setItem('glossaryTerms', JSON.stringify(glossaryTerms));
+    }
+    
+    // 용어집 표시
+    displayGlossaryTerms();
+}
+
+// 용어집 표시 함수
+function displayGlossaryTerms(searchTerm = '', contextFilter = 'all') {
+    if (!elements.glossaryList) return;
+    
+    elements.glossaryList.innerHTML = '';
+    
+    let filteredTerms = [...glossaryTerms];
+    
+    // 맥락 필터링
+    if (contextFilter !== 'all') {
+        filteredTerms = filteredTerms.filter(term => term.context === contextFilter);
+    }
+    
+    // 검색어 필터링
+    if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        filteredTerms = filteredTerms.filter(term => 
+            term.source.toLowerCase().includes(searchLower) || 
+            term.target.toLowerCase().includes(searchLower)
+        );
+    }
+    
+    // 최신순으로 정렬
+    filteredTerms.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    
+    if (filteredTerms.length === 0) {
+        elements.glossaryList.innerHTML = '<div class="glossary-empty">등록된 용어가 없습니다.</div>';
+        return;
+    }
+    
+    // 맥락 라벨 매핑
+    const contextLabels = {
+        'all': '모든 맥락',
+        'general': '일반',
+        'tech': '기술/IT',
+        'med': '의학',
+        'law': '법률',
+        'biz': '비즈니스',
+        'acad': '학술'
+    };
+    
+    filteredTerms.forEach((term, index) => {
+        const termElement = document.createElement('div');
+        termElement.className = 'glossary-item';
+        
+        // HTML 이스케이프 함수
+        const escapeHTML = (text) => {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+        
+        termElement.innerHTML = `
+            <div class="term-info">
+                <div class="term-pair">
+                    <span class="source-term">${escapeHTML(term.source)}</span>
+                    <span class="arrow">→</span>
+                    <span class="target-term">${escapeHTML(term.target)}</span>
+                </div>
+                <div class="item-bottom-row">
+                    <span class="term-context-tag">${contextLabels[term.context] || term.context || '일반'}</span>
+                    <div class="term-actions">
+                        <button class="edit-term" onclick="editGlossaryTerm(${glossaryTerms.indexOf(term)})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-term" onclick="removeGlossaryTerm(${glossaryTerms.indexOf(term)})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        elements.glossaryList.appendChild(termElement);
+    });
 }

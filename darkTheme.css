@@ -435,3 +435,164 @@
 [data-theme="dark"] .clear-btn:hover {
     color: #ffffff;
 }
+
+/* 배치 번역 섹션 스타일 */
+[data-theme="dark"] .batch-translation-section {
+    background-color: #363636;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .batch-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .batch-input textarea {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .batch-options {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .batch-progress {
+    border-color: #404040;
+}
+
+[data-theme="dark"] .progress-bar {
+    background-color: #2d2d2d;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .progress-fill {
+    background-color: #4285f4;
+}
+
+[data-theme="dark"] .progress-text {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .batch-result-item {
+    background-color: #2d2d2d;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .batch-source,
+[data-theme="dark"] .batch-translated {
+    color: #ffffff;
+    background-color: #363636;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .batch-result-actions button {
+    background-color: #4285f4;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .batch-result-actions button:hover {
+    background-color: #5294ff;
+}
+
+[data-theme="dark"] .batch-item-actions button {
+    background-color: #4285f4;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .batch-item-actions button:hover {
+    background-color: #5294ff;
+}
+
+/* 용어집 섹션 스타일 - 다크 테마 */
+[data-theme="dark"] .glossary-section {
+    background-color: #363636;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .glossary-section h3 {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .glossary-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .glossary-input input,
+[data-theme="dark"] .glossary-search input {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .term-context,
+[data-theme="dark"] .filter-context,
+[data-theme="dark"] .glossary-select {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .glossary-list {
+    background-color: #2d2d2d;
+}
+
+[data-theme="dark"] .glossary-item {
+    background-color: #363636;
+    border-color: #4a4a4a;
+}
+
+[data-theme="dark"] .glossary-empty {
+    color: #aaaaaa;
+}
+
+[data-theme="dark"] .term-info {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .term-pair {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .source-term,
+[data-theme="dark"] .target-term {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .arrow {
+    color: #4285f4;
+}
+
+[data-theme="dark"] .term-context-tag {
+    background-color: #1a3c6d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .term-actions button {
+    background-color: transparent;
+    color: #aaaaaa;
+}
+
+[data-theme="dark"] .term-actions button:hover {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .glossary-category-section {
+    background-color: #363636;
+    color: #ffffff;
+    border-color: #404040;
+}
+
+[data-theme="dark"] .glossary-category-section label {
+    color: #ffffff;
+}
+
+/* 추가적인 컨테이너 스타일 */
+[data-theme="dark"] .item-bottom-row {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}

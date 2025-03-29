@@ -5,6 +5,242 @@
     font-style: normal;
 }
 
+@font-face {
+  font-family: "Pretendard-Regular";
+  font-weight: 400;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SUIT-Regular";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Chosunilbo_myungjo";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ChosunSm";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.1/ChosunSm.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ChosunGu";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ChosunSg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunSg.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NotoSerifKR";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NotoSerifKR.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GangwonEdu_OTFBoldA";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MaruBuriSemiBold";
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.eot?#iefix)
+      format("embedded-opentype"),
+    url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.woff2)
+      format("woff2"),
+    url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.woff)
+      format("woff"),
+    url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.ttf)
+      format("truetype");
+}
+
+@font-face {
+  font-family: "SunBatang-Light";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/SunBatang-Light.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "S-CoreDream-3Light";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "KyoboHandwriting2020A";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2112@1.0/KyoboHandwriting2020A.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_corncorn-Rg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2412-1@1.0/Ownglyph_corncorn-Rg.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SDKukdetopokki";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SDKukdetopokki.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MapoGoldenPier";
+  font-weight: normal;
+  src: url("https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoGoldenPierA.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Iropke Batang";
+  font-weight: 400;
+  font-style: normal;
+  src: url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot);
+  src: url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot?#iefix)
+      format("embedded-opentype"),
+    url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.woff) format("woff"),
+    url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Jeju Myeongjo";
+  font-weight: 400;
+  font-style: normal;
+  src: url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.eot?#iefix)
+      format("embedded-opentype"),
+    url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.woff2) format("woff2"),
+    url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.woff) format("woff"),
+    url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Father_loveletter";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/naverfont_03@1.0/Father_loveletter.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "KyoboHand";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/KyoboHand.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Danjo-bold-Regular";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/Danjo-bold-Regular.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_wiseelist-Rg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2501-1@1.1/Ownglyph_wiseelist-Rg.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_ParkDaHyun";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Uiyeun";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Uiyeun.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Yoonwoo";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Yoonwoo.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_ryuttung-Rg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2405-2@1.0/Ownglyph_ryuttung-Rg.woff2")
+    format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GowunDodum-Regular";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SF_HambakSnow";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2106@1.1/SF_HambakSnow.woff")
+    format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "LeeSeoyun";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff")
+    format("woff");
+  font-style: normal;
+}
+
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translateY(20px); }
     20% { opacity: 1; transform: translateY(0); }
@@ -714,8 +950,10 @@ kbd {
 .translation-history-section {
     margin-bottom: 2rem;
     padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
 }
 
 .section-header {
@@ -729,20 +967,25 @@ kbd {
 
 /* 토글 버튼 스타일 개선 */
 .toggle-btn {
-    background-color: #f0f0f0;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 1rem; /* 화살표 크기 증가 */
+    background: none;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 0.2rem 0.5rem;
-    color: #333;
+    padding: 0.3rem 0.5rem;
+    color: var(--primary-color, #4285f4);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     transition: all 0.2s ease;
+    margin-left: 0.5rem;
+    width: 28px;
+    height: 28px;
 }
 
 .toggle-btn:hover {
-    background-color: #e0e0e0;
+    background-color: rgba(66, 133, 244, 0.1);
+    transform: scale(1.1);
 }
 
 /* 히스토리 검색창 스타일 수정 */
@@ -771,15 +1014,16 @@ kbd {
 .history-controls {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .history-controls .btn-small {
-    padding: 0.25rem 0.8rem; /* 상하 패딩을 0.3rem에서 0.25rem으로 감소 */
+    padding: 0.5rem 1rem;
     font-size: 0.85rem;
     flex: 1;
     white-space: nowrap;
-    line-height: 1.2; /* 줄 높이 추가로 조정 */
-    min-height: unset; /* 최소 높이 제거 */
+    max-width: none;
+    min-width: 0;
 }
 
 .history-list {
@@ -1288,10 +1532,6 @@ kbd {
   color: #666;
 }
 
-.history-import-btn {
-    margin-bottom: 0.5rem;
-}
-
 .translation-history-section,
 .word-rules-section,
 .data-management-section {
@@ -1658,4 +1898,434 @@ kbd {
 
 .download-btn:hover {
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 용어집/사전 기능 스타일 */
+.glossary-section {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: var(--container-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.glossary-section h3 {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    color: var(--text-color);
+    gap: 0.5rem;
+}
+
+.glossary-content {
+    display: none;
+    padding: 10px 0;
+}
+
+.glossary-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.glossary-input input,
+.glossary-search input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.term-context,
+.filter-context {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.glossary-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.glossary-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.glossary-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+}
+
+.glossary-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.glossary-item:last-child {
+    border-bottom: none;
+}
+
+.term-info {
+    width: 100%;
+}
+
+.term-pair {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.source-term {
+    font-weight: 500;
+}
+
+.arrow {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.term-context-tag {
+    font-size: 0.8em;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.item-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.term-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.edit-term, .delete-term {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 1.1em;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.edit-term:hover, .delete-term:hover {
+    color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .glossary-input, 
+    .glossary-search,
+    .glossary-controls,
+    .batch-options {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .batch-result-actions {
+        flex-direction: column;
+    }
+    
+    .term-context-tag {
+        font-size: 0.75em;
+    }
+    
+    .term-actions {
+        gap: 15px;
+    }
+    
+    .edit-term, .delete-term {
+        padding: 8px;
+    }
+}
+
+/* 용어집 카테고리 선택 섹션 스타일 */
+.glossary-category-section {
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    background-color: var(--container-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.glossary-category-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.glossary-select {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+/* 배치 번역 스타일 */
+.batch-translation-section {
+    margin: 25px 0;
+    padding: 15px;
+    background-color: var(--container-bg);
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--border-color);
+}
+
+.batch-translation-section h3 {
+    display: flex;
+    align-items: center;
+    margin: 0 0 10px 0;
+    cursor: pointer;
+    color: var(--text-color);
+    gap: 0.6rem;
+    font-size: 1.15rem;
+}
+
+.batch-content {
+    display: none;
+    padding: 15px 0;
+}
+
+.batch-controls {
+    margin-bottom: 20px;
+}
+
+.batch-input {
+    margin-bottom: 15px;
+}
+
+.batch-input textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    resize: vertical;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.batch-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+}
+
+.batch-options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+    padding: 4px 0;
+}
+
+.batch-options input[type="checkbox"],
+.batch-options input[type="radio"] {
+    width: 16px;
+    height: 16px;
+}
+
+.batch-results {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 15px;
+    background-color: var(--input-bg);
+    margin-top: 15px;
+}
+
+.batch-progress {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+}
+
+.progress-bar {
+    height: 12px;
+    background-color: var(--bg-color);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 0.95em;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.batch-result-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 5px;
+}
+
+.batch-result-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--container-bg);
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.batch-source, .batch-translated {
+    margin-bottom: 12px;
+    word-wrap: break-word;
+    padding: 10px;
+    border-radius: 6px;
+    line-height: 1.5;
+}
+
+.batch-source {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-left: 3px solid var(--primary-color);
+}
+
+.batch-translated {
+    background-color: rgba(52, 168, 83, 0.05);
+    border-left: 3px solid #34a853;
+}
+
+.batch-source::before {
+    content: "원문: ";
+    font-weight: bold;
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.batch-translated::before {
+    content: "번역: ";
+    font-weight: bold;
+    color: #34a853;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.batch-item-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.copy-item-btn {
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.copy-item-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.batch-result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.batch-result-actions .btn-small {
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .batch-translation-section {
+        padding: 12px;
+        margin: 15px 0;
+    }
+    
+    .batch-content {
+        padding: 10px 0;
+    }
+    
+    .batch-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .batch-options label {
+        width: 100%;
+    }
+    
+    .batch-result-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .batch-result-actions .btn-small {
+        width: 100%;
+    }
+    
+    .batch-result-item {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .batch-source, .batch-translated {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
 }
