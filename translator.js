@@ -35,7 +35,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.7.0'; 
+const CURRENT_VERSION = '1.7.4'; 
 const UPDATE_NOTIFICATIONS = 2;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -84,29 +84,71 @@ const modelOptions = [
     {
         group: 'Google Gemini 2.5',
         options: [
+            { value: 'gemini-2.5-flash-preview-05-20', label: 'Gemini 2.5 Flash Preview 2025-05-20'},
+            { value: 'gemini-2.5-pro-preview-05-06', label: 'Gemini 2.5 Pro Preview 2025-05-06'},
             { value: 'gemini-2.5-pro-exp-03-25', label: 'Gemini 2.5 Pro Experimental 2025-03-25'},
+            { value: 'gemini-2.5-pro-preview-03-25', label: 'Gemini 2.5 Pro Preview 2025-03-25'},
+            { value: 'gemini-2.5-flash-preview-04-17', label: 'Gemini 2.5 Flash Preview 2025-04-17'},
         ]
     },
     {
         group: 'Google Gemini 2.0',
         options: [
+            { value: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash'},
             { value: 'gemini-2.0-pro-exp', label: 'Gemini 2.0 Pro Experimental'},
             { value: 'gemini-2.0-pro-exp-02-05', label: 'Gemini 2.0 Pro Experimental 2025-02-05'},
             { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash Experimental' },
+            { value: 'gemini-2.0-flash-exp-image-generation', label: 'Gemini 2.0 Flash Experimental (Image Generation)' },
             { value: 'gemini-2.0-flash-lite-preview', label: 'Gemini 2.0 Flash-Lite Preview'},
             { value: 'gemini-2.0-flash-lite-preview-02-05', label: 'Gemini 2.0 Flash-Lite Preview 2025-02-05'},
             { value: 'gemini-2.0-flash-001', label: 'Gemini 2.0 Flash [001]'},
             { value: 'gemini-2.0-flash-thinking-exp', label: 'Gemini 2.0 Flash Thinking Experimental' },
             { value: 'gemini-2.0-flash-thinking-exp-01-21', label: 'Gemini 2.0 Flash Thinking Experimental 2025-01-21' },
+            { value: 'gemini-2.0-flash-thinking-exp-1219', label: 'Gemini 2.0 Flash Thinking Experimental 2024-12-19' },
         ]
     },
     {
         group: 'Google Gemini 1.5',
         options: [
-            { value: 'gemini-1.5-pro-002', label: 'Gemini 1.5 Pro (Latest)' },
-            { value: 'gemini-1.5-pro-001', label: 'Gemini 1.5 Pro (Stable)' },
-            { value: 'gemini-1.5-flash-002', label: 'Gemini 1.5 Flash (Latest)' },
-            { value: 'gemini-1.5-flash-001', label: 'Gemini 1.5 Flash (Stable)' }
+            { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
+            { value: 'gemini-1.5-pro-latest', label: 'Gemini 1.5 Pro (Latest)' },
+            { value: 'gemini-1.5-pro-002', label: 'Gemini 1.5 Pro [002]' },
+            { value: 'gemini-1.5-pro-001', label: 'Gemini 1.5 Pro [001]' },
+            { value: 'gemini-1.5-pro-exp-0801', label: 'Gemini 1.5 Pro Experimental 2024-08-01' },
+            { value: 'gemini-1.5-pro-exp-0827', label: 'Gemini 1.5 Pro Experimental 2024-08-27' },
+            { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
+            { value: 'gemini-1.5-flash-latest', label: 'Gemini 1.5 Flash (Latest)' },
+            { value: 'gemini-1.5-flash-002', label: 'Gemini 1.5 Flash [002]' },
+            { value: 'gemini-1.5-flash-001', label: 'Gemini 1.5 Flash [001]' },
+            { value: 'gemini-1.5-flash-8b', label: 'Gemini 1.5 Flash 8B' },
+            { value: 'gemini-1.5-flash-exp-0827', label: 'Gemini 1.5 Flash Experimental 2024-08-27' },
+            { value: 'gemini-1.5-flash-8b-exp-0827', label: 'Gemini 1.5 Flash 8B Experimental 2024-08-27' },
+            { value: 'gemini-1.5-flash-8b-exp-0924', label: 'Gemini 1.5 Flash 8B Experimental 2024-09-24' }
+        ]
+    },
+    {
+        group: 'Google Gemini Experimental',
+        options: [
+            { value: 'gemini-exp-1114', label: 'Gemini Experimental 2024-11-14' },
+            { value: 'gemini-exp-1121', label: 'Gemini Experimental 2024-11-21' },
+            { value: 'gemini-exp-1206', label: 'Gemini Experimental 2024-12-06' }
+        ]
+    },
+    {
+        group: 'Google Gemini Legacy',
+        options: [
+            { value: 'gemini-1.0-pro', label: 'Gemini 1.0 Pro (Deprecated)' },
+            { value: 'gemini-1.0-pro-latest', label: 'Gemini 1.0 Pro (Latest) (Deprecated)' },
+            { value: 'gemini-1.0-pro-001', label: 'Gemini 1.0 Pro [001] (Deprecated)' },
+            { value: 'gemini-pro', label: 'Gemini Pro (1.0) (Deprecated)' },
+            { value: 'gemini-ultra', label: 'Gemini Ultra (1.0)' },
+            { value: 'gemini-1.0-ultra-latest', label: 'Gemini 1.0 Ultra' }
+        ]
+    },
+    {
+        group: 'Google Gemma',
+        options: [
+            { value: 'gemma-3-27b-it', label: 'Gemma 3 27B' }
         ]
     },
     {
@@ -153,24 +195,36 @@ const modelOptions = [
         ]
     },
     {
+        group: 'Claude 4',
+        options: [
+            { value: 'claude-opus-4-20250514', label: 'Claude Opus 4 2025-05-14' },
+            { value: 'claude-4-sonnet-20250219', label: 'Claude 4 Sonnet 2025-02-19' },
+            { value: 'claude-4-sonnet-thinking', label: 'Claude 4 Sonnet Thinking' },
+            { value: 'claude-4-opus-thinking', label: 'Claude 4 Opus Thinking' },
+        ]
+    },
+    {
         group: 'Claude 3.7',
         options: [
+            { value: 'claude-3-7-sonnet-latest', label: 'Claude 3.7 Sonnet (Latest)' },
             { value: 'claude-3-7-sonnet-20250219', label: 'Claude 3.7 Sonnet 2025-02-19' },
         ]
     },
     {
         group: 'Claude 3.5',
         options: [
-            { value: 'claude-3-5-haiku-20241022', label: 'claude-3-5-haiku-20241022' },
-            { value: 'claude-3-5-sonnet-20241022', label: 'claude-3-5-sonnet-20241022' },
+            { value: 'claude-3-5-sonnet-latest', label: 'Claude 3.5 Sonnet (Latest)' },
+            { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet 2024-10-22' },
+            { value: 'claude-3-5-sonnet-20240620', label: 'Claude 3.5 Sonnet 2024-06-20' },
+            { value: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku 2024-10-22' },
         ]
     },
     {
         group: 'Claude 3',
         options: [
-            { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus 24-02-29' },
-            { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet 24-02-29' },
-            { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku 24-03-07' },
+            { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus 2024-02-29' },
+            { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet 2024-02-29' },
+            { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku 2024-03-07' },
         ]
     },
     {
@@ -2433,65 +2487,169 @@ async function translateWithGemini(text, apiKey) {
         threshold: 'BLOCK_NONE', // 기본값으로 BLOCK_NONE 설정
     }));
 
-    // 모델 이름 목록에 포함되는지 확인하여 threshold 변경
-    const flashModels = ['gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-2.0-flash-exp'];
+    // Flash 모델들은 threshold를 OFF로 설정
+    const flashModels = [
+        'gemini-2.5-flash-preview-05-20', 'gemini-2.5-flash-preview-04-17',
+        'gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-2.0-flash-exp',
+        'gemini-2.0-flash-lite-preview', 'gemini-2.0-flash-lite-preview-02-05',
+        'gemini-2.0-flash-thinking-exp', 'gemini-2.0-flash-thinking-exp-01-21',
+        'gemini-2.0-flash-thinking-exp-1219', 'gemini-1.5-flash', 'gemini-1.5-flash-latest',
+        'gemini-1.5-flash-001', 'gemini-1.5-flash-002', 'gemini-1.5-flash-8b',
+        'gemini-1.5-flash-exp-0827', 'gemini-1.5-flash-8b-exp-0827', 'gemini-1.5-flash-8b-exp-0924'
+    ];
+    
     if (flashModels.includes(selectedModel)) {
         safetySettings = safetySettings.map(setting => ({ ...setting, threshold: 'OFF' }));
     }
 
-    const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: `${customPrompt}\n${text}`
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.2,
-                    topK: 40,
-                    topP: 0.8,
+    try {
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                safetySettings: safetySettings
-            })
-        }
-    );
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: `${customPrompt}\n${text}`
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.2,
+                        topK: 40,
+                        topP: 0.8,
+                        maxOutputTokens: 8192
+                    },
+                    safetySettings: safetySettings
+                })
+            }
+        );
 
-    if (!response.ok) throw new Error('Gemini API 요청 실패');
-    const data = await response.json();
-    if (data.candidates[0].content.parts.length > 1) {
-        return data.candidates[0].content.parts[1].text;
-    } else {
-        return data.candidates[0].content.parts[0].text;
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            
+            // 상세한 오류 메시지 제공
+            if (response.status === 400) {
+                if (errorData.error?.message?.includes('API key')) {
+                    throw new Error('❌ API 키가 유효하지 않습니다. 설정에서 올바른 Gemini API 키를 입력해주세요.');
+                } else if (errorData.error?.message?.includes('quota')) {
+                    throw new Error('⏰ API 할당량이 초과되었습니다. 잠시 후 다시 시도해주세요.');
+                } else if (errorData.error?.message?.includes('model')) {
+                    throw new Error(`🚫 선택한 모델 '${selectedModel}'을 사용할 수 없습니다. 다른 모델을 선택해보세요.`);
+                } else if (errorData.error?.message?.includes('unsupported location')) {
+                    throw new Error('🌍 현재 지역에서는 이 모델을 사용할 수 없습니다. 다른 모델을 선택해보세요.');
+                } else if (errorData.error?.message?.includes('blocked')) {
+                    throw new Error('🛡️ 입력 내용이 차단되었습니다. 다른 표현으로 시도해보세요.');
+                }
+                throw new Error(`⚠️ 잘못된 요청입니다: ${errorData.error?.message || '입력을 확인해주세요.'}`);
+            } else if (response.status === 401) {
+                throw new Error('🔑 인증에 실패했습니다. API 키를 확인해주세요.');
+            } else if (response.status === 403) {
+                throw new Error('🚨 API 키 권한이 부족합니다. API 키 설정을 확인해주세요.');
+            } else if (response.status === 429) {
+                throw new Error('⚡ 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status >= 500) {
+                throw new Error('🔧 서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            }
+            
+            throw new Error(`❌ Gemini API 오류 (${response.status}): ${errorData.error?.message || '알 수 없는 오류'}`);
+        }
+
+        const data = await response.json();
+        
+        // 응답 검증
+        if (!data.candidates || data.candidates.length === 0) {
+            throw new Error('📝 번역 결과를 생성할 수 없습니다. 입력 텍스트를 확인하거나 다른 모델을 시도해보세요.');
+        }
+        
+        const candidate = data.candidates[0];
+        
+        // 안전 필터링으로 인한 차단 확인
+        if (candidate.finishReason === 'SAFETY') {
+            throw new Error('🛡️ 입력 내용이 안전 필터에 의해 차단되었습니다. 다른 표현으로 시도해보세요.');
+        }
+        
+        // 길이 제한으로 인한 차단 확인
+        if (candidate.finishReason === 'MAX_TOKENS') {
+            console.warn('⚠️ 응답이 최대 토큰 수로 인해 잘렸습니다.');
+            showToast('⚠️ 응답이 길어서 일부가 잘렸을 수 있습니다.', 'warning', 5000);
+        }
+        
+        if (!candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
+            throw new Error('📭 빈 응답을 받았습니다. 다시 시도해주세요.');
+        }
+        
+        // 텍스트 추출
+        const textParts = candidate.content.parts.filter(part => part.text);
+        if (textParts.length === 0) {
+            throw new Error('📄 텍스트 응답을 찾을 수 없습니다.');
+        }
+        
+        return textParts.map(part => part.text).join('');
+        
+    } catch (error) {
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('🌐 네트워크 연결을 확인해주세요.');
+        }
+        if (error.name === 'AbortError') {
+            throw new Error('⏱️ 요청 시간이 초과되었습니다. 다시 시도해주세요.');
+        }
+        throw error;
     }
 }
 
 // OpenAI로 번역
 async function translateWithOpenAI(text, apiKey) {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-            model: selectedModel,
-            messages: [
-                { role: "system", content: "How can I help you?" },
-                { role: "user", content: `${customPrompt}\n${text}` }
-            ],
-            temperature: 0.2
-        })
-    });
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: selectedModel,
+                messages: [
+                    { role: "system", content: "How can I help you?" },
+                    { role: "user", content: `${customPrompt}\n${text}` }
+                ],
+                temperature: 0.2
+            })
+        });
 
-    if (!response.ok) throw new Error('OpenAI API 요청 실패');
-    const data = await response.json();
-    return data.choices[0].message.content;
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            
+            if (response.status === 400) {
+                throw new Error(`⚠️ 잘못된 요청: ${errorData.error?.message || '입력을 확인해주세요.'}`);
+            } else if (response.status === 401) {
+                throw new Error('🔑 OpenAI API 키가 유효하지 않습니다.');
+            } else if (response.status === 403) {
+                throw new Error('🚨 API 키 권한이 부족합니다.');
+            } else if (response.status === 429) {
+                throw new Error('⚡ 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status >= 500) {
+                throw new Error('🔧 OpenAI 서버 오류입니다. 잠시 후 다시 시도해주세요.');
+            }
+            
+            throw new Error(`❌ OpenAI API 오류 (${response.status}): ${errorData.error?.message || '알 수 없는 오류'}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data.choices || data.choices.length === 0) {
+            throw new Error('📝 번역 결과를 받을 수 없습니다.');
+        }
+        
+        return data.choices[0].message.content;
+    } catch (error) {
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('🌐 네트워크 연결을 확인해주세요.');
+        }
+        throw error;
+    }
 }
 
 // Anthropic으로 번역
@@ -2518,8 +2676,21 @@ async function translateWithAnthropic(text, apiKey) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Anthropic API Error: ${errorData.error?.message || 'Unknown error'}`);
+            const errorData = await response.json().catch(() => ({}));
+            
+            if (response.status === 400) {
+                throw new Error(`⚠️ 잘못된 요청: ${errorData.error?.message || '입력을 확인해주세요.'}`);
+            } else if (response.status === 401) {
+                throw new Error('🔑 Claude API 키가 유효하지 않습니다.');
+            } else if (response.status === 403) {
+                throw new Error('🚨 API 키 권한이 부족합니다.');
+            } else if (response.status === 429) {
+                throw new Error('⚡ 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status >= 500) {
+                throw new Error('🔧 Claude 서버 오류입니다. 잠시 후 다시 시도해주세요.');
+            }
+            
+            throw new Error(`❌ Claude API 오류 (${response.status}): ${errorData.error?.message || '알 수 없는 오류'}`);
         }
 
         const data = await response.json();
@@ -2536,10 +2707,13 @@ async function translateWithAnthropic(text, apiKey) {
             }
         }
 
-        throw new Error('예상치 못한 API 응답 형식');
+        throw new Error('📄 예상치 못한 API 응답 형식입니다.');
     } catch (error) {
         console.error('Anthropic translation error:', error);
-        throw new Error(`Claude API 요청 실패: ${error.message}`);
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('🌐 네트워크 연결을 확인해주세요.');
+        }
+        throw new Error(`❌ Claude API 요청 실패: ${error.message}`);
     }
 }
 
@@ -2565,8 +2739,21 @@ async function translateWithCohere(text, apiKey) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Cohere API Error: ${errorData.message || 'Unknown error'}`);
+            const errorData = await response.json().catch(() => ({}));
+            
+            if (response.status === 400) {
+                throw new Error(`⚠️ 잘못된 요청: ${errorData.message || '입력을 확인해주세요.'}`);
+            } else if (response.status === 401) {
+                throw new Error('🔑 Cohere API 키가 유효하지 않습니다.');
+            } else if (response.status === 403) {
+                throw new Error('🚨 API 키 권한이 부족합니다.');
+            } else if (response.status === 429) {
+                throw new Error('⚡ 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status >= 500) {
+                throw new Error('🔧 Cohere 서버 오류입니다. 잠시 후 다시 시도해주세요.');
+            }
+            
+            throw new Error(`❌ Cohere API 오류 (${response.status}): ${errorData.message || '알 수 없는 오류'}`);
         }
 
         const data = await response.json();
@@ -2579,10 +2766,13 @@ async function translateWithCohere(text, apiKey) {
             }
         }
 
-        throw new Error('예상치 못한 API 응답 형식');
+        throw new Error('📄 예상치 못한 API 응답 형식입니다.');
     } catch (error) {
         console.error('Cohere translation error:', error);
-        throw new Error(`Cohere API 요청 실패: ${error.message}`);
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('🌐 네트워크 연결을 확인해주세요.');
+        }
+        throw new Error(`❌ Cohere API 요청 실패: ${error.message}`);
     }
 }
 

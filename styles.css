@@ -282,6 +282,53 @@ body {
     padding: 20px;
 }
 
+/* 전역 입력 요소 스타일 */
+select {
+    padding: 0.6rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23666' d='M5.5 7.5L10 12l4.5-4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+select:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+select:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+input[type="text"], input[type="number"], input[type="password"] {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+input[type="text"]:hover, input[type="number"]:hover, input[type="password"]:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
 .container {
     background-color: white;
     padding: 2rem;
@@ -429,9 +476,23 @@ body {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     border: 2px solid #e0e0e0;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.9rem;
     box-sizing: border-box; /* 패딩과 너비 포함 */
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.api-input-container input:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.api-input-container input:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .api-input-container label {
@@ -504,10 +565,31 @@ body {
 
 .prompt-controls select {
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.6rem;
     border: 2px solid #e0e0e0;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.9rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23666' d='M5.5 7.5L10 12l4.5-4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+.prompt-controls select:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.prompt-controls select:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .prompt-section textarea {
@@ -521,6 +603,21 @@ body {
     resize: vertical; /* 사용자가 필요시 수직으로 크기 조절 가능 */
     min-height: 120px; /* 최소 높이 설정 */
     max-height: 400px; /* 최대 높이 제한 */
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    line-height: 1.5;
+}
+
+.prompt-section textarea:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.prompt-section textarea:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 /* 단어 규칙 섹션 스타일 */
@@ -670,6 +767,14 @@ textarea, .formatted-result {
     font-size: 1rem;
     font-family: inherit;
     line-height: 1.6;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+textarea:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .text-counter {
@@ -712,13 +817,33 @@ textarea:focus {
 
 /* 버튼 스타일 */
 .btn-small {
-    background-color: #4285f4;
+    background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-small::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-small:hover::before {
+    left: 100%;
 }
 
 .translate-controls {
@@ -731,20 +856,42 @@ textarea:focus {
 }
 
 .translate-btn {
-    background-color: #4285f4;
+    background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
+    padding: 0.8rem 1.5rem;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 600;
     display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.translate-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+}
+
+.translate-btn:hover::before {
+    left: 100%;
 }
 
 .btn-small:hover,
 .translate-btn:hover {
-    background-color: #3367d6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.5);
 }
 
 .direction-switch-btn {
@@ -809,24 +956,55 @@ textarea:focus {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px 40px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    color: #333;
+    padding: 30px 50px;
+    border-radius: 16px;
     display: none;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
     z-index: 1000;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 500;
 }
 
 .spinner {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4285f4, #34a853, #fbbc04, #ea4335);
+    animation: spinGradient 1.5s linear infinite;
+    z-index: 1;
+}
+
+.spinner::after {
+    content: '';
+    position: absolute;
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #4285f4;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    background: var(--bg-color, white);
+    z-index: 2;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes spinGradient {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .error-message {
@@ -834,6 +1012,12 @@ textarea:focus {
     text-align: center;
     margin-top: 1rem;
     display: none;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border-left: 4px solid #d93025;
+    box-shadow: 0 4px 12px rgba(217, 48, 37, 0.15);
+    font-weight: 500;
 }
 
 /* 토스트 메시지 스타일 */
@@ -848,25 +1032,35 @@ textarea:focus {
 }
 
 .toast {
-    padding: 12px 24px;
-    border-radius: 4px;
+    padding: 16px 28px;
+    border-radius: 12px;
     color: white;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 8px;
-    animation: slideIn 0.3s ease-out;
-    margin-top: 10px;
+    gap: 12px;
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: 12px;
     position: relative;
-    padding-right: 30px; /* 닫기 버튼을 위한 공간 */
+    padding-right: 40px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
 }
 
 .toast.success {
-    background-color: #4caf50;
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    border-left: 4px solid #2e7d32;
 }
 
 .toast.error {
-    background-color: #f44336;
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    border-left: 4px solid #c62828;
+}
+
+.toast.warning {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    border-left: 4px solid #ef6c00;
 }
 
 .close-toast {
@@ -1264,15 +1458,15 @@ kbd {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem;
+    padding: 0.7rem 0.8rem;
     background-color: #ffffff;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 200px;
+    min-width: 180px;
     width: 100%;
-    max-width: 300px;
+    max-width: 260px;
 }
 
 .direction-btn-container {
@@ -1328,9 +1522,9 @@ kbd {
 }
 
 .direction-text {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 .template-name {
@@ -1903,10 +2097,11 @@ kbd {
 /* 용어집/사전 기능 스타일 */
 .glossary-section {
     margin: 20px 0;
-    padding: 10px;
-    background-color: var(--container-bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
 }
 
 .glossary-section h3 {
@@ -1933,20 +2128,59 @@ kbd {
 .glossary-input input,
 .glossary-search input {
     flex: 1;
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
+    padding: 0.6rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.glossary-input input:focus,
+.glossary-search input:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.glossary-input input:hover,
+.glossary-search input:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .term-context,
 .filter-context {
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
+    padding: 0.6rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23666' d='M5.5 7.5L10 12l4.5-4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+    font-size: 0.9rem;
+}
+
+.term-context:focus,
+.filter-context:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.15), 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.term-context:hover,
+.filter-context:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .glossary-search {
@@ -1966,9 +2200,10 @@ kbd {
 .glossary-list {
     max-height: 300px;
     overflow-y: auto;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--input-bg);
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .glossary-item {
@@ -2327,5 +2562,64 @@ kbd {
     .batch-source, .batch-translated {
         padding: 8px;
         margin-bottom: 10px;
+    }
+}
+
+/* 모바일 터치 최적화 - 전역 */
+@media (max-width: 768px) {
+    /* 터치 친화적 최소 크기 보장 */
+    .btn-small,
+    .translate-btn,
+    .theme-toggle,
+    .file-upload-btn,
+    .nav-btn {
+        min-height: 44px; /* iOS 터치 가이드라인 */
+        touch-action: manipulation;
+    }
+    
+    .copy-btn, 
+    .clear-btn,
+    .toggle-password,
+    .close-toast {
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+    
+    /* 입력 요소들도 터치 친화적으로 */
+    input[type="text"],
+    input[type="number"],
+    input[type="color"],
+    textarea {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+    
+    /* 모바일에서 select 드롭다운 최적화 */
+    select {
+        min-height: 44px;
+        touch-action: manipulation;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* 모델 선택 드롭다운 특별 처리 */
+    .model-select select,
+    #modelSelect {
+        width: 100% !important;
+        max-width: calc(100vw - 40px);
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+    
+    /* 호버 효과를 터치 시에도 적용 */
+    .btn-small:active,
+    .translate-btn:active {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(66, 133, 244, 0.5);
     }
 }
