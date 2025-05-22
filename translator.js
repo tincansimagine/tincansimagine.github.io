@@ -19,6 +19,14 @@ let boldColor = localStorage.getItem('boldColor') || '#e39db9';
 let selectedFont = localStorage.getItem('selectedFont') || 'RIDIBatang';
 let sourceFontSize = localStorage.getItem('sourceFontSize') || '16px';
 let resultFontSize = localStorage.getItem('resultFontSize') || '16px';
+
+// 모델 파라미터 설정
+let modelParams = {
+    temperature: parseFloat(localStorage.getItem('modelParams.temperature')) || 0.2,
+    maxTokens: parseInt(localStorage.getItem('modelParams.maxTokens')) || 2000,
+    topP: parseFloat(localStorage.getItem('modelParams.topP')) || 0.95,
+    topK: parseInt(localStorage.getItem('modelParams.topK')) || 40
+};
 let enableMarkdown = localStorage.getItem('enableMarkdown') !== 'false';
 let savedText = localStorage.getItem('savedText') || '';
 let lastTranslation = localStorage.getItem('lastTranslation') || '';
@@ -35,7 +43,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.7.4'; 
+const CURRENT_VERSION = '1.8.0'; 
 const UPDATE_NOTIFICATIONS = 2;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -349,6 +357,7 @@ function initializeEventListeners() {
     
     elements.translatedText.addEventListener('input', debounce(() => {
         saveContent();
+        updateCharacterCount(); // 글자수/단어수 실시간 업데이트
     }, 1000));
 
     function debounce(func, wait) {
@@ -1735,6 +1744,9 @@ function handleMarkdownToggle(e) {
 function handleModelChange(e) {
     selectedModel = e.target.value;
     localStorage.setItem('selectedModel', selectedModel);
+    
+    // 모델 변경 시 파라미터 가시성 업데이트
+    updateParamVisibility();
 }
 
 // 프롬프트 템플릿 처리
@@ -2020,6 +2032,10 @@ async function translateText() {
         
             // 번역 결과 저장
             elements.translatedText.value = translatedText;
+            
+            // 글자수/단어수 카운터 업데이트
+            updateCharacterCount();
+            
             formattedResult();
             saveToHistory(sourceText, translatedText, selectedModel);
             localStorage.setItem('lastTranslation', translatedText);
@@ -2517,10 +2533,10 @@ async function translateWithGemini(text, apiKey) {
                         }]
                     }],
                     generationConfig: {
-                        temperature: 0.2,
-                        topK: 40,
-                        topP: 0.8,
-                        maxOutputTokens: 8192
+                        temperature: modelParams.temperature,
+                        topK: modelParams.topK,
+                        topP: modelParams.topP,
+                        maxOutputTokens: modelParams.maxTokens
                     },
                     safetySettings: safetySettings
                 })
@@ -2615,7 +2631,9 @@ async function translateWithOpenAI(text, apiKey) {
                     { role: "system", content: "How can I help you?" },
                     { role: "user", content: `${customPrompt}\n${text}` }
                 ],
-                temperature: 0.2
+                temperature: modelParams.temperature,
+                max_tokens: modelParams.maxTokens,
+                top_p: modelParams.topP
             })
         });
 
@@ -2671,7 +2689,8 @@ async function translateWithAnthropic(text, apiKey) {
                     role: "user",
                     content: `${customPrompt}\n${text}`
                 }],
-                max_tokens: 4000
+                max_tokens: modelParams.maxTokens,
+                temperature: modelParams.temperature
             })
         });
 
@@ -2734,7 +2753,9 @@ async function translateWithCohere(text, apiKey) {
                         role: "user",
                         content: `${customPrompt}\n${text}`
                     }
-                ]
+                ],
+                temperature: modelParams.temperature,
+                max_tokens: modelParams.maxTokens
             })
         });
 
@@ -3120,7 +3141,10 @@ function initialize() {
     // 5. 단어 규칙 초기화 대신 용어집 초기화
     initializeGlossary();
 
-    // 6. 히스토리 목록 초기 표시
+    // 6. 고급 파라미터 설정 초기화
+    initializeAdvancedParams();
+
+    // 7. 히스토리 목록 초기 표시
     updateHistoryList();
 }
 
@@ -3226,6 +3250,153 @@ function initializeGlossary() {
     
     // 용어집 표시
     displayGlossaryTerms();
+}
+
+/* 고급 파라미터 설정 함수들 */
+function initializeAdvancedParams() {
+    const toggleBtn = document.getElementById('toggleAdvancedParams');
+    const content = document.getElementById('advancedParamsContent');
+    
+    if (!toggleBtn || !content) return;
+    
+    // 토글 기능
+    toggleBtn.addEventListener('click', () => {
+        const isVisible = content.style.display !== 'none';
+        content.style.display = isVisible ? 'none' : 'block';
+        toggleBtn.querySelector('i').className = isVisible ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+    });
+    
+    // 슬라이더와 숫자 입력 동기화
+    setupParamSync('temperature', 0, 1, 100);
+    setupParamSync('maxTokens', 100, 8000, 1);
+    setupParamSync('topP', 0, 1, 100);
+    setupParamSync('topK', 1, 100, 1);
+    
+    // 초기값 설정
+    updateParamUI();
+    
+    // 모델 변화에 따른 파라미터 가시성 제어
+    updateParamVisibility();
+    
+    // 버튼 이벤트
+    const resetBtn = document.getElementById('resetParams');
+    const saveBtn = document.getElementById('saveParams');
+    
+    if (resetBtn) resetBtn.addEventListener('click', resetToDefaults);
+    if (saveBtn) saveBtn.addEventListener('click', saveModelParams);
+}
+
+function setupParamSync(paramName, min, max, scale) {
+    const slider = document.getElementById(`${paramName}Slider`);
+    const input = document.getElementById(`${paramName}Input`);
+    
+    if (!slider || !input) return;
+    
+    // 슬라이더 → 숫자 입력
+    slider.addEventListener('input', () => {
+        const value = paramName === 'maxTokens' || paramName === 'topK' 
+            ? parseInt(slider.value)
+            : parseFloat(slider.value) / scale;
+        input.value = value;
+        modelParams[paramName] = value;
+        updateSliderBackground(slider);
+    });
+    
+    // 숫자 입력 → 슬라이더
+    input.addEventListener('input', () => {
+        let value = parseFloat(input.value);
+        
+        // 범위 제한
+        if (paramName === 'temperature' || paramName === 'topP') {
+            value = Math.max(0, Math.min(1, value));
+            slider.value = value * scale;
+        } else {
+            value = Math.max(min, Math.min(max, value));
+            slider.value = value;
+        }
+        
+        input.value = value;
+        modelParams[paramName] = value;
+        updateSliderBackground(slider);
+    });
+    
+    // 초기 배경 설정
+    updateSliderBackground(slider);
+}
+
+function updateSliderBackground(slider) {
+    const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.background = `linear-gradient(to right, #4285f4 0%, #4285f4 ${value}%, #e0e0e0 ${value}%, #e0e0e0 100%)`;
+}
+
+function updateParamUI() {
+    // Temperature
+    const tempSlider = document.getElementById('temperatureSlider');
+    const tempInput = document.getElementById('temperatureInput');
+    if (tempSlider && tempInput) {
+        tempSlider.value = modelParams.temperature * 100;
+        tempInput.value = modelParams.temperature;
+        updateSliderBackground(tempSlider);
+    }
+    
+    // Max Tokens
+    const tokensSlider = document.getElementById('maxTokensSlider');
+    const tokensInput = document.getElementById('maxTokensInput');
+    if (tokensSlider && tokensInput) {
+        tokensSlider.value = modelParams.maxTokens;
+        tokensInput.value = modelParams.maxTokens;
+        updateSliderBackground(tokensSlider);
+    }
+    
+    // Top-P
+    const topPSlider = document.getElementById('topPSlider');
+    const topPInput = document.getElementById('topPInput');
+    if (topPSlider && topPInput) {
+        topPSlider.value = modelParams.topP * 100;
+        topPInput.value = modelParams.topP;
+        updateSliderBackground(topPSlider);
+    }
+    
+    // Top-K
+    const topKSlider = document.getElementById('topKSlider');
+    const topKInput = document.getElementById('topKInput');
+    if (topKSlider && topKInput) {
+        topKSlider.value = modelParams.topK;
+        topKInput.value = modelParams.topK;
+        updateSliderBackground(topKSlider);
+    }
+}
+
+function updateParamVisibility() {
+    const provider = getModelProvider(selectedModel);
+    const topKGroup = document.getElementById('topKGroup');
+    
+    if (topKGroup) {
+        // Top-K는 Gemini만 지원
+        topKGroup.style.display = provider === 'gemini' ? 'flex' : 'none';
+    }
+}
+
+function resetToDefaults() {
+    modelParams = {
+        temperature: 0.2,
+        maxTokens: 2000,
+        topP: 0.95,
+        topK: 40
+    };
+    
+    updateParamUI();
+    saveModelParams();
+    showToast('기본값으로 복원되었습니다', 'success');
+}
+
+function saveModelParams() {
+    localStorage.setItem('modelParams.temperature', modelParams.temperature);
+    localStorage.setItem('modelParams.maxTokens', modelParams.maxTokens);
+    localStorage.setItem('modelParams.topP', modelParams.topP);
+    localStorage.setItem('modelParams.topK', modelParams.topK);
+    
+    showToast('파라미터가 저장되었습니다', 'success');
 }
 
 /*********************************************

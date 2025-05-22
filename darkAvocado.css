@@ -10,6 +10,7 @@
     --section-border: #374230;
     --accent-color: #C4D5A6;
     --muted-text: #A8B596;
+    --container-bg: #23291B;
 }
 
 [data-theme="dark-avocado"] body {
@@ -383,4 +384,129 @@
 [data-theme="dark-avocado"] .history-actions .btn-small:hover {
     background-color: var(--hover-color);
     border-color: var(--accent-color);
+}
+
+/* 용어집 섹션 스타일 - 다크 아보카도 테마 */
+[data-theme="dark-avocado"] .glossary-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--section-border);
+    border-radius: 6px;
+}
+
+[data-theme="dark-avocado"] .glossary-section h3 {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .glossary-content {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .glossary-input input,
+[data-theme="dark-avocado"] .glossary-search input {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .glossary-input input:focus,
+[data-theme="dark-avocado"] .glossary-search input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 138, 75, 0.2);
+}
+
+[data-theme="dark-avocado"] .term-context,
+[data-theme="dark-avocado"] .filter-context,
+[data-theme="dark-avocado"] .glossary-select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .term-context:focus,
+[data-theme="dark-avocado"] .filter-context:focus,
+[data-theme="dark-avocado"] .glossary-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 138, 75, 0.2);
+}
+
+[data-theme="dark-avocado"] .glossary-list {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .glossary-item {
+    background-color: #2A321F;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .glossary-item:last-child {
+    border-bottom: none;
+}
+
+[data-theme="dark-avocado"] .glossary-empty {
+    color: var(--muted-text);
+}
+
+[data-theme="dark-avocado"] .term-info {
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .term-pair {
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .source-term,
+[data-theme="dark-avocado"] .target-term {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+[data-theme="dark-avocado"] .arrow {
+    color: var(--primary-color);
+}
+
+[data-theme="dark-avocado"] .term-context-tag {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark-avocado"] .term-actions button {
+    background-color: transparent;
+    color: var(--muted-text);
+    transition: color 0.2s ease;
+}
+
+[data-theme="dark-avocado"] .term-actions button:hover {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .edit-term:hover {
+    color: var(--secondary-color);
+}
+
+[data-theme="dark-avocado"] .delete-term:hover {
+    color: #E78B8B;
+}
+
+[data-theme="dark-avocado"] .glossary-category-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--section-border);
+    border-radius: 6px;
+}
+
+[data-theme="dark-avocado"] .glossary-category-section label {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .item-bottom-row {
+    background-color: var(--input-bg);
+    color: var(--text-color);
 }

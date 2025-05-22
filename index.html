@@ -48,6 +48,16 @@
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
                         <div class="changelog-item">
+                            <h4>v1.8.0 (2025-05-21) pm 8:00</h4>
+                            <ul>
+                                <li>고급 모델 파라미터 설정 기능 추가: Temperature, Max Tokens, Top-P, Top-K 조정 가능</li>
+                                <li>모델별 파라미터 지원: Gemini (모든 파라미터), OpenAI/Claude/Cohere (일부 파라미터)</li>
+                                <li>파워유저 친화적 UI: 접히는 고급 설정, 슬라이더+숫자 입력 조합</li>
+                                <li>개인화된 설정 저장: 각 파라미터별 localStorage 자동 저장</li>
+                                <li>실시간 파라미터 동기화: 슬라이더와 숫자 입력이 실시간으로 연동</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
                             <h4>v1.7.4 (2025-05-21) pm 7:00</h4>
                             <ul>
                                 <li>용어집 섹션 테두리 스타일 개선: 번역 히스토리와 일치하는 테두리 적용</li>
@@ -457,6 +467,58 @@
                 <select id="modelSelect">
                     <!-- 옵션들은 JavaScript에서 동적으로 생성됨 -->
                 </select>
+            </div>
+            
+            <!-- 고급 모델 파라미터 설정 -->
+            <div class="advanced-params-section">
+                <h3>
+                    🎛️ 고급 설정
+                    <button class="toggle-btn" id="toggleAdvancedParams"><i class="fas fa-chevron-down"></i></button>
+                </h3>
+                <div class="advanced-params-content" id="advancedParamsContent" style="display: none;">
+                    <div class="param-group">
+                        <div class="param-item">
+                            <label for="temperatureSlider">🌡️ 창의성 (Temperature)</label>
+                            <div class="param-control">
+                                <input type="range" id="temperatureSlider" min="0" max="100" value="20" class="param-slider">
+                                <input type="number" id="temperatureInput" min="0" max="1" step="0.01" value="0.2" class="param-number">
+                            </div>
+                            <p class="param-desc">낮을수록 일관적, 높을수록 창의적</p>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label for="maxTokensSlider">📏 최대 응답 길이</label>
+                            <div class="param-control">
+                                <input type="range" id="maxTokensSlider" min="100" max="8000" value="2000" class="param-slider">
+                                <input type="number" id="maxTokensInput" min="100" max="8000" value="2000" class="param-number">
+                            </div>
+                            <p class="param-desc">응답 최대 토큰 수 (대략 글자수 × 0.7)</p>
+                        </div>
+                        
+                        <div class="param-item" id="topPGroup">
+                            <label for="topPSlider">🎯 핵심도 (Top-P)</label>
+                            <div class="param-control">
+                                <input type="range" id="topPSlider" min="0" max="100" value="95" class="param-slider">
+                                <input type="number" id="topPInput" min="0" max="1" step="0.01" value="0.95" class="param-number">
+                            </div>
+                            <p class="param-desc">낮을수록 핵심 단어만, 높을수록 다양한 표현</p>
+                        </div>
+                        
+                        <div class="param-item" id="topKGroup">
+                            <label for="topKSlider">🔢 다양성 (Top-K)</label>
+                            <div class="param-control">
+                                <input type="range" id="topKSlider" min="1" max="100" value="40" class="param-slider">
+                                <input type="number" id="topKInput" min="1" max="100" value="40" class="param-number">
+                            </div>
+                            <p class="param-desc">고려할 단어 후보 수 (Gemini만 지원)</p>
+                        </div>
+                        
+                        <div class="param-actions">
+                            <button id="resetParams" class="btn-small">기본값 복원</button>
+                            <button id="saveParams" class="btn-small">저장</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="data-management-section">

@@ -5,6 +5,9 @@
     --primary-color: #7DAE58;
     --secondary-color: #F7E8A1;
     --border-color: #C8D9A8;
+    --container-bg: #FFFFFF;
+    --input-bg: #FAFDEA;
+    --muted-text: #6B5B47;
 }
 
 [data-theme="avocado"] body {
@@ -72,4 +75,134 @@
 [data-theme="avocado"] .toast {
     background-color: var(--primary-color);
     color: white;
+}
+
+/* 고급 파라미터 슬라이더 스타일 - 아보카도 테마 */
+[data-theme="avocado"] .advanced-params-section {
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] .advanced-params-section h3 {
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .param-item label {
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .param-slider {
+    background: linear-gradient(to right, var(--border-color) 0%, var(--primary-color) 0%, var(--primary-color) 20%, var(--border-color) 20%);
+}
+
+[data-theme="avocado"] .param-slider::-webkit-slider-thumb {
+    background: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(125, 174, 88, 0.4);
+}
+
+[data-theme="avocado"] .param-slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 3px 8px rgba(125, 174, 88, 0.6);
+    transform: scale(1.1);
+}
+
+[data-theme="avocado"] .param-slider::-moz-range-thumb {
+    background: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(125, 174, 88, 0.4);
+}
+
+[data-theme="avocado"] .param-number {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+}
+
+[data-theme="avocado"] .param-number:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5);
+}
+
+[data-theme="avocado"] .param-desc {
+    color: var(--muted-text);
+}
+
+[data-theme="avocado"] .param-actions {
+    border-top: 1px solid var(--border-color);
+}
+
+/* 용어집 섹션 스타일 - 아보카도 테마 */
+[data-theme="avocado"] .glossary-section {
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] .glossary-section h3 {
+    color: var(--primary-color);
+}
+
+[data-theme="avocado"] .glossary-content {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .glossary-input input,
+[data-theme="avocado"] .glossary-search input {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] .glossary-input input:focus,
+[data-theme="avocado"] .glossary-search input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5);
+}
+
+[data-theme="avocado"] .term-context,
+[data-theme="avocado"] .filter-context,
+[data-theme="avocado"] .glossary-select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] .term-context:focus,
+[data-theme="avocado"] .filter-context:focus,
+[data-theme="avocado"] .glossary-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(125, 174, 88, 0.5);
+}
+
+[data-theme="avocado"] .glossary-list {
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] .glossary-item {
+    background-color: #FCFEF8;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .glossary-item:last-child {
+    border-bottom: none;
+}
+
+[data-theme="avocado"] .term-context-tag {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+[data-theme="avocado"] .term-actions button {
+    color: var(--muted-text);
+}
+
+[data-theme="avocado"] .term-actions button:hover {
+    color: var(--primary-color);
+}
+
+[data-theme="avocado"] .glossary-category-section {
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }

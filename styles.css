@@ -2300,6 +2300,133 @@ kbd {
     }
 }
 
+/* 고급 파라미터 설정 스타일 */
+.advanced-params-section {
+    margin: 20px 0;
+    padding: 1rem;
+    background-color: var(--container-bg, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.advanced-params-section h3 {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    color: var(--text-color, #333);
+    gap: 0.5rem;
+}
+
+.advanced-params-content {
+    padding: 1rem 0;
+    animation: slideDown 0.3s ease-out;
+}
+
+.param-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.param-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.param-item label {
+    font-weight: 600;
+    color: var(--text-color, #333);
+    font-size: 0.95rem;
+}
+
+.param-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.param-slider {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--border-color, #e0e0e0) 0%, var(--primary-color, #4285f4) 0%, var(--primary-color, #4285f4) 20%, var(--border-color, #e0e0e0) 20%);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.param-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-color, #4285f4);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+    transition: all 0.2s ease;
+}
+
+.param-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(66, 133, 244, 0.5);
+}
+
+.param-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-color, #4285f4);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+}
+
+.param-number {
+    width: 80px;
+    padding: 0.4rem 0.6rem;
+    border: 2px solid var(--border-color, #e0e0e0);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9rem;
+    background-color: var(--input-bg, #ffffff);
+    color: var(--text-color, #333);
+    transition: border-color 0.3s ease;
+}
+
+.param-number:focus {
+    outline: none;
+    border-color: var(--primary-color, #4285f4);
+}
+
+.param-desc {
+    font-size: 0.8rem;
+    color: var(--muted-text, #666);
+    margin: 0;
+    font-style: italic;
+}
+
+.param-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
 /* 용어집 카테고리 선택 섹션 스타일 */
 .glossary-category-section {
     margin-bottom: 1rem;
@@ -2621,5 +2748,37 @@ kbd {
     .translate-btn:active {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(66, 133, 244, 0.5);
+    }
+    
+    /* 고급 파라미터 모바일 최적화 */
+    .advanced-params-section {
+        margin: 15px 0;
+        padding: 0.8rem;
+    }
+    
+    .param-control {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: stretch;
+    }
+    
+    .param-slider {
+        order: 2;
+    }
+    
+    .param-number {
+        order: 1;
+        width: 100%;
+        max-width: 120px;
+        align-self: center;
+    }
+    
+    .param-actions {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+    
+    .param-actions .btn-small {
+        width: 100%;
     }
 }

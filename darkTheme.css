@@ -596,3 +596,61 @@
     background-color: #2d2d2d;
     color: #ffffff;
 }
+
+/* 고급 파라미터 설정 - 다크 테마 */
+[data-theme="dark"] .advanced-params-section {
+    background-color: #363636;
+    color: #ffffff;
+    border: 1px solid #404040;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .advanced-params-section h3 {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .advanced-params-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .param-item label {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .param-slider {
+    background: linear-gradient(to right, #404040 0%, #5294ff 0%, #5294ff 20%, #404040 20%);
+}
+
+[data-theme="dark"] .param-slider::-webkit-slider-thumb {
+    background: #5294ff;
+    box-shadow: 0 2px 6px rgba(82, 148, 255, 0.4);
+}
+
+[data-theme="dark"] .param-slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 3px 8px rgba(82, 148, 255, 0.6);
+}
+
+[data-theme="dark"] .param-slider::-moz-range-thumb {
+    background: #5294ff;
+    box-shadow: 0 2px 6px rgba(82, 148, 255, 0.4);
+}
+
+[data-theme="dark"] .param-number {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border: 2px solid #404040;
+}
+
+[data-theme="dark"] .param-number:focus {
+    border-color: #5294ff;
+    box-shadow: 0 0 0 2px rgba(82, 148, 255, 0.2);
+}
+
+[data-theme="dark"] .param-desc {
+    color: #aaaaaa;
+}
+
+[data-theme="dark"] .param-actions {
+    border-top: 1px solid #404040;
+}
