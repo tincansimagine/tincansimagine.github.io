@@ -198,7 +198,7 @@ const modelOptions = [
         group: 'Claude 4',
         options: [
             { value: 'claude-opus-4-20250514', label: 'Claude Opus 4 2025-05-14' },
-            { value: 'claude-4-sonnet-20250219', label: 'Claude 4 Sonnet 2025-02-19' },
+            { value: 'claude-4-sonnet-20250514', label: 'Claude 4 Sonnet 2025-05-14' },
             { value: 'claude-4-sonnet-thinking', label: 'Claude 4 Sonnet Thinking' },
             { value: 'claude-4-opus-thinking', label: 'Claude 4 Opus Thinking' },
         ]
