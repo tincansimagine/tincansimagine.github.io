@@ -618,23 +618,7 @@
     color: #ffffff;
 }
 
-[data-theme="dark"] .param-slider {
-    background: linear-gradient(to right, #404040 0%, #5294ff 0%, #5294ff 20%, #404040 20%);
-}
-
-[data-theme="dark"] .param-slider::-webkit-slider-thumb {
-    background: #5294ff;
-    box-shadow: 0 2px 6px rgba(82, 148, 255, 0.4);
-}
-
-[data-theme="dark"] .param-slider::-webkit-slider-thumb:hover {
-    box-shadow: 0 3px 8px rgba(82, 148, 255, 0.6);
-}
-
-[data-theme="dark"] .param-slider::-moz-range-thumb {
-    background: #5294ff;
-    box-shadow: 0 2px 6px rgba(82, 148, 255, 0.4);
-}
+/* 다크 테마 슬라이더는 기본 스타일 사용 */
 
 [data-theme="dark"] .param-number {
     background-color: #2d2d2d;
@@ -653,4 +637,13 @@
 
 [data-theme="dark"] .param-actions {
     border-top: 1px solid #404040;
+}
+
+/* 다운로드 버튼 스타일 */
+[data-theme="dark"] .download-btn {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .download-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
 }

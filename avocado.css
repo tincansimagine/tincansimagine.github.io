@@ -48,7 +48,7 @@
     border: 1px solid var(--border-color);
 }
 
-[data-theme="avocado"] input,
+[data-theme="avocado"] input:not(.param-slider):not([type="color"]),
 [data-theme="avocado"] textarea,
 [data-theme="avocado"] .formatted-result {
     background-color: #FAFDEA;
@@ -60,14 +60,31 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-[data-theme="avocado"] input:focus,
+/* 슬라이더는 패딩/테두리 강제 제거 */
+[data-theme="avocado"] .param-slider {
+    padding: 0 !important;
+    border: none !important;
+    background: #ddd !important;
+}
+
+/* 색상 선택기는 기본 스타일 유지 */
+[data-theme="avocado"] input[type="color"] {
+    padding: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px !important;
+    width: 32px !important;
+    height: 32px !important;
+    cursor: pointer !important;
+}
+
+[data-theme="avocado"] input:not(.param-slider):not([type="color"]):focus,
 [data-theme="avocado"] textarea:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 5px rgba(125, 174, 88, 0.5);
     outline: none;
 }
 
-[data-theme="avocado"] input:hover,
+[data-theme="avocado"] input:not(.param-slider):not([type="color"]):hover,
 [data-theme="avocado"] textarea:hover {
     border-color: var(--primary-color);
 }
@@ -91,24 +108,7 @@
     color: var(--text-color);
 }
 
-[data-theme="avocado"] .param-slider {
-    background: linear-gradient(to right, var(--border-color) 0%, var(--primary-color) 0%, var(--primary-color) 20%, var(--border-color) 20%);
-}
-
-[data-theme="avocado"] .param-slider::-webkit-slider-thumb {
-    background: var(--primary-color);
-    box-shadow: 0 2px 6px rgba(125, 174, 88, 0.4);
-}
-
-[data-theme="avocado"] .param-slider::-webkit-slider-thumb:hover {
-    box-shadow: 0 3px 8px rgba(125, 174, 88, 0.6);
-    transform: scale(1.1);
-}
-
-[data-theme="avocado"] .param-slider::-moz-range-thumb {
-    background: var(--primary-color);
-    box-shadow: 0 2px 6px rgba(125, 174, 88, 0.4);
-}
+/* 아보카도 테마 슬라이더는 기본 스타일 사용 */
 
 [data-theme="avocado"] .param-number {
     background-color: var(--input-bg);
@@ -137,7 +137,7 @@
 }
 
 [data-theme="avocado"] .glossary-section h3 {
-    color: var(--primary-color);
+    color: var(--text-color);
 }
 
 [data-theme="avocado"] .glossary-content {

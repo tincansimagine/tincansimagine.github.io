@@ -48,6 +48,17 @@
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
                         <div class="changelog-item">
+                            <h4>v1.8.1 (2025-05-21) pm 10:00</h4>
+                            <ul>
+                                <li>리버스 프록시 지원 기능 추가: OpenAI 호환 API 엔드포인트 사용 가능</li>
+                                <li>자동 모델 탐지 기능: 프록시 서버에서 사용 가능한 모델 자동 감지</li>
+                                <li>슬라이더 스타일 개선: 모든 테마에서 일관된 슬라이더 디자인 적용</li>
+                                <li>모바일 슬라이더 최적화: 터치 친화적이고 깔끔한 슬라이더 디자인</li>
+                                <li>UI 배치 개선: 리버스 프록시 설정을 독립 섹션으로 분리</li>
+                                <li>사용자 친화적 가이드: 설정별 상세 설명과 예시 추가</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
                             <h4>v1.8.0 (2025-05-21) pm 8:00</h4>
                             <ul>
                                 <li>고급 모델 파라미터 설정 기능 추가: Temperature, Max Tokens, Top-P, Top-K 조정 가능</li>
@@ -461,6 +472,43 @@
                     </div>
                     <button id="saveApiKeys" class="btn-small">API 키 저장</button>
                 </div>
+        </div>
+        
+        <!-- 리버스 프록시 설정 -->
+        <div class="settings-section">
+            <div class="proxy-header">
+                <h2>🔄 리버스 프록시 설정</h2>
+                <div class="proxy-toggle">
+                    <input type="checkbox" id="useReverseProxy">
+                    <label for="useReverseProxy">사용하기</label>
+                </div>
+            </div>
+            <div class="proxy-description">
+                <small>OpenAI 호환 API를 제공하는 리버스 프록시나 커스텀 엔드포인트를 사용할 수 있습니다.</small>
+            </div>
+            <div id="proxySettings" style="display: none;">
+                <div class="input-group">
+                    <label for="reverseProxyUrl">🌐 프록시 엔드포인트 URL</label>
+                    <div class="api-input-container">
+                        <input type="text" id="reverseProxyUrl" placeholder="https://your-proxy.domain.com">
+                    </div>
+                    <small>예: https://api.openai.com, https://your-proxy.com</small>
+                </div>
+                <div class="input-group">
+                    <label for="reverseProxyApiKey">🔑 API 키 (선택사항)</label>
+                    <div class="api-input-container">
+                        <input type="password" id="reverseProxyApiKey" placeholder="리버스 프록시용 API 키 (필요한 경우)">
+                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small>리버스 프록시에서 별도 API 키가 필요한 경우에만 입력하세요.</small>
+                </div>
+                <div class="proxy-actions">
+                    <button id="testProxyBtn" class="btn-small">🔗 연결 테스트</button>
+                    <button id="detectModelsBtn" class="btn-small">🔍 모델 자동 탐지</button>
+                </div>
+            </div>
         </div>
             <div class="model-select">
                 <label for="modelSelect">번역 모델 선택</label>

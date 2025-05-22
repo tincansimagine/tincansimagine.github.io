@@ -737,9 +737,73 @@ input[type="text"]:hover, input[type="number"]:hover, input[type="password"]:hov
 .checkbox-option {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-left: auto; /* 추가: 오른쪽 정렬 */
-    padding-right: 1rem; /* 추가: 오른쪽 여백 */
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.checkbox-option label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+}
+
+.checkbox-option small {
+    color: var(--muted-text, #666);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-left: 24px; /* checkbox width + gap */
+}
+
+.proxy-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.proxy-actions .btn-small {
+    flex: 1;
+    min-width: 140px;
+}
+
+/* 리버스 프록시 헤더 스타일 */
+.proxy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.proxy-header h2 {
+    margin: 0;
+    flex: 1;
+}
+
+.proxy-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.proxy-toggle label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+}
+
+.proxy-description {
+    margin-bottom: 16px;
+}
+
+.proxy-description small {
+    color: var(--muted-text, #666);
+    font-size: 0.85rem;
+    line-height: 1.4;
 }
 
 /* 번역 박스 스타일 */
@@ -1822,9 +1886,40 @@ kbd {
     }
 
     .checkbox-option {
-        margin-left: 0; /* auto 제거 */
-        padding-right: 0; /* 오른쪽 여백 제거 */
-        align-self: flex-start; /* 왼쪽 정렬 추가 */
+        flex-direction: row;
+        align-items: center;
+        margin-left: 0;
+        padding-right: 0;
+    }
+    
+    .checkbox-option label {
+        margin: 0;
+    }
+    
+    .checkbox-option small {
+        margin-left: 0; /* 모바일에서는 왼쪽 여백 제거 */
+        padding-left: 0;
+    }
+    
+    .proxy-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .proxy-actions .btn-small {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    /* 모바일에서 리버스 프록시 헤더 세로 배치 */
+    .proxy-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .proxy-toggle {
+        align-self: flex-start;
     }
     
     /* 번역 방향 컨트롤 모바일 스타일 */
@@ -2350,38 +2445,67 @@ kbd {
 
 .param-slider {
     flex: 1;
-    height: 6px;
-    border-radius: 3px;
-    background: linear-gradient(to right, var(--border-color, #e0e0e0) 0%, var(--primary-color, #4285f4) 0%, var(--primary-color, #4285f4) 20%, var(--border-color, #e0e0e0) 20%);
-    outline: none;
-    -webkit-appearance: none;
+    height: 2px !important;
+    background: #ddd !important;
+    outline: none !important;
+    border: none !important;
+    border-radius: 1px !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
     cursor: pointer;
+    margin: 8px 0 !important;
+}
+
+/* Chrome/Safari/Edge 슬라이더 트랙 */
+.param-slider::-webkit-slider-track {
+    height: 2px !important;
+    background: #ddd !important;
+    border-radius: 1px !important;
+    border: none !important;
+}
+
+/* Firefox 슬라이더 트랙 */
+.param-slider::-moz-range-track {
+    height: 2px !important;
+    background: #ddd !important;
+    border-radius: 1px !important;
+    border: none !important;
+}
+
+/* Firefox 진행률 제거 */
+.param-slider::-moz-range-progress {
+    background: transparent !important;
+    height: 0 !important;
 }
 
 .param-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--primary-color, #4285f4);
+    -webkit-appearance: none !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    background: #666 !important;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
-    transition: all 0.2s ease;
+    border: none !important;
+    box-shadow: none !important;
+    transition: background 0.2s ease;
 }
 
 .param-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-    box-shadow: 0 3px 8px rgba(66, 133, 244, 0.5);
+    background: #333 !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .param-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--primary-color, #4285f4);
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    background: #666 !important;
     cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+    border: none !important;
+    box-shadow: none !important;
+    -moz-appearance: none !important;
 }
 
 .param-number {
@@ -2764,6 +2888,9 @@ kbd {
     
     .param-slider {
         order: 2;
+        height: 2px !important;
+        background: #ddd !important;
+        margin: 10px 0 !important;
     }
     
     .param-number {

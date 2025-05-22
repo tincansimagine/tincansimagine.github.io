@@ -10,6 +10,12 @@ let cohereApiKey = localStorage.getItem('cohereApiKey') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let glossaryTerms = JSON.parse(localStorage.getItem('glossaryTerms')) || []; // 용어집을 위한 배열 추가
 let selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
+
+// 리버스 프록시 설정
+let useReverseProxy = localStorage.getItem('useReverseProxy') === 'true' || false;
+let reverseProxyUrl = localStorage.getItem('reverseProxyUrl') || '';
+let reverseProxyApiKey = localStorage.getItem('reverseProxyApiKey') || '';
+let reverseProxyModels = JSON.parse(localStorage.getItem('reverseProxyModels')) || [];
 let customPrompt = localStorage.getItem('customPrompt') || "# Translation Task Definition\nYou are a professional English-Korean translator specializing in roleplaying content. Your task is to translate English text into natural, fluent Korean while preserving the original tone, context, and cultural nuances. Focus particularly on translating both dialogue and action descriptions in roleplay scenarios.\n\n# Translation Requirements\n\n## Core Translation Principles\n1. Maintain the original meaning and intent\n2. Choose appropriate Korean honorific levels\n3. Convert English expressions to natural Korean equivalents\n4. Keep character personalities consistent through appropriate speech levels\n5. Apply Korean cultural context while preserving original story elements\n\n## Technical Guidelines\n\n### For Dialogue Translation\n- Select appropriate Korean honorific levels based on context:\n  * Formal situations → 합쇼체 (-ㅂ니다/습니다)\n  * Polite casual → 해요체 (-아/어요)\n  * Informal between friends/close relations → 반말 (-아/어)\n  * Professional settings → 존댓말 with proper honorific markers\n\n- Handle English dialogue features:\n  * Convert direct English expressions into natural Korean patterns\n  * Add appropriate sentence-final particles (요, 네, 군요, etc.)\n  * Consider speaker-listener relationship for proper honorifics\n  * Include context-appropriate Korean discourse markers\n\n### For Action Description Translation\n- Transform English action descriptions into natural Korean flow:\n  * Convert SVO (Subject-Verb-Object) to SOV (Subject-Object-Verb) structure\n  * Use appropriate Korean action descriptors and auxiliaries\n  * Add proper Korean particles (조사) based on context\n  * Incorporate Korean-style onomatopoeia and mimetic words\n\n### Cultural Elements\n- Adapt English titles and forms of address to Korean equivalents\n- Use appropriate Korean relationship terms (언니, 오빠, 선배 etc.)\n- Convert Western gestures to Korean cultural equivalents\n- Apply proper level of formality in different situations\n\n## Specific Instructions\n\n1. Initial Analysis\n- Understand the overall context and relationship between characters\n- Identify the appropriate speech levels for each character\n- Note any cultural references that need adaptation\n\n2. Translation Process\n- First pass: Basic translation maintaining core meaning\n- Second pass: Apply proper Korean grammar and particles\n- Final pass: Refine for natural Korean flow and proper honorifics\n\n3. Quality Checks\n- Verify honorific consistency\n- Check particle usage accuracy\n- Confirm natural Korean expression\n- Validate cultural appropriateness\n\n# Format Specifications\n\nInput Format:\n```\n[English text]\n```\n\nOutput Format:\n```\n[Korean translation only]\n```\n\n# Response Rules\n- Provide ONLY the Korean translation\n- Do not offer multiple options or explanations\n- Do not include commentary about the translation choices\n- Do not include the original English text\n- Do not ask questions or suggest alternatives\n- Do not explain honorific choices or grammar points\n\nExample:\n\nInput:\n```\n\"Hello everyone,\" she said with a bright smile. She bowed politely to the group.\n```\n\nOutput:\n```\n\"안녕하세요,\" 그녀가 밝은 미소를 지으며 말했다. 그녀는 일행들에게 공손히 인사를 했다.\n```\n\n## Honorific System Guidelines\n- Business/Formal: \n  * \"Could you please...\" → \"~해 주시겠습니까?\"\n  * \"I would like to...\" → \"~하고 싶습니다\"\n\n- Casual Polite:\n  * \"Can you...\" → \"~할 수 있으세요?\"\n  * \"I think...\" → \"~인 것 같아요\"\n\n- Informal:\n  * \"Hey, do this\" → \"야, 이거 해\"\n  * \"What's up\" → \"뭐 해?\"\n\n## Tense and Aspect Guidelines\n\n### Present Tense\n- Simple present → \"-ㄴ다/는다\" or \"-아/어요\"\n- Present continuous → \"-고  있다\" or \"-고 있어요\"\n- Present habits → \"-ㄴ다/는다\" or relevant time markers\n\n### Past Tense\n- Simple past → \"-았/었다\" or \"-았/ 었어요\"\n- Past perfect → \"-았/었었다\" or \"-았/었었어요\"\n- Past continuous → \"-고 있었다\" or \"-고 있었어요\"\n\n### Future Tense\n- Will/Shall → \"-ㄹ/을 거예요\" or \"-ㄹ/을 것입니다\"\n- Going to → \"-려고 해요\" or \"-기로 했어요\"\n- Future plans → \"-ㄹ/을 예정이다\"\n\n## Style Adaptation\n- Convert English emphasis to Korean particles and endings\n- Adapt English idiomatic expressions to Korean equivalents\n- Maintain character voice through consistent speech patterns\n- Use appropriate Korean discourse markers and fillers\n\n## Common Translation Patterns\n\n### Action Descriptions\nEnglish: \"He slowly walks towards the door\"\nKorean: \"그가 천천히 문쪽으로 걸어간다\"\n\n### Emotional Expressions\nEnglish: \"I'm so excited!\"\nKorean: \"정말 신나요!\" or \"너무 설레요!\"\n\n### Requests\nEnglish: \"Could you help me with this?\"\nKorean: \"이것 좀 도와 주시겠어요?\"\n\n# Error Prevention\n- Avoid awkward literal translations\n- Maintain proper particle usage\n- Keep honorific levels consistent\n- Preserve emotional nuances\n\n# Examples with Context\n\nFormal Business Setting:\n```\n[English]\nChecks the document carefully\n\"I apologize for the delay in processing your request.\"\n\n[Korean]\n서류를 세심히 확인한다\n\"요청하신 건의 처리가 지연되어 대단히 죄송합니다.\"\n```\n\nCasual Friend Setting:\n```\n[English]\nWaves excitedly\n\"Hey! I missed you so much!\"\n\n[Korean]\n신나서 손을 흔든다\n\"야! 너무 보고 싶었어!\"\n```\n\nRemember: Focus on creating natural Korean expressions that convey the same meaning and feeling as the original English text, while appropriately adapting to Korean cultural and linguistic norms.\n\n# Your Translation Task\n\nNow, following all the guidelines above, please translate the following English text into natural, fluent Korean. Consider the context, use appropriate honorific levels, and ensure natural expression; Here is it:";
 let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
 let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
@@ -43,7 +49,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.0'; 
+const CURRENT_VERSION = '1.8.1'; 
 const UPDATE_NOTIFICATIONS = 2;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -947,12 +953,184 @@ function getModelProvider(model) {
 
 // API 키 가져오기
 function getApiKey(provider) {
+    if (useReverseProxy && reverseProxyApiKey) {
+        return reverseProxyApiKey;
+    }
     switch(provider) {
         case 'gemini': return geminiApiKey;
         case 'openai': return openaiApiKey;
         case 'anthropic': return anthropicApiKey;
         case 'cohere': return cohereApiKey;
         default: return '';
+    }
+}
+
+// 리버스 프록시 관련 함수들
+function saveReverseProxySettings() {
+    localStorage.setItem('useReverseProxy', useReverseProxy);
+    localStorage.setItem('reverseProxyUrl', reverseProxyUrl);
+    localStorage.setItem('reverseProxyApiKey', reverseProxyApiKey);
+    localStorage.setItem('reverseProxyModels', JSON.stringify(reverseProxyModels));
+}
+
+async function testReverseProxyConnection() {
+    if (!reverseProxyUrl.trim()) {
+        showToast('리버스 프록시 URL을 먼저 입력해주세요.', 'error');
+        return false;
+    }
+
+    const testButton = document.getElementById('testProxyBtn');
+    const originalText = testButton.textContent;
+    testButton.textContent = '연결 테스트 중...';
+    testButton.disabled = true;
+
+    try {
+        const response = await fetch(`${reverseProxyUrl.replace(/\/$/, '')}/v1/models`, {
+            method: 'GET',
+            headers: {
+                'Authorization': reverseProxyApiKey ? `Bearer ${reverseProxyApiKey}` : '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.data && Array.isArray(data.data)) {
+                // 모델 목록 업데이트
+                reverseProxyModels = data.data.map(model => ({
+                    value: model.id,
+                    label: model.id
+                }));
+                saveReverseProxySettings();
+                updateProxyModelList();
+                showToast('🟢 연결 성공! 사용 가능한 모델을 불러왔습니다.', 'success');
+                return true;
+            }
+        }
+        
+        showToast('🔴 연결 실패: 서버 응답이 올바르지 않습니다.', 'error');
+        return false;
+    } catch (error) {
+        console.error('Proxy connection test failed:', error);
+        showToast(`🔴 연결 실패: ${error.message}`, 'error');
+        return false;
+    } finally {
+        testButton.textContent = originalText;
+        testButton.disabled = false;
+    }
+}
+
+function updateProxyModelList() {
+    const modelSelect = elements.modelSelect;
+    if (!modelSelect) return;
+
+    if (useReverseProxy && reverseProxyModels.length > 0) {
+        // 리버스 프록시 모델 표시
+        modelSelect.innerHTML = '';
+        const proxyGroup = document.createElement('optgroup');
+        proxyGroup.label = '🔄 Reverse Proxy Models';
+        
+        reverseProxyModels.forEach(model => {
+            const option = document.createElement('option');
+            option.value = model.value;
+            option.textContent = model.label;
+            proxyGroup.appendChild(option);
+        });
+        
+        modelSelect.appendChild(proxyGroup);
+        
+        // 첫 번째 모델 선택
+        if (reverseProxyModels.length > 0) {
+            selectedModel = reverseProxyModels[0].value;
+            modelSelect.value = selectedModel;
+            localStorage.setItem('selectedModel', selectedModel);
+        }
+    } else {
+        // 기본 모델 목록 복원
+        initializeModelSelect();
+    }
+}
+
+function toggleReverseProxy() {
+    useReverseProxy = document.getElementById('useReverseProxy').checked;
+    const proxySettings = document.getElementById('proxySettings');
+    
+    if (useReverseProxy) {
+        proxySettings.style.display = 'block';
+        updateProxyModelList();
+    } else {
+        proxySettings.style.display = 'none';
+        // 기본 모델 목록으로 복원
+        initializeModelSelect();
+        // 기본 모델로 재설정
+        selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
+        if (elements.modelSelect) {
+            elements.modelSelect.value = selectedModel;
+        }
+    }
+    
+    saveReverseProxySettings();
+}
+
+// 리버스 프록시에서 사용 가능한 모델 자동 탐지
+async function detectAvailableModels() {
+    if (!useReverseProxy || !reverseProxyUrl) {
+        showToast('❌ 리버스 프록시가 활성화되지 않았습니다.', 'error');
+        return;
+    }
+
+    const detectBtn = document.getElementById('detectModelsBtn');
+    const originalText = detectBtn.textContent;
+    detectBtn.textContent = '🔍 탐지 중...';
+    detectBtn.disabled = true;
+
+    try {
+        const modelsUrl = `${reverseProxyUrl.replace(/\/$/, '')}/v1/models`;
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (reverseProxyApiKey) {
+            headers['Authorization'] = `Bearer ${reverseProxyApiKey}`;
+        }
+
+        const response = await fetch(modelsUrl, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.data && Array.isArray(data.data)) {
+            // 기존 리버스 프록시 모델 목록 초기화
+            reverseProxyModels = [];
+            
+            // 새로운 모델들 추가
+            data.data.forEach(model => {
+                reverseProxyModels.push({
+                    value: model.id,
+                    label: model.id
+                });
+            });
+
+            updateProxyModelList();
+            
+            showToast(`✅ ${reverseProxyModels.length}개의 모델을 발견했습니다!`, 'success');
+            console.log('Detected models:', reverseProxyModels);
+        } else {
+            throw new Error('모델 목록 형식이 올바르지 않습니다.');
+        }
+
+    } catch (error) {
+        console.error('모델 탐지 실패:', error);
+        showToast(`❌ 모델 탐지 실패: ${error.message}`, 'error');
+    } finally {
+        detectBtn.textContent = originalText;
+        detectBtn.disabled = false;
     }
 }
 
@@ -1745,6 +1923,10 @@ function handleModelChange(e) {
     selectedModel = e.target.value;
     localStorage.setItem('selectedModel', selectedModel);
     
+    // 콘솔에 모델 변경 로그 출력
+    console.log('🤖 모델 변경됨:', selectedModel);
+    console.log('📊 모델 제공자:', getModelProvider(selectedModel));
+    
     // 모델 변경 시 파라미터 가시성 업데이트
     updateParamVisibility();
 }
@@ -1981,6 +2163,17 @@ async function translateText() {
         return;
     }
 
+    // 콘솔에 번역 시작 로그 출력
+    console.log('🚀 번역 시작');
+    console.log('🤖 사용 모델:', selectedModel);
+    console.log('📊 모델 제공자:', modelProvider);
+    console.log('📝 번역 방향:', currentDirection);
+    console.log('📄 입력 텍스트 길이:', sourceText.length + '글자');
+    console.log('🔄 리버스 프록시 사용:', useReverseProxy);
+    if (useReverseProxy) {
+        console.log('🌐 프록시 URL:', reverseProxyUrl);
+    }
+
     // 진행 상태 표시 초기화
     const progressElement = document.querySelector('.translation-progress');
     progressElement.style.display = 'block';
@@ -2039,6 +2232,12 @@ async function translateText() {
             formattedResult();
             saveToHistory(sourceText, translatedText, selectedModel);
             localStorage.setItem('lastTranslation', translatedText);
+            
+            // 번역 완료 로그 출력
+            console.log('✅ 번역 완료');
+            console.log('📝 결과 텍스트 길이:', translatedText.length + '글자');
+            console.log('📊 사용된 모델:', selectedModel);
+            
             showToast('번역이 완료되었습니다.');
         }
     } catch (error) {
@@ -2493,6 +2692,50 @@ elements.setTemplateButtons.forEach((button, index) => {
 
 // Gemini로 번역
 async function translateWithGemini(text, apiKey) {
+    console.log('🔵 Gemini API 호출 시작 - 모델:', selectedModel);
+    
+    // 리버스 프록시 사용 시 OpenAI 호환 형식으로 요청
+    if (useReverseProxy && reverseProxyUrl) {
+        console.log('🔄 리버스 프록시를 통한 요청:', reverseProxyUrl);
+        try {
+            const response = await fetch(`${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': apiKey ? `Bearer ${apiKey}` : ''
+                },
+                body: JSON.stringify({
+                    model: selectedModel,
+                    messages: [
+                        { role: "user", content: `${customPrompt}\n${text}` }
+                    ],
+                    temperature: modelParams.temperature,
+                    max_tokens: modelParams.maxTokens,
+                    top_p: modelParams.topP
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`⚠️ 리버스 프록시 오류 (${response.status}): ${errorData.error?.message || '알 수 없는 오류'}`);
+            }
+
+            const data = await response.json();
+            
+            if (!data.choices || data.choices.length === 0) {
+                throw new Error('📝 번역 결과를 받을 수 없습니다.');
+            }
+            
+            return data.choices[0].message.content;
+        } catch (error) {
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                throw new Error('🌐 네트워크 연결을 확인해주세요.');
+            }
+            throw error;
+        }
+    }
+
+    // 기본 Gemini API 처리
     let safetySettings = Object.values({
         HARM_CATEGORY_HARASSMENT: 'HARM_CATEGORY_HARASSMENT',
         HARM_CATEGORY_HATE_SPEECH: 'HARM_CATEGORY_HATE_SPEECH',
@@ -2618,8 +2861,14 @@ async function translateWithGemini(text, apiKey) {
 
 // OpenAI로 번역
 async function translateWithOpenAI(text, apiKey) {
+    console.log('🟠 OpenAI API 호출 시작 - 모델:', selectedModel);
+    
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const baseUrl = useReverseProxy && reverseProxyUrl ? 
+            `${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions` : 
+            'https://api.openai.com/v1/chat/completions';
+            
+        const response = await fetch(baseUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -2672,26 +2921,45 @@ async function translateWithOpenAI(text, apiKey) {
 
 // Anthropic으로 번역
 async function translateWithAnthropic(text, apiKey) {
-    // Cloudflare Workers URL
-    const PROXY_URL = 'https://tincanstranslator.antinomyanonymity.workers.dev/';
+    console.log('🟣 Anthropic API 호출 시작 - 모델:', selectedModel);
+    
+    // Cloudflare Workers URL 또는 리버스 프록시 URL 사용
+    const PROXY_URL = useReverseProxy && reverseProxyUrl ? 
+        `${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions` : 
+        'https://tincanstranslator.antinomyanonymity.workers.dev/';
 
     try {
+        const requestBody = useReverseProxy ? {
+            model: selectedModel,
+            messages: [{
+                role: "user",
+                content: `${customPrompt}\n${text}`
+            }],
+            max_tokens: modelParams.maxTokens,
+            temperature: modelParams.temperature
+        } : {
+            model: selectedModel,
+            messages: [{
+                role: "user",
+                content: `${customPrompt}\n${text}`
+            }],
+            max_tokens: modelParams.maxTokens,
+            temperature: modelParams.temperature
+        };
+
+        const headers = useReverseProxy ? {
+            'Content-Type': 'application/json',
+            'Authorization': apiKey ? `Bearer ${apiKey}` : ''
+        } : {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01'
+        };
+
         const response = await fetch(PROXY_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01'
-            },
-            body: JSON.stringify({
-                model: selectedModel,
-                messages: [{
-                    role: "user",
-                    content: `${customPrompt}\n${text}`
-                }],
-                max_tokens: modelParams.maxTokens,
-                temperature: modelParams.temperature
-            })
+            headers: headers,
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
@@ -2713,16 +2981,27 @@ async function translateWithAnthropic(text, apiKey) {
         }
 
         const data = await response.json();
+        console.log('Anthropic API Response:', data);
 
-        // 응답 데이터 처리
-        if (data.content && Array.isArray(data.content)) {
-            const translatedText = data.content
-                .filter(item => item.type === 'text')
-                .map(item => item.text)
-                .join('');
-            
-            if (translatedText) {
-                return translatedText;
+        // 리버스 프록시 사용 시 OpenAI 형식 응답 처리
+        if (useReverseProxy) {
+            if (data.choices && Array.isArray(data.choices) && data.choices.length > 0) {
+                const choice = data.choices[0];
+                if (choice.message && choice.message.content) {
+                    return choice.message.content;
+                }
+            }
+        } else {
+            // 기본 Anthropic 형식 응답 처리
+            if (data.content && Array.isArray(data.content)) {
+                const translatedText = data.content
+                    .filter(item => item.type === 'text')
+                    .map(item => item.text)
+                    .join('');
+                
+                if (translatedText) {
+                    return translatedText;
+                }
             }
         }
 
@@ -2738,25 +3017,44 @@ async function translateWithAnthropic(text, apiKey) {
 
 // Cohere로 번역
 async function translateWithCohere(text, apiKey) {
+    console.log('🔵 Cohere API 호출 시작 - 모델:', selectedModel);
+    
     try {
-        const response = await fetch('https://api.cohere.ai/v2/chat', {
+        const baseUrl = useReverseProxy && reverseProxyUrl ? 
+            `${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions` : 
+            'https://api.cohere.ai/v2/chat';
+            
+        const requestBody = useReverseProxy ? {
+            model: selectedModel,
+            messages: [{
+                role: "user",
+                content: `${customPrompt}\n${text}`
+            }],
+            temperature: modelParams.temperature,
+            max_tokens: modelParams.maxTokens
+        } : {
+            model: selectedModel,
+            messages: [{
+                role: "user",
+                content: `${customPrompt}\n${text}`
+            }],
+            temperature: modelParams.temperature,
+            max_tokens: modelParams.maxTokens
+        };
+
+        const headers = useReverseProxy ? {
+            'Content-Type': 'application/json',
+            'Authorization': apiKey ? `Bearer ${apiKey}` : ''
+        } : {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'Cohere-Version': '2024-03-01'
+        };
+            
+        const response = await fetch(baseUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-                'Cohere-Version': '2024-03-01'
-            },
-            body: JSON.stringify({
-                model: selectedModel,
-                messages: [
-                    {
-                        role: "user",
-                        content: `${customPrompt}\n${text}`
-                    }
-                ],
-                temperature: modelParams.temperature,
-                max_tokens: modelParams.maxTokens
-            })
+            headers: headers,
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
@@ -2780,10 +3078,21 @@ async function translateWithCohere(text, apiKey) {
         const data = await response.json();
         console.log('Cohere API Response:', data);
 
-        if (data.message && Array.isArray(data.message.content)) {
-            const textContent = data.message.content.find(item => item.type === 'text');
-            if (textContent && textContent.text) {
-                return textContent.text;
+        // 리버스 프록시 사용 시 OpenAI 형식 응답 처리
+        if (useReverseProxy) {
+            if (data.choices && Array.isArray(data.choices) && data.choices.length > 0) {
+                const choice = data.choices[0];
+                if (choice.message && choice.message.content) {
+                    return choice.message.content;
+                }
+            }
+        } else {
+            // 기본 Cohere 형식 응답 처리
+            if (data.message && Array.isArray(data.message.content)) {
+                const textContent = data.message.content.find(item => item.type === 'text');
+                if (textContent && textContent.text) {
+                    return textContent.text;
+                }
             }
         }
 
@@ -2846,6 +3155,13 @@ function initializeModelSelect() {
         
         elements.modelSelect.appendChild(optgroup);
     });
+    
+    // 저장된 모델로 복원
+    if (selectedModel) {
+        elements.modelSelect.value = selectedModel;
+        console.log('🔄 저장된 모델 복원됨:', selectedModel);
+        console.log('📊 모델 제공자:', getModelProvider(selectedModel));
+    }
 }
 
 // 비밀번호 토글 설정
@@ -3063,6 +3379,39 @@ function setupEventListeners() {
     document.getElementById('copyAllResults')?.addEventListener('click', copyAllBatchResults);
     document.getElementById('downloadResults')?.addEventListener('click', downloadBatchResults);
     document.getElementById('clearBatchResults')?.addEventListener('click', clearBatchResults);
+
+    // 리버스 프록시 관련 이벤트 리스너
+    const useReverseProxyCheckbox = document.getElementById('useReverseProxy');
+    const reverseProxyUrlInput = document.getElementById('reverseProxyUrl');
+    const reverseProxyApiKeyInput = document.getElementById('reverseProxyApiKey');
+    const testProxyBtn = document.getElementById('testProxyBtn');
+
+    if (useReverseProxyCheckbox) {
+        useReverseProxyCheckbox.addEventListener('change', toggleReverseProxy);
+    }
+
+    if (reverseProxyUrlInput) {
+        reverseProxyUrlInput.addEventListener('input', (e) => {
+            reverseProxyUrl = e.target.value.trim();
+            saveReverseProxySettings();
+        });
+    }
+
+    if (reverseProxyApiKeyInput) {
+        reverseProxyApiKeyInput.addEventListener('input', (e) => {
+            reverseProxyApiKey = e.target.value.trim();
+            saveReverseProxySettings();
+        });
+    }
+
+    if (testProxyBtn) {
+        testProxyBtn.addEventListener('click', testReverseProxyConnection);
+    }
+
+    const detectModelsBtn = document.getElementById('detectModelsBtn');
+    if (detectModelsBtn) {
+        detectModelsBtn.addEventListener('click', detectAvailableModels);
+    }
 }
 
     elements.showShortcutsBtn?.addEventListener('click', () => {
@@ -3109,6 +3458,24 @@ function restoreSettings() {
     if (thoughtColor) elements.thoughtColorInput.value = thoughtColor;
     if (emphasisColor) elements.emphasisColorInput.value = emphasisColor;
     elements.enableMarkdownInput.checked = enableMarkdown;
+
+    // 리버스 프록시 설정 복원
+    const useReverseProxyCheckbox = document.getElementById('useReverseProxy');
+    const reverseProxyUrlInput = document.getElementById('reverseProxyUrl');
+    const reverseProxyApiKeyInput = document.getElementById('reverseProxyApiKey');
+
+    if (useReverseProxyCheckbox) {
+        useReverseProxyCheckbox.checked = useReverseProxy;
+        toggleReverseProxy(); // 초기 UI 상태 설정
+    }
+
+    if (reverseProxyUrlInput) {
+        reverseProxyUrlInput.value = reverseProxyUrl;
+    }
+
+    if (reverseProxyApiKeyInput) {
+        reverseProxyApiKeyInput.value = reverseProxyApiKey;
+    }
 }
 
 // 단어 규칙 초기화 함수
