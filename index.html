@@ -48,6 +48,18 @@
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
                         <div class="changelog-item">
+                            <h4>v1.8.3 (2025-05-23) am 07:70</h4>
+                            <ul>
+                                <li>고급 설정 입력값 오류 수정</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
+                            <h4>v1.8.2 (2025-05-23) am 07:05</h4>
+                            <ul>
+                                <li>커스텀 모델 관리 기능 추가: 사용자가 직접 모델을 추가하고 관리할 수 있도록 개선</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
                             <h4>v1.8.1 (2025-05-21) pm 10:00</h4>
                             <ul>
                                 <li>리버스 프록시 지원 기능 추가: OpenAI 호환 API 엔드포인트 사용 가능</li>
@@ -472,6 +484,41 @@
                     </div>
                     <button id="saveApiKeys" class="btn-small">API 키 저장</button>
                 </div>
+        </div>
+        
+        <!-- 커스텀 모델 관리 -->
+        <div class="settings-section">
+            <h2>🎯 커스텀 모델 관리</h2>
+            <div class="custom-model-section">
+                <div class="custom-model-input">
+                    <div class="input-group">
+                        <label for="customModelName">모델명</label>
+                        <input type="text" id="customModelName" placeholder="예: gpt-4.5-turbo, claude-4-opus">
+                    </div>
+                    <div class="input-group">
+                        <label for="customModelProvider">공급자</label>
+                        <select id="customModelProvider">
+                            <option value="openai">OpenAI</option>
+                            <option value="anthropic">Anthropic</option>
+                            <option value="gemini">Google Gemini</option>
+                            <option value="cohere">Cohere</option>
+                        </select>
+                    </div>
+                    <button id="addCustomModel" class="btn-small">
+                        <i class="fas fa-plus"></i> 모델 추가
+                    </button>
+                </div>
+                
+                <div class="custom-model-list" id="customModelList">
+                    <h4>추가된 커스텀 모델</h4>
+                    <div class="custom-models-container" id="customModelsContainer">
+                        <div class="no-custom-models">
+                            <p>추가된 커스텀 모델이 없습니다.</p>
+                            <small>새로운 모델을 위에서 추가해보세요!</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- 리버스 프록시 설정 -->

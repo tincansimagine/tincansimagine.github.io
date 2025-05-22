@@ -16,6 +16,7 @@ let useReverseProxy = localStorage.getItem('useReverseProxy') === 'true' || fals
 let reverseProxyUrl = localStorage.getItem('reverseProxyUrl') || '';
 let reverseProxyApiKey = localStorage.getItem('reverseProxyApiKey') || '';
 let reverseProxyModels = JSON.parse(localStorage.getItem('reverseProxyModels')) || [];
+let customModels = JSON.parse(localStorage.getItem('customModels')) || [];
 let customPrompt = localStorage.getItem('customPrompt') || "# Translation Task Definition\nYou are a professional English-Korean translator specializing in roleplaying content. Your task is to translate English text into natural, fluent Korean while preserving the original tone, context, and cultural nuances. Focus particularly on translating both dialogue and action descriptions in roleplay scenarios.\n\n# Translation Requirements\n\n## Core Translation Principles\n1. Maintain the original meaning and intent\n2. Choose appropriate Korean honorific levels\n3. Convert English expressions to natural Korean equivalents\n4. Keep character personalities consistent through appropriate speech levels\n5. Apply Korean cultural context while preserving original story elements\n\n## Technical Guidelines\n\n### For Dialogue Translation\n- Select appropriate Korean honorific levels based on context:\n  * Formal situations → 합쇼체 (-ㅂ니다/습니다)\n  * Polite casual → 해요체 (-아/어요)\n  * Informal between friends/close relations → 반말 (-아/어)\n  * Professional settings → 존댓말 with proper honorific markers\n\n- Handle English dialogue features:\n  * Convert direct English expressions into natural Korean patterns\n  * Add appropriate sentence-final particles (요, 네, 군요, etc.)\n  * Consider speaker-listener relationship for proper honorifics\n  * Include context-appropriate Korean discourse markers\n\n### For Action Description Translation\n- Transform English action descriptions into natural Korean flow:\n  * Convert SVO (Subject-Verb-Object) to SOV (Subject-Object-Verb) structure\n  * Use appropriate Korean action descriptors and auxiliaries\n  * Add proper Korean particles (조사) based on context\n  * Incorporate Korean-style onomatopoeia and mimetic words\n\n### Cultural Elements\n- Adapt English titles and forms of address to Korean equivalents\n- Use appropriate Korean relationship terms (언니, 오빠, 선배 etc.)\n- Convert Western gestures to Korean cultural equivalents\n- Apply proper level of formality in different situations\n\n## Specific Instructions\n\n1. Initial Analysis\n- Understand the overall context and relationship between characters\n- Identify the appropriate speech levels for each character\n- Note any cultural references that need adaptation\n\n2. Translation Process\n- First pass: Basic translation maintaining core meaning\n- Second pass: Apply proper Korean grammar and particles\n- Final pass: Refine for natural Korean flow and proper honorifics\n\n3. Quality Checks\n- Verify honorific consistency\n- Check particle usage accuracy\n- Confirm natural Korean expression\n- Validate cultural appropriateness\n\n# Format Specifications\n\nInput Format:\n```\n[English text]\n```\n\nOutput Format:\n```\n[Korean translation only]\n```\n\n# Response Rules\n- Provide ONLY the Korean translation\n- Do not offer multiple options or explanations\n- Do not include commentary about the translation choices\n- Do not include the original English text\n- Do not ask questions or suggest alternatives\n- Do not explain honorific choices or grammar points\n\nExample:\n\nInput:\n```\n\"Hello everyone,\" she said with a bright smile. She bowed politely to the group.\n```\n\nOutput:\n```\n\"안녕하세요,\" 그녀가 밝은 미소를 지으며 말했다. 그녀는 일행들에게 공손히 인사를 했다.\n```\n\n## Honorific System Guidelines\n- Business/Formal: \n  * \"Could you please...\" → \"~해 주시겠습니까?\"\n  * \"I would like to...\" → \"~하고 싶습니다\"\n\n- Casual Polite:\n  * \"Can you...\" → \"~할 수 있으세요?\"\n  * \"I think...\" → \"~인 것 같아요\"\n\n- Informal:\n  * \"Hey, do this\" → \"야, 이거 해\"\n  * \"What's up\" → \"뭐 해?\"\n\n## Tense and Aspect Guidelines\n\n### Present Tense\n- Simple present → \"-ㄴ다/는다\" or \"-아/어요\"\n- Present continuous → \"-고  있다\" or \"-고 있어요\"\n- Present habits → \"-ㄴ다/는다\" or relevant time markers\n\n### Past Tense\n- Simple past → \"-았/었다\" or \"-았/ 었어요\"\n- Past perfect → \"-았/었었다\" or \"-았/었었어요\"\n- Past continuous → \"-고 있었다\" or \"-고 있었어요\"\n\n### Future Tense\n- Will/Shall → \"-ㄹ/을 거예요\" or \"-ㄹ/을 것입니다\"\n- Going to → \"-려고 해요\" or \"-기로 했어요\"\n- Future plans → \"-ㄹ/을 예정이다\"\n\n## Style Adaptation\n- Convert English emphasis to Korean particles and endings\n- Adapt English idiomatic expressions to Korean equivalents\n- Maintain character voice through consistent speech patterns\n- Use appropriate Korean discourse markers and fillers\n\n## Common Translation Patterns\n\n### Action Descriptions\nEnglish: \"He slowly walks towards the door\"\nKorean: \"그가 천천히 문쪽으로 걸어간다\"\n\n### Emotional Expressions\nEnglish: \"I'm so excited!\"\nKorean: \"정말 신나요!\" or \"너무 설레요!\"\n\n### Requests\nEnglish: \"Could you help me with this?\"\nKorean: \"이것 좀 도와 주시겠어요?\"\n\n# Error Prevention\n- Avoid awkward literal translations\n- Maintain proper particle usage\n- Keep honorific levels consistent\n- Preserve emotional nuances\n\n# Examples with Context\n\nFormal Business Setting:\n```\n[English]\nChecks the document carefully\n\"I apologize for the delay in processing your request.\"\n\n[Korean]\n서류를 세심히 확인한다\n\"요청하신 건의 처리가 지연되어 대단히 죄송합니다.\"\n```\n\nCasual Friend Setting:\n```\n[English]\nWaves excitedly\n\"Hey! I missed you so much!\"\n\n[Korean]\n신나서 손을 흔든다\n\"야! 너무 보고 싶었어!\"\n```\n\nRemember: Focus on creating natural Korean expressions that convey the same meaning and feeling as the original English text, while appropriately adapting to Korean cultural and linguistic norms.\n\n# Your Translation Task\n\nNow, following all the guidelines above, please translate the following English text into natural, fluent Korean. Consider the context, use appropriate honorific levels, and ensure natural expression; Here is it:";
 let baseColor = localStorage.getItem('baseColor') || (isDarkMode ? '#ffffff' : '#000000');
 let quoteColor = localStorage.getItem('quoteColor') || '#2E5CB8';
@@ -49,8 +50,8 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.1'; 
-const UPDATE_NOTIFICATIONS = 2;  // 업데이트 알림 개수
+const CURRENT_VERSION = '1.8.3'; 
+const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
     
@@ -942,14 +943,7 @@ function showToast(message, type = 'success', duration = 3000) {
 }
 
 //* API 관련
-// 모델 제공자 확인
-function getModelProvider(model) {
-    if (model.startsWith('gemini')) return 'gemini';
-    if (model.startsWith('gpt') || model.startsWith('chatgpt') || model.startsWith('o1')) return 'openai';
-    if (model.startsWith('claude')) return 'anthropic';
-    if (model.startsWith('c4ai') || model.startsWith('command')) return 'cohere';
-    return '';
-}
+
 
 // API 키 가져오기
 function getApiKey(provider) {
@@ -3142,6 +3136,8 @@ function initializeModelSelect() {
     if (!elements.modelSelect) return;
     
     elements.modelSelect.innerHTML = '';
+    
+    // 기본 모델 옵션 추가
     modelOptions.forEach(group => {
         const optgroup = document.createElement('optgroup');
         optgroup.label = group.group;
@@ -3156,12 +3152,162 @@ function initializeModelSelect() {
         elements.modelSelect.appendChild(optgroup);
     });
     
+    // 커스텀 모델 추가
+    if (customModels.length > 0) {
+        const customOptgroup = document.createElement('optgroup');
+        customOptgroup.label = '🎯 커스텀 모델';
+        
+        customModels.forEach(model => {
+            const optElement = document.createElement('option');
+            optElement.value = model.name;
+            optElement.textContent = `${model.name} (${model.provider})`;
+            customOptgroup.appendChild(optElement);
+        });
+        
+        elements.modelSelect.appendChild(customOptgroup);
+    }
+    
     // 저장된 모델로 복원
     if (selectedModel) {
         elements.modelSelect.value = selectedModel;
         console.log('🔄 저장된 모델 복원됨:', selectedModel);
         console.log('📊 모델 제공자:', getModelProvider(selectedModel));
     }
+}
+
+// 커스텀 모델 추가
+function addCustomModel() {
+    const nameInput = document.getElementById('customModelName');
+    const providerSelect = document.getElementById('customModelProvider');
+    
+    const modelName = nameInput.value.trim();
+    const provider = providerSelect.value;
+    
+    if (!modelName) {
+        showToast('모델명을 입력해주세요.', 'error');
+        return;
+    }
+    
+    // 중복 확인
+    const isDuplicate = customModels.some(model => model.name === modelName) ||
+                      modelOptions.some(group => 
+                          group.options.some(option => option.value === modelName)
+                      );
+    
+    if (isDuplicate) {
+        showToast('이미 존재하는 모델명입니다.', 'error');
+        return;
+    }
+    
+    // 커스텀 모델 추가
+    const newModel = {
+        name: modelName,
+        provider: provider,
+        id: Date.now().toString()
+    };
+    
+    customModels.push(newModel);
+    localStorage.setItem('customModels', JSON.stringify(customModels));
+    
+    // UI 업데이트
+    displayCustomModels();
+    initializeModelSelect();
+    
+    // 입력 필드 초기화
+    nameInput.value = '';
+    
+    showToast(`커스텀 모델 '${modelName}'이 추가되었습니다.`, 'success');
+    console.log('🎯 커스텀 모델 추가됨:', newModel);
+}
+
+// 커스텀 모델 삭제
+function removeCustomModel(modelId) {
+    const modelIndex = customModels.findIndex(model => model.id === modelId);
+    
+    if (modelIndex === -1) {
+        showToast('모델을 찾을 수 없습니다.', 'error');
+        return;
+    }
+    
+    const removedModel = customModels[modelIndex];
+    customModels.splice(modelIndex, 1);
+    localStorage.setItem('customModels', JSON.stringify(customModels));
+    
+    // 현재 선택된 모델이 삭제되는 경우 기본 모델로 변경
+    if (selectedModel === removedModel.name) {
+        selectedModel = 'gemini-1.5-pro-002';
+        localStorage.setItem('selectedModel', selectedModel);
+        if (elements.modelSelect) {
+            elements.modelSelect.value = selectedModel;
+        }
+    }
+    
+    // UI 업데이트
+    displayCustomModels();
+    initializeModelSelect();
+    
+    showToast(`커스텀 모델 '${removedModel.name}'이 삭제되었습니다.`, 'success');
+    console.log('🗑️ 커스텀 모델 삭제됨:', removedModel);
+}
+
+// 커스텀 모델 목록 표시
+function displayCustomModels() {
+    const container = document.getElementById('customModelsContainer');
+    if (!container) return;
+    
+    if (customModels.length === 0) {
+        container.innerHTML = `
+            <div class="no-custom-models">
+                <p>추가된 커스텀 모델이 없습니다.</p>
+                <small>새로운 모델을 위에서 추가해보세요!</small>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = customModels.map(model => `
+        <div class="custom-model-item" data-id="${model.id}">
+            <div class="model-info">
+                <div class="model-name">${model.name}</div>
+                <div class="model-provider">${getProviderDisplayName(model.provider)}</div>
+            </div>
+            <button class="delete-model-btn" onclick="removeCustomModel('${model.id}')" title="모델 삭제">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+// 공급자 표시명 반환
+function getProviderDisplayName(provider) {
+    const providerNames = {
+        'openai': 'OpenAI',
+        'anthropic': 'Anthropic',
+        'gemini': 'Google Gemini',
+        'cohere': 'Cohere'
+    };
+    return providerNames[provider] || provider;
+}
+
+// getModelProvider 함수 수정 (커스텀 모델 지원)
+function getModelProvider(model) {
+    // 커스텀 모델 확인
+    const customModel = customModels.find(m => m.name === model);
+    if (customModel) {
+        return customModel.provider;
+    }
+    
+    // 기존 로직
+    if (model.includes('gpt-') || model.includes('chatgpt') || model.includes('o1-')) {
+        return 'openai';
+    } else if (model.includes('claude-') || model.includes('claude') || model.includes('haiku') || model.includes('sonnet') || model.includes('opus')) {
+        return 'anthropic';
+    } else if (model.includes('gemini') || model.includes('gemma')) {
+        return 'gemini';
+    } else if (model.includes('command') || model.includes('c4ai') || model.includes('aya')) {
+        return 'cohere';
+    }
+    return 'gemini'; // 기본값
 }
 
 // 비밀번호 토글 설정
@@ -3412,6 +3558,22 @@ function setupEventListeners() {
     if (detectModelsBtn) {
         detectModelsBtn.addEventListener('click', detectAvailableModels);
     }
+    
+    // 커스텀 모델 관련 이벤트 리스너
+    const addCustomModelBtn = document.getElementById('addCustomModel');
+    if (addCustomModelBtn) {
+        addCustomModelBtn.addEventListener('click', addCustomModel);
+    }
+    
+    // Enter 키로 모델 추가
+    const customModelNameInput = document.getElementById('customModelName');
+    if (customModelNameInput) {
+        customModelNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addCustomModel();
+            }
+        });
+    }
 }
 
     elements.showShortcutsBtn?.addEventListener('click', () => {
@@ -3491,6 +3653,7 @@ function initialize() {
     // 1. UI 초기화
     initializeModelSelect();
     updatePromptTemplateOptions();
+    displayCustomModels(); // 커스텀 모델 목록 표시
     
     // 2. 이벤트 핸들러 설정
     setupEventListeners();
@@ -3667,11 +3830,58 @@ function setupParamSync(paramName, min, max, scale) {
         input.value = value;
         modelParams[paramName] = value;
         updateSliderBackground(slider);
+        
+        console.log(`[슬라이더 변경] ${paramName}: ${value}`, {
+            sliderValue: slider.value,
+            inputValue: input.value,
+            modelParams: {...modelParams}
+        });
     });
     
     // 숫자 입력 → 슬라이더
     input.addEventListener('input', () => {
         let value = parseFloat(input.value);
+        
+        // 빈 값이거나 NaN인 경우 처리하지 않음
+        if (isNaN(value) || input.value === '') {
+            return;
+        }
+        
+        let clampedValue = value;
+        
+        // 범위 제한 (하지만 입력값은 변경하지 않음)
+        if (paramName === 'temperature' || paramName === 'topP') {
+            clampedValue = Math.max(0, Math.min(1, value));
+            slider.value = clampedValue * scale;
+        } else {
+            clampedValue = Math.max(min, Math.min(max, value));
+            slider.value = clampedValue;
+        }
+        
+        // 실제 저장되는 값만 제한하고, 입력값은 그대로 유지
+        modelParams[paramName] = clampedValue;
+        updateSliderBackground(slider);
+        
+        console.log(`[입력 변경] ${paramName}: 입력값=${value}, 적용값=${clampedValue}`, {
+            inputValue: input.value,
+            sliderValue: slider.value,
+            modelParams: {...modelParams}
+        });
+    });
+    
+    // blur 이벤트에서 최종 값 검증 및 수정
+    input.addEventListener('blur', () => {
+        let value = parseFloat(input.value);
+        
+        // 유효하지 않은 값인 경우 이전 값으로 복원
+        if (isNaN(value) || input.value === '') {
+            input.value = modelParams[paramName];
+            console.log(`[입력 완료] ${paramName}: 잘못된 값으로 인해 복원됨`, {
+                invalidInput: input.value,
+                restoredValue: modelParams[paramName]
+            });
+            return;
+        }
         
         // 범위 제한
         if (paramName === 'temperature' || paramName === 'topP') {
@@ -3682,9 +3892,17 @@ function setupParamSync(paramName, min, max, scale) {
             slider.value = value;
         }
         
+        // 최종 값으로 업데이트
         input.value = value;
         modelParams[paramName] = value;
         updateSliderBackground(slider);
+        
+        console.log(`[입력 완료] ${paramName}: 최종 적용됨`, {
+            finalValue: value,
+            inputValue: input.value,
+            sliderValue: slider.value,
+            modelParams: {...modelParams}
+        });
     });
     
     // 초기 배경 설정

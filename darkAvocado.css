@@ -510,3 +510,74 @@
     background-color: var(--input-bg);
     color: var(--text-color);
 }
+
+/* 커스텀 모델 관리 - 다크 아보카도 테마 */
+[data-theme="dark-avocado"] .custom-model-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .custom-model-input input,
+[data-theme="dark-avocado"] .custom-model-input select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark-avocado"] .custom-model-input input:focus,
+[data-theme="dark-avocado"] .custom-model-input select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(91, 138, 75, 0.2);
+}
+
+[data-theme="dark-avocado"] .custom-model-input input:hover,
+[data-theme="dark-avocado"] .custom-model-input select:hover {
+    border-color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .custom-model-input .input-group label {
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .custom-model-list h4 {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .custom-models-container {
+    background-color: var(--section-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark-avocado"] .custom-model-item {
+    border-bottom-color: var(--border-color);
+    background-color: #2A321F;
+}
+
+[data-theme="dark-avocado"] .custom-model-item:hover {
+    background-color: rgba(91, 138, 75, 0.15);
+}
+
+[data-theme="dark-avocado"] .model-name {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .model-provider {
+    color: var(--muted-text);
+}
+
+[data-theme="dark-avocado"] .no-custom-models {
+    color: var(--muted-text);
+}
+
+[data-theme="dark-avocado"] .no-custom-models p {
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .delete-model-btn {
+    color: #E78B8B;
+}
+
+[data-theme="dark-avocado"] .delete-model-btn:hover {
+    background-color: rgba(231, 139, 139, 0.2);
+    color: #ff6b6b;
+}
