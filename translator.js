@@ -50,7 +50,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.4'; 
+const CURRENT_VERSION = '1.8.5'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -4085,7 +4085,7 @@ function initializeAdvancedParams() {
     
     // 슬라이더와 숫자 입력 동기화
     setupParamSync('temperature', 0, 1, 100);
-    setupParamSync('maxTokens', 100, 8000, 1);
+    setupParamSync('maxTokens', 100, 100000, 1);
     setupParamSync('topP', 0, 1, 100);
     setupParamSync('topK', 1, 100, 1);
     
