@@ -1033,14 +1033,16 @@ function updateProxyModelList() {
         
         modelSelect.appendChild(proxyGroup);
         
-        // 첫 번째 모델 선택
-        if (reverseProxyModels.length > 0) {
+        const savedProxyModel = localStorage.getItem('selectedModel');
+        const exist = reverseProxyModels.find(m => m.value === savedProxyModel);
+        if (exist) {
+            selectedModel = savedProxyModel;
+        } else {
             selectedModel = reverseProxyModels[0].value;
-            modelSelect.value = selectedModel;
-            localStorage.setItem('selectedModel', selectedModel);
         }
+        modelSelect.value = selectedModel;
+        localStorage.setItem('selectedModel', selectedModel);
     } else {
-        // 기본 모델 목록 복원
         initializeModelSelect();
     }
 }
@@ -2184,7 +2186,7 @@ function saveApiKeys() {
 function toggleTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('selectedTheme', theme);
-    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : theme === 'avocado' ? '아보카도 모드' : '다크 아보카도 모드'}가 적용되었습니다.`);
+    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : theme === 'avocado' ? '아보카도 모드' : theme === 'pastel-dream' ? '파스텔 모드' :'다크 아보카도 모드'}가 적용되었습니다.`);
 }
 
 //* 프롬프트 관리
@@ -2426,6 +2428,9 @@ async function translateText() {
             console.log('📊 사용된 모델:', selectedModel);
             
             showToast('번역이 완료되었습니다.');
+
+            saveContent();
+
         }
     } catch (error) {
         console.error('Translation error:', error);
