@@ -1,0 +1,603 @@
+[data-theme="pastel-dream"] {
+    --background-color: #F5F7FA; /* Very Light Bluish Gray */
+    --text-color: #4A5568;       /* Dark Slate Gray - for readability */
+    --primary-color: #A7C7E7;    /* Pastel Blue */
+    --secondary-color: #F9D8B7;  /* Pastel Peach */
+    --border-color: #DDE2E7;     /* Light Gray */
+    --hover-color: #93B5D9;      /* Slightly darker/more saturated Pastel Blue */
+    --input-bg: #FFFFFF;         /* White */
+    --section-bg: #FFFFFF;       /* White - for sections to stand out slightly */
+    --section-border: #E2E8F0;   /* Another Light Gray */
+    --accent-color: #FFB3BA;     /* Pastel Pink/Coral */
+    --muted-text: #718096;       /* Medium Gray */
+    --container-bg: #FFFFFF;     /* White */
+}
+
+[data-theme="pastel-dream"] body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .container {
+    background-color: var(--container-bg); /* Changed from section-bg for clarity, but same value */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Softer shadow for pastel */
+}
+
+[data-theme="pastel-dream"] .header h1 {
+    color: var(--primary-color); /* Using primary for header, can be accent too */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Softer text shadow */
+}
+
+[data-theme="pastel-dream"] .btn-small {
+    background-color: var(--primary-color);
+    color: #FFFFFF; /* White text on pastel blue */
+    border: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="pastel-dream"] .translate-btn {
+    background-color: var(--primary-color);
+    color: #FFFFFF; /* White text on pastel blue */
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10); /* Softer shadow */
+}
+
+[data-theme="pastel-dream"] .btn-small:hover,
+[data-theme="pastel-dream"] .translate-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Softer shadow */
+}
+
+[data-theme="pastel-dream"] .update-notification {
+    background-color: var(--accent-color);
+    color: #FFFFFF; /* White text for good contrast on pastel pink */
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .modal-content {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    border-radius: 6px;
+}
+
+[data-theme="pastel-dream"] input,
+[data-theme="pastel-dream"] textarea,
+[data-theme="pastel-dream"] .formatted-result {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] input:focus,
+[data-theme="pastel-dream"] textarea:focus,
+[data-theme="pastel-dream"] .formatted-result:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(167, 199, 231, 0.25); /* Pastel Blue focus ring */
+}
+
+[data-theme="pastel-dream"] .toast {
+    background-color: var(--primary-color);
+    color: #FFFFFF; /* White text on pastel blue */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .settings-section {
+    background-color: var(--section-bg);
+    border: 1px solid var(--section-border);
+    border-radius: 6px;
+}
+
+[data-theme="pastel-dream"] .settings-section h2,
+[data-theme="pastel-dream"] .api-section h2 {
+    color: var(--primary-color); /* Primary for section titles */
+    border-bottom: 2px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] select option {
+    background-color: var(--input-bg); /* Or #FFFFFF */
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .nav-bar {
+    border-bottom: 2px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] .nav-btn {
+    color: var(--muted-text);
+    transition: all 0.2s ease;
+}
+
+[data-theme="pastel-dream"] .nav-btn:hover {
+    color: var(--primary-color); /* Hover to primary */
+}
+
+[data-theme="pastel-dream"] .nav-btn.active {
+    color: var(--primary-color); /* Active is primary color */
+}
+
+[data-theme="pastel-dream"] .translation-direction-controls {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+[data-theme="pastel-dream"] .direction-btn {
+    background-color: var(--input-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .direction-btn:hover {
+    background-color: #E9F2F9; /* Very light blue hover */
+    border-color: var(--primary-color);
+}
+
+[data-theme="pastel-dream"] .direction-btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--accent-color);
+    color: #FFFFFF; /* White text on active button */
+    box-shadow: 0 0 8px rgba(167, 199, 231, 0.2); /* Pastel blue glow */
+}
+
+[data-theme="pastel-dream"] .template-name {
+    color: var(--accent-color);
+}
+
+[data-theme="pastel-dream"] .translation-progress {
+    background-color: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+[data-theme="pastel-dream"] .step-icon {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+}
+
+[data-theme="pastel-dream"] .step.active .step-icon {
+    background-color: var(--primary-color);
+    border-color: var(--accent-color);
+    color: #FFFFFF; /* Icon color inside active step */
+}
+
+[data-theme="pastel-dream"] .step.completed .step-icon {
+    background-color: var(--hover-color); /* Darker primary for completed */
+    border-color: var(--accent-color);
+    color: #FFFFFF; /* Icon color inside completed step */
+}
+
+[data-theme="pastel-dream"] .progress-bar {
+    background-color: #E9F2F9; /* Light background for progress bar */
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .progress-fill {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .file-upload-btn {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="pastel-dream"] .file-upload-btn:hover {
+    background-color: #E9F2F9; /* Light hover state */
+    border-color: var(--primary-color); /* Primary accent on hover */
+}
+
+[data-theme="pastel-dream"] .supported-formats {
+    color: var(--muted-text);
+}
+
+[data-theme="pastel-dream"] .file-upload-btn i {
+    color: var(--primary-color); /* Icon color */
+}
+
+[data-theme="pastel-dream"] .api-settings,
+[data-theme="pastel-dream"] .api-section,
+[data-theme="pastel-dream"] .prompt-section,
+[data-theme="pastel-dream"] .word-rules-section,
+[data-theme="pastel-dream"] .style-settings,
+[data-theme="pastel-dream"] .translation-history-section {
+    background-color: var(--section-bg);
+    border: 1px solid var(--section-border);
+    color: var(--text-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+[data-theme="pastel-dream"] .data-management-section {
+    background-color: var(--section-bg);
+    border: 1px solid var(--section-border);
+    color: var(--text-color);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+[data-theme="pastel-dream"] .api-section h2,
+[data-theme="pastel-dream"] .prompt-section h2,
+[data-theme="pastel-dream"] .word-rules-section h2,
+[data-theme="pastel-dream"] .style-settings h2,
+[data-theme="pastel-dream"] .data-management-section h2,
+[data-theme="pastel-dream"] .translation-history-section h2 {
+    color: var(--primary-color); /* Consistent section titles */
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+[data-theme="pastel-dream"] .api-section input,
+[data-theme="pastel-dream"] .prompt-section input,
+[data-theme="pastel-dream"] .word-rules-section input {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+[data-theme="pastel-dream"] .api-section input:focus,
+[data-theme="pastel-dream"] .prompt-section input:focus,
+[data-theme="pastel-dream"] .word-rules-section input:focus,
+[data-theme="pastel-dream"] .style-settings input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(167, 199, 231, 0.25); /* Pastel Blue focus */
+    outline: none;
+}
+
+[data-theme="pastel-dream"] .api-section label,
+[data-theme="pastel-dream"] .prompt-section label,
+[data-theme="pastel-dream"] .word-rules-section label,
+[data-theme="pastel-dream"] .style-settings label {
+    color: var(--muted-text);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+[data-theme="pastel-dream"] .api-section select,
+[data-theme="pastel-dream"] .prompt-section select,
+[data-theme="pastel-dream"] .word-rules-section select,
+[data-theme="pastel-dream"] .style-settings select {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+[data-theme="pastel-dream"] .api-section select:focus,
+[data-theme="pastel-dream"] .prompt-section select:focus,
+[data-theme="pastel-dream"] .word-rules-section select:focus,
+[data-theme="pastel-dream"] .style-settings select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(167, 199, 231, 0.25); /* Pastel Blue focus */
+    outline: none;
+}
+
+[data-theme="pastel-dream"] .set-template-btn {
+    background-color: var(--accent-color);
+    color: #FFFFFF; /* White text on accent */
+    border: 1px solid transparent; /* Cleaner look */
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="pastel-dream"] .set-template-btn:hover {
+    background-color: #FF9AA2; /* Slightly darker pastel pink */
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Softer shadow */
+}
+
+[data-theme="pastel-dream"] .set-template-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+[data-theme="pastel-dream"] .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Adjust if nav-bar border thickness changes */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color); /* Accent color for active underline */
+    border-radius: 1px;
+}
+
+[data-theme="pastel-dream"] .history-list {
+    background-color: var(--section-bg); /* Or var(--background-color) if no distinction needed */
+    border-radius: 8px;
+}
+
+[data-theme="pastel-dream"] .history-item {
+    background-color: #F9FBFC; /* Very light, slightly off-white for item */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07); /* Softer shadow */
+}
+
+[data-theme="pastel-dream"] .history-item-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] .history-timestamp {
+    color: var(--muted-text);
+}
+
+[data-theme="pastel-dream"] .history-model {
+    background-color: #E0EBF5; /* Very light pastel blue */
+    color: var(--primary-color); /* Darker blue text */
+    border-radius: 4px; /* Added for consistency */
+    padding: 0.2em 0.5em; /* Added for spacing */
+}
+
+[data-theme="pastel-dream"] .bookmark-btn {
+    color: #B0C4DE; /* Lighter, muted pastel blue for inactive bookmark */
+}
+
+[data-theme="pastel-dream"] .bookmark-btn.active {
+    color: var(--accent-color); /* Accent color for active bookmark */
+}
+
+[data-theme="pastel-dream"] .history-text {
+    background-color: var(--section-bg); /* Or --input-bg */
+}
+
+[data-theme="pastel-dream"] .history-source,
+[data-theme="pastel-dream"] .history-translated {
+    background-color: #F8FAFC; /* Very light gray, almost white */
+    color: var(--text-color);
+    border-left: 4px solid var(--primary-color);
+    padding: 0.75rem; /* Added padding */
+    margin-bottom: 0.5rem; /* Added margin */
+}
+
+[data-theme="pastel-dream"] .history-source::before,
+[data-theme="pastel-dream"] .history-translated::before {
+    background-color: var(--primary-color);
+    color: #FFFFFF; /* White text on primary color */
+    /* Styling for these pseudo-elements would depend on their content/purpose */
+}
+
+[data-theme="pastel-dream"] .history-actions .btn-small {
+    background-color: #E9F2F9; /* Very light blue/gray */
+    color: var(--primary-color); /* Primary color text */
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] .history-actions .btn-small:hover {
+    background-color: var(--hover-color); /* Use primary hover color */
+    color: #FFFFFF; /* White text on hover */
+    border-color: var(--primary-color);
+}
+
+/* 용어집 섹션 스타일 - 파스텔 테마 */
+[data-theme="pastel-dream"] .glossary-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--section-border);
+    border-radius: 6px;
+}
+
+[data-theme="pastel-dream"] .glossary-section h3 {
+    color: var(--primary-color); /* Consistent with other titles */
+}
+
+[data-theme="pastel-dream"] .glossary-content {
+    background-color: var(--input-bg); /* Or var(--section-bg) */
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .glossary-input input,
+[data-theme="pastel-dream"] .glossary-search input {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .glossary-input input:focus,
+[data-theme="pastel-dream"] .glossary-search input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(167, 199, 231, 0.25); /* Pastel Blue focus */
+}
+
+[data-theme="pastel-dream"] .term-context,
+[data-theme="pastel-dream"] .filter-context,
+[data-theme="pastel-dream"] .glossary-select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .term-context:focus,
+[data-theme="pastel-dream"] .filter-context:focus,
+[data-theme="pastel-dream"] .glossary-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(167, 199, 231, 0.25); /* Pastel Blue focus */
+}
+
+[data-theme="pastel-dream"] .glossary-list {
+    background-color: var(--section-bg); /* Or var(--input-bg) */
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="pastel-dream"] .glossary-item {
+    background-color: #FBFCFE; /* Very light, distinct item background */
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .glossary-item:last-child {
+    border-bottom: none;
+}
+
+[data-theme="pastel-dream"] .glossary-empty {
+    color: var(--muted-text);
+}
+
+[data-theme="pastel-dream"] .term-info {
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .term-pair {
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .source-term,
+[data-theme="pastel-dream"] .target-term {
+    color: var(--primary-color); /* Primary for terms */
+    font-weight: 500;
+}
+
+[data-theme="pastel-dream"] .arrow {
+    color: var(--secondary-color); /* Secondary for arrow */
+}
+
+[data-theme="pastel-dream"] .term-context-tag {
+    background-color: var(--primary-color);
+    color: #FFFFFF; /* White text on pastel blue */
+    border-radius: 4px;
+    padding: 0.2em 0.5em; /* Added padding */
+    font-size: 0.9em; /* Slightly smaller font */
+}
+
+[data-theme="pastel-dream"] .term-actions button {
+    background-color: transparent;
+    color: var(--muted-text);
+    transition: color 0.2s ease;
+}
+
+[data-theme="pastel-dream"] .term-actions button:hover {
+    color: var(--primary-color);
+}
+
+[data-theme="pastel-dream"] .edit-term:hover {
+    color: var(--secondary-color); /* Pastel Peach for edit */
+}
+
+[data-theme="pastel-dream"] .delete-term:hover {
+    color: #E57373; /* Softer Pastel Red for delete */
+}
+
+[data-theme="pastel-dream"] .glossary-category-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--section-border);
+    border-radius: 6px;
+}
+
+[data-theme="pastel-dream"] .glossary-category-section label {
+    color: var(--primary-color); /* Primary for label */
+}
+
+[data-theme="pastel-dream"] .item-bottom-row {
+    background-color: var(--input-bg); /* Or var(--section-bg) if more subtle */
+    color: var(--text-color);
+}
+
+/* 커스텀 모델 관리 - 파스텔 테마 */
+[data-theme="pastel-dream"] .custom-model-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .custom-model-input input,
+[data-theme="pastel-dream"] .custom-model-input select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color); /* Explicitly set border */
+}
+
+[data-theme="pastel-dream"] .custom-model-input input:focus,
+[data-theme="pastel-dream"] .custom-model-input select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(167, 199, 231, 0.25); /* Pastel Blue focus */
+}
+
+[data-theme="pastel-dream"] .custom-model-input input:hover,
+[data-theme="pastel-dream"] .custom-model-input select:hover {
+    border-color: var(--primary-color); /* Hover border to primary */
+}
+
+[data-theme="pastel-dream"] .custom-model-input .input-group label {
+    color: var(--muted-text); /* Muted for labels */
+}
+
+[data-theme="pastel-dream"] .custom-model-list h4 {
+    color: var(--primary-color); /* Primary for subheadings */
+}
+
+[data-theme="pastel-dream"] .custom-models-container {
+    background-color: var(--section-bg); /* Or --input-bg */
+    border: 1px solid var(--border-color); /* Explicitly set border */
+    border-radius: 4px; /* Added for consistency */
+}
+
+[data-theme="pastel-dream"] .custom-model-item {
+    border-bottom: 1px solid var(--border-color); /* Consistent border */
+    background-color: #F9FBFC; /* Very light background for items */
+    padding: 0.75rem 1rem; /* Added padding */
+}
+
+[data-theme="pastel-dream"] .custom-model-item:hover {
+    background-color: rgba(167, 199, 231, 0.1); /* Lighter hover based on primary */
+}
+
+[data-theme="pastel-dream"] .model-name {
+    color: var(--primary-color); /* Primary for model name */
+    font-weight: 500; /* Added weight */
+}
+
+[data-theme="pastel-dream"] .model-provider {
+    color: var(--muted-text);
+}
+
+[data-theme="pastel-dream"] .no-custom-models {
+    color: var(--muted-text);
+    padding: 1rem; /* Added padding */
+    text-align: center; /* Centered text */
+}
+
+[data-theme="pastel-dream"] .no-custom-models p {
+    color: var(--text-color); /* Main text color for the paragraph */
+}
+
+[data-theme="pastel-dream"] .delete-model-btn {
+    color: #E57373; /* Softer Pastel Red for delete */
+    background: transparent; /* Ensure no background */
+    border: none; /* Ensure no border */
+    padding: 0.25rem 0.5rem; /* Added padding */
+    border-radius: 4px; /* Added border-radius */
+}
+
+[data-theme="pastel-dream"] .delete-model-btn:hover {
+    background-color: rgba(229, 115, 115, 0.15); /* Light red background on hover */
+    color: #D32F2F; /* Darker Red on hover */
+}
