@@ -50,7 +50,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.5'; 
+const CURRENT_VERSION = '1.8.6'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -99,6 +99,7 @@ const modelOptions = [
     {
         group: 'Google Gemini 2.5',
         options: [
+            { value: 'gemini-2.5-pro-preview-06-05', label: 'Gemini 2.5 Pro Preview 2025-06-05'},
             { value: 'gemini-2.5-flash-preview-05-20', label: 'Gemini 2.5 Flash Preview 2025-05-20'},
             { value: 'gemini-2.5-pro-preview-05-06', label: 'Gemini 2.5 Pro Preview 2025-05-06'},
             { value: 'gemini-2.5-pro-exp-03-25', label: 'Gemini 2.5 Pro Experimental 2025-03-25'},
