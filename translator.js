@@ -50,11 +50,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-<<<<<<< HEAD
 const CURRENT_VERSION = '1.8.5'; 
-=======
-const CURRENT_VERSION = '1.8.6'; 
->>>>>>> f36eb5e1eb738d8530e5d48dc3aab8ec1425b979
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
