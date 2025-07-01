@@ -50,7 +50,11 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
+<<<<<<< HEAD
 const CURRENT_VERSION = '1.8.5'; 
+=======
+const CURRENT_VERSION = '1.8.6'; 
+>>>>>>> f36eb5e1eb738d8530e5d48dc3aab8ec1425b979
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -100,7 +104,7 @@ const modelOptions = [
         group: 'Google Gemini 2.5',
         options: [
             { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro (정식)'},
-            { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash Preview (정식)'},
+            { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (정식)'},
             { value: 'gemini-2.5-flash-preview-05-20', label: 'Gemini 2.5 Flash Preview 2025-05-20'},
             { value: 'gemini-2.5-pro-preview-05-06', label: 'Gemini 2.5 Pro Preview 2025-05-06'},
             { value: 'gemini-2.5-pro-preview-03-25', label: 'Gemini 2.5 Pro Preview 2025-03-25'},
@@ -1034,14 +1038,16 @@ function updateProxyModelList() {
         
         modelSelect.appendChild(proxyGroup);
         
-        // 첫 번째 모델 선택
-        if (reverseProxyModels.length > 0) {
+        const savedProxyModel = localStorage.getItem('selectedModel');
+        const exist = reverseProxyModels.find(m => m.value === savedProxyModel);
+        if (exist) {
+            selectedModel = savedProxyModel;
+        } else {
             selectedModel = reverseProxyModels[0].value;
-            modelSelect.value = selectedModel;
-            localStorage.setItem('selectedModel', selectedModel);
         }
+        modelSelect.value = selectedModel;
+        localStorage.setItem('selectedModel', selectedModel);
     } else {
-        // 기본 모델 목록 복원
         initializeModelSelect();
     }
 }
@@ -2185,7 +2191,7 @@ function saveApiKeys() {
 function toggleTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('selectedTheme', theme);
-    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : theme === 'avocado' ? '아보카도 모드' : '다크 아보카도 모드'}가 적용되었습니다.`);
+    showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : theme === 'avocado' ? '아보카도 모드' : theme === 'pastel-dream' ? '파스텔 모드' :'다크 아보카도 모드'}가 적용되었습니다.`);
 }
 
 //* 프롬프트 관리
@@ -2427,6 +2433,9 @@ async function translateText() {
             console.log('📊 사용된 모델:', selectedModel);
             
             showToast('번역이 완료되었습니다.');
+
+            saveContent();
+
         }
     } catch (error) {
         console.error('Translation error:', error);
@@ -4086,7 +4095,7 @@ function initializeAdvancedParams() {
     
     // 슬라이더와 숫자 입력 동기화
     setupParamSync('temperature', 0, 1, 100);
-    setupParamSync('maxTokens', 100, 8000, 1);
+    setupParamSync('maxTokens', 100, 100000, 1);
     setupParamSync('topP', 0, 1, 100);
     setupParamSync('topK', 1, 100, 1);
     
