@@ -3142,12 +3142,17 @@ async function translateWithGemini(text, apiKey) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: usePrefill && prefillPrompt ? 
-                                `${customPrompt}\n${text}\n\nAssistant: ${prefillPrompt}` : 
-                                `${customPrompt}\n${text}`
-                        }]
+                    contents: usePrefill && prefillPrompt ? [
+                        {
+                            role: "user",
+                            parts: [{ text: `${customPrompt}\n${text}` }]
+                        },
+                        {
+                            role: "model",
+                            parts: [{ text: prefillPrompt.trim() }]
+                        }
+                    ] : [{
+                        parts: [{ text: `${customPrompt}\n${text}` }]
                     }],
                     generationConfig: {
                         temperature: modelParams.temperature,
@@ -3420,25 +3425,20 @@ async function translateWithCohere(text, apiKey) {
             `${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions` : 
             'https://api.cohere.ai/v2/chat';
         
-        // 프롬프트 생성 (Cohere는 프리필을 직접 지원하지 않으므로 프롬프트에 추가)
-        const userContent = usePrefill && prefillPrompt ? 
-            `${customPrompt}\n${text}\n\nAssistant: ${prefillPrompt}` : 
-            `${customPrompt}\n${text}`;
+        // 메시지 배열 생성 (프리필 지원)
+        const messages = [{ role: "user", content: `${customPrompt}\n${text}` }];
+        
+        // 프리필 추가 (assistant 메시지로)
+        if (usePrefill && prefillPrompt) {
+            messages.push({
+                role: "assistant",
+                content: prefillPrompt.trim()
+            });
+        }
             
-        const requestBody = useReverseProxy ? {
+        const requestBody = {
             model: selectedModel,
-            messages: [{
-                role: "user",
-                content: userContent
-            }],
-            temperature: modelParams.temperature,
-            max_tokens: modelParams.maxTokens
-        } : {
-            model: selectedModel,
-            messages: [{
-                role: "user",
-                content: userContent
-            }],
+            messages: messages,
             temperature: modelParams.temperature,
             max_tokens: modelParams.maxTokens
         };
