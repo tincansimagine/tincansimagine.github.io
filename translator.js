@@ -55,7 +55,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.6'; 
+const CURRENT_VERSION = '1.8.7'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -1319,6 +1319,9 @@ function initializeFontSettings() {
     }
 }
 
+// 결과 보기 모드 변수
+let showEditableResult = true; // true: 편집 모드, false: 미리보기 모드
+
 function formatText(text) {
     if (!enableMarkdown) {
         elements.formattedResult.style.display = 'none';
@@ -1359,8 +1362,14 @@ function formatText(text) {
     // 마크다운 변환
     let formatted = marked.parse(text);
 
-    elements.formattedResult.style.display = 'block';
-    elements.translatedText.style.display = 'none';
+    // 토글 상태에 따라 표시 결정
+    if (showEditableResult) {
+        elements.formattedResult.style.display = 'none';
+        elements.translatedText.style.display = 'block';
+    } else {
+        elements.formattedResult.style.display = 'block';
+        elements.translatedText.style.display = 'none';
+    }
     elements.formattedResult.style.fontFamily = selectedFont;
     elements.sourceText.style.fontFamily = selectedFont;
     elements.translatedText.style.fontFamily = selectedFont;
@@ -2298,8 +2307,14 @@ function formattedResult() {
     // formatText 함수를 여기서 호출하여 스타일 적용
     const formattedText = formatText(elements.translatedText.value);
     elements.formattedResult.innerHTML = formattedText;
-    elements.formattedResult.style.display = 'block';
-    elements.translatedText.style.display = 'none';
+    // 토글 상태에 따라 표시 결정
+    if (showEditableResult) {
+        elements.formattedResult.style.display = 'none';
+        elements.translatedText.style.display = 'block';
+    } else {
+        elements.formattedResult.style.display = 'block';
+        elements.translatedText.style.display = 'none';
+    }
 }
 
 //* 단어 규칙 관리
@@ -2486,6 +2501,16 @@ async function translateText() {
             
             // 글자수/단어수 카운터 업데이트
             updateCharacterCount();
+            
+            // 번역 완료 시 기본적으로 편집 모드로 설정
+            showEditableResult = true;
+            const toggleResultBtn = document.getElementById('toggleResultView');
+            if (toggleResultBtn) {
+                const icon = toggleResultBtn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-edit';
+                }
+            }
             
             formattedResult();
             saveToHistory(sourceText, translatedText, selectedModel);
@@ -3791,7 +3816,38 @@ function setupShortcuts() {
     elements.translatedText.addEventListener('input', () => {
         localStorage.setItem('lastTranslation', elements.translatedText.value);
         updateCharacterCount(elements.translatedText, 'translated');
+        // 실시간으로 포맷된 결과 업데이트
+        if (enableMarkdown) {
+            formattedResult();
+        }
     });
+
+    // 결과 보기 모드 토글 이벤트 리스너
+    const toggleResultBtn = document.getElementById('toggleResultView');
+    if (toggleResultBtn) {
+        toggleResultBtn.addEventListener('click', () => {
+            showEditableResult = !showEditableResult;
+            
+            // 버튼 아이콘 변경
+            const icon = toggleResultBtn.querySelector('i');
+            if (showEditableResult) {
+                icon.className = 'fas fa-edit';
+                toggleResultBtn.title = '편집/미리보기 전환';
+            } else {
+                icon.className = 'fas fa-eye';
+                toggleResultBtn.title = '편집/미리보기 전환';
+            }
+            
+            // 결과 표시 업데이트
+            if (enableMarkdown) {
+                formattedResult();
+            } else {
+                // 마크다운이 비활성화된 경우 편집 모드로 유지
+                elements.formattedResult.style.display = 'none';
+                elements.translatedText.style.display = 'block';
+            }
+        });
+    }
 
     // 히스토리 토글 이벤트 리스너
     elements.toggleHistory?.addEventListener('click', () => {

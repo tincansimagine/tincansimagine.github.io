@@ -941,6 +941,24 @@ textarea:focus {
     font-weight: bold;
 }
 
+/* 토글 결과 보기 버튼 스타일 */
+.toggle-result-btn {
+    background: #f1f3f4;
+    color: #5f6368;
+    border: 1px solid #dadce0;
+    padding: 0.25rem 0.4rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.toggle-result-btn:hover {
+    background: #e8eaed;
+    color: #3c4043;
+}
+
 /* 버튼 스타일 */
 .btn-small {
     background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);

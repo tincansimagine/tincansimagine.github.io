@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=250829a2">
+    <link rel="stylesheet" href="styles.css?v=250829a3">
     <link rel="stylesheet" href="darkAvocado.css?v=241122a7">
     <link rel="stylesheet" href="avocado.css?v=241122a6">
     <link rel="stylesheet" href="darkTheme.css?v=241122a6">
@@ -48,6 +48,12 @@
                     <button class="close-modal">&times;</button>
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
+                        <div class="changelog-item">
+                            <h4>v1.8.7 (2025-08-29) pm 05:52</h4>
+                            <ul>
+                                <li>번역 결과 편집 버튼 추가</li>
+                            </ul>
+                        </div>
                         <div class="changelog-item">
                             <h4>v1.8.6 (2025-08-29) pm 05:20</h4>
                             <ul>
@@ -249,7 +255,12 @@
                 </div>
             </div>
             <div class="input-group">
-                <label for="translatedText">번역 결과</label>
+                <label for="translatedText">
+                    번역 결과
+                    <button id="toggleResultView" class="toggle-result-btn" title="편집/미리보기 전환">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </label>
                 <div class="textarea-container">
                     <div id="formattedResult" class="formatted-result"></div>
                     <textarea id="translatedText" placeholder="번역 결과가 여기에 표시됩니다"></textarea>
@@ -808,6 +819,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=250829a2"></script>
+    <script src="translator.js?v=250829a3"></script>
   </body>
 </html>
