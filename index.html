@@ -49,6 +49,13 @@
                     <h3>💡 업데이트 내역</h3>
                     <div class="changelog-list">
                         <div class="changelog-item">
+                            <h4>v1.8.6 (2025-08-29) pm 05:20</h4>
+                            <ul>
+                                <li>프리필 기능 추가: 모든 모델 지원 (프롬프트 섹션을 확인해주세요!)</li>
+                                <li>gpt-5 모델들 추가</li>
+                            </ul>
+                        </div>
+                        <div class="changelog-item">
                             <h4>v1.8.5 (2025-07-02) am 01:30</h4>
                             <ul>
                                 <li>제미나이 정식 2.5 프로 및 플래시 모델 추가</li>
@@ -207,33 +214,6 @@
                                 <li>번역 제공 모델 리스트에 gemini-exp-1121 추가</li>
                             </ul>
                         </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.2 (2024-11-21) pm 8:23</h4>
-                            <ul>
-                                <li>업데이트 알림 표시 구현 로직 수정</li>
-                                <li>아보카도 테마 추가 / 테마 선택을 설정 페이지로 이동</li>
-                                <li>라이트 모드, 아보카도 모드 단축키 추가</li>
-                                <li>기타 UI/UX 개편</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.1 (2024-11-21) pm 5:53</h4>
-                            <ul>
-                                <li>페이지가 다시 로드되더라도 사용자 지정 폰트 유지되도록 개선 & 텍스트 입력/결과창 폰트 사이즈 사용자가 지정할 수 있도록 텍스트 스타일 설정 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.0 (2024-11-21) pm 4:18</h4>
-                            <ul>
-                                <li>코드블록으로 감싸진 텍스트문의 마크다운 변환 적용이 안 되는 문제 및 영문 텍스트에서 축약어의 홑따옴표와 혼동돼 색상 변경이 이상하게 되는 문제 수정.</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.5.9 (2024-11-21) am 4:55</h4>
-                            <ul>
-                                <li>영한/한영 기본 프롬프트 개선, 번역 품질 향상 목적</li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -328,6 +308,20 @@
             </div>
             <textarea id="customPrompt" rows="3"></textarea>
             <button id="savePrompt" class="btn-small">프롬프트 저장</button>
+            
+            <!-- 프리필 설정 추가 -->
+            <div class="prefill-section">
+                <div class="prefill-toggle">
+                    <input type="checkbox" id="usePrefill">
+                    <label for="usePrefill">프리필(Prefill) 사용</label>
+                    <span class="prefill-info" title="AI가 응답을 시작할 때 미리 정해진 텍스트로 시작하도록 합니다">ℹ️</span>
+                </div>
+                <div id="prefillContent" style="display: none;">
+                    <label for="prefillPrompt">프리필 내용</label>
+                    <textarea id="prefillPrompt" rows="2" placeholder="AI 응답의 시작 부분을 입력하세요..."></textarea>
+                    <button id="resetPrefill" class="btn-small">기본값으로 재설정</button>
+                </div>
+            </div>
         </div>
         
         <!-- 번역에 적용할 용어집 카테고리 선택 -->
