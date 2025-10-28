@@ -277,3 +277,48 @@
     background-color: rgba(220, 53, 69, 0.1);
     color: #b02a37;
 }
+
+/* Vertex AI 설정 아보카도 테마 */
+[data-theme="avocado"] .vertex-mode-selector {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] .vertex-mode-selector label {
+    color: var(--text-color);
+}
+
+[data-theme="avocado"] .vertex-mode-selector label:hover {
+    color: var(--primary-color);
+}
+
+[data-theme="avocado"] .mode-description {
+    background: rgba(125, 174, 88, 0.15);
+    border-left-color: var(--primary-color);
+    color: #5a8a42;
+}
+
+[data-theme="avocado"] .import-json-icon-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-theme="avocado"] .import-json-icon-btn:hover {
+    background: #74A15A;
+}
+
+[data-theme="avocado"] #vertexRegion {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] #vertexServiceAccount {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="avocado"] #vertexServiceAccount::placeholder {
+    color: var(--muted-text);
+}

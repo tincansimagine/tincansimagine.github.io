@@ -3181,3 +3181,127 @@ kbd {
         max-height: 250px;
     }
 }
+
+/* Vertex AI 설정 스타일 */
+.vertex-mode-selector {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.vertex-mode-selector label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.vertex-mode-selector label:hover {
+    color: #4285f4;
+}
+
+.vertex-mode-selector input[type="radio"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.vertex-mode-content {
+    padding: 1rem 0;
+}
+
+.vertex-mode-content .input-group {
+    margin-bottom: 1rem;
+}
+
+.vertex-mode-content small {
+    display: block;
+    margin-top: 0.4rem;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.mode-description {
+    padding: 0.8rem;
+    background: #e8f0fe;
+    border-left: 3px solid #4285f4;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #1a73e8;
+}
+
+.import-json-icon-btn {
+    margin-left: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    background: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.import-json-icon-btn:hover {
+    background: #1a73e8;
+    transform: translateY(-1px);
+}
+
+.import-json-icon-btn i {
+    font-size: 1rem;
+}
+
+/* Vertex AI 모바일 최적화 */
+@media (max-width: 768px) {
+    .vertex-mode-selector {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0.8rem;
+    }
+    
+    .vertex-mode-selector label {
+        font-size: 0.95rem;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 6px;
+        border: 2px solid transparent;
+    }
+    
+    .vertex-mode-selector input[type="radio"]:checked + span {
+        color: #4285f4;
+        font-weight: 600;
+    }
+    
+    .vertex-mode-content {
+        padding: 0.5rem 0;
+    }
+    
+    .mode-description {
+        font-size: 0.85rem;
+        padding: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .import-json-icon-btn {
+        margin: 0.3rem 0 0 0;
+        padding: 0.5rem 0.6rem;
+    }
+    
+    #vertexServiceAccount {
+        font-size: 0.75rem;
+        min-height: 150px;
+    }
+    
+    #vertexRegion {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+}

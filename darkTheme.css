@@ -717,3 +717,48 @@
     background-color: rgba(255, 107, 107, 0.2);
     color: #ff5252;
 }
+
+/* Vertex AI 설정 다크모드 */
+[data-theme="dark"] .vertex-mode-selector {
+    background: #1e1e1e;
+    border: 1px solid #404040;
+}
+
+[data-theme="dark"] .vertex-mode-selector label {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .vertex-mode-selector label:hover {
+    color: #6495ed;
+}
+
+[data-theme="dark"] .mode-description {
+    background: #1e3a5f;
+    border-left-color: #6495ed;
+    color: #a0c8ff;
+}
+
+[data-theme="dark"] .import-json-icon-btn {
+    background: #6495ed;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .import-json-icon-btn:hover {
+    background: #5080d0;
+}
+
+[data-theme="dark"] #vertexRegion {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #404040;
+}
+
+[data-theme="dark"] #vertexServiceAccount {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #404040;
+}
+
+[data-theme="dark"] #vertexServiceAccount::placeholder {
+    color: #666666;
+}

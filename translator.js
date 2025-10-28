@@ -7,6 +7,12 @@ let geminiApiKey = localStorage.getItem('geminiApiKey') || '';
 let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
 let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
 let cohereApiKey = localStorage.getItem('cohereApiKey') || '';
+
+// Vertex AI 설정
+let vertexMode = localStorage.getItem('vertexMode') || 'express'; // 'express' 또는 'full'
+let vertexApiKey = localStorage.getItem('vertexApiKey') || '';
+let vertexRegion = localStorage.getItem('vertexRegion') || 'us-central1';
+let vertexServiceAccount = localStorage.getItem('vertexServiceAccount') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let glossaryTerms = JSON.parse(localStorage.getItem('glossaryTerms')) || []; // 용어집을 위한 배열 추가
 let selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
@@ -55,7 +61,7 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.7'; 
+const CURRENT_VERSION = '1.8.8'; 
 const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
@@ -278,6 +284,19 @@ const modelOptions = [
             { value: 'command-r-08-2024', label: 'Command-R 08-2024' },
             { value: 'command-r-plus', label: 'Command-R Plus' },
             { value: 'command-r-plus-08-2024', label: 'Command-R Plus 08-2024' }
+        ]
+    },
+    {
+        group: 'Vertex AI (Gemini)',
+        options: [
+            { value: 'vertex-gemini-2.5-flash', label: 'Vertex Gemini 2.5 Flash' },
+            { value: 'vertex-gemini-2.5-flash-lite', label: 'Vertex Gemini 2.5 Flash Lite' },
+            { value: 'vertex-gemini-2.5-pro', label: 'Vertex Gemini 2.5 Pro' },
+            { value: 'vertex-gemini-2.5-flash-preview-09-2025', label: 'Vertex Gemini 2.5 Flash Preview (09-2025)' },
+            { value: 'vertex-gemini-2.5-flash-lite-preview-09-2025', label: 'Vertex Gemini 2.5 Flash Lite Preview (09-2025)' },
+            { value: 'vertex-gemini-2.5-flash-image-preview', label: 'Vertex Gemini 2.5 Flash Image Preview' },
+            { value: 'vertex-gemini-2.0-flash-001', label: 'Vertex Gemini 2.0 Flash 001' },
+            { value: 'vertex-gemini-2.0-flash-lite-001', label: 'Vertex Gemini 2.0 Flash Lite 001' }
         ]
     }
 ];
@@ -613,6 +632,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 모델 선택 옵션 초기화
     initializeModelSelect();
+    
+    // Vertex AI 설정 이벤트 리스너
+    if (elements.saveVertexSettingsBtn) {
+        elements.saveVertexSettingsBtn.addEventListener('click', saveVertexSettings);
+    }
+    
+    // Vertex AI 모드 전환 이벤트
+    if (elements.vertexModeRadios) {
+        elements.vertexModeRadios.forEach(radio => {
+            radio.addEventListener('change', toggleVertexMode);
+        });
+    }
+    
+    // Service Account JSON 파일 import 이벤트
+    const importServiceAccountBtn = document.getElementById('importServiceAccountBtn');
+    const serviceAccountFileInput = document.getElementById('serviceAccountFileInput');
+    
+    if (importServiceAccountBtn && serviceAccountFileInput) {
+        importServiceAccountBtn.addEventListener('click', () => {
+            serviceAccountFileInput.click();
+        });
+        
+        serviceAccountFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        // JSON 유효성 검사
+                        const jsonContent = event.target.result;
+                        JSON.parse(jsonContent); // 유효성 검사
+                        
+                        // textarea에 JSON 내용 설정
+                        const textarea = document.getElementById('vertexServiceAccount');
+                        if (textarea) {
+                            textarea.value = jsonContent;
+                            showToast('Service Account JSON 파일을 불러왔습니다.', 'success');
+                        }
+                    } catch (error) {
+                        showToast('유효하지 않은 JSON 파일입니다.', 'error');
+                    }
+                };
+                reader.onerror = () => {
+                    showToast('파일을 읽는 중 오류가 발생했습니다.', 'error');
+                };
+                reader.readAsText(file);
+            }
+            // 파일 입력 초기화 (같은 파일을 다시 선택할 수 있도록)
+            e.target.value = '';
+        });
+    }
+    
+    // Vertex AI 설정 복원
+    if (elements.vertexApiKeyInput && vertexApiKey) {
+        elements.vertexApiKeyInput.value = vertexApiKey;
+    }
+    if (elements.vertexRegionSelect && vertexRegion) {
+        elements.vertexRegionSelect.value = vertexRegion;
+    }
+    if (elements.vertexServiceAccountInput && vertexServiceAccount) {
+        elements.vertexServiceAccountInput.value = vertexServiceAccount;
+    }
+    
+    // Vertex 모드 복원
+    const vertexModeRadio = document.querySelector(`input[name="vertexMode"][value="${vertexMode}"]`);
+    if (vertexModeRadio) {
+        vertexModeRadio.checked = true;
+        toggleVertexMode();
+    }
 
     // 저장된 상태 복원
     const savedDirection = localStorage.getItem('currentDirection') || 'enToKo';
@@ -768,6 +856,14 @@ const elements = {
     anthropicApiKeyInput: document.getElementById('anthropicApiKey'),
     cohereApiKeyInput: document.getElementById('cohereApiKey'),
     saveApiKeysBtn: document.getElementById('saveApiKeys'),
+    // Vertex AI 관련 요소
+    vertexApiKeyInput: document.getElementById('vertexApiKey'),
+    vertexRegionSelect: document.getElementById('vertexRegion'),
+    vertexServiceAccountInput: document.getElementById('vertexServiceAccount'),
+    saveVertexSettingsBtn: document.getElementById('saveVertexSettings'),
+    vertexModeRadios: document.querySelectorAll('input[name="vertexMode"]'),
+    vertexExpressModeDiv: document.getElementById('vertexExpressMode'),
+    vertexFullModeDiv: document.getElementById('vertexFullMode'),
     modelSelect: document.getElementById('modelSelect'),
     sourceWord: document.getElementById('sourceWord'),
     targetWord: document.getElementById('targetWord'),
@@ -1024,6 +1120,9 @@ function getApiKey(provider) {
         case 'openai': return openaiApiKey;
         case 'anthropic': return anthropicApiKey;
         case 'cohere': return cohereApiKey;
+        case 'vertex': 
+            // Express mode는 API 키, Full mode는 Service Account 사용
+            return vertexMode === 'express' ? vertexApiKey : 'SERVICE_ACCOUNT';
         default: return '';
     }
 }
@@ -1830,6 +1929,12 @@ function exportSettings() {
             anthropicApiKey,
             cohereApiKey,
             
+            // Vertex AI 설정
+            vertexMode,
+            vertexApiKey,
+            vertexRegion,
+            vertexServiceAccount,
+            
             // 리버스 프록시 설정 (새로 추가)
             useReverseProxy,
             reverseProxyUrl,
@@ -1939,6 +2044,24 @@ function importSettings(file) {
             if (data.cohereApiKey) {
                 cohereApiKey = data.cohereApiKey;
                 localStorage.setItem('cohereApiKey', cohereApiKey);
+            }
+            
+            // Vertex AI 설정 복원
+            if (data.vertexMode) {
+                vertexMode = data.vertexMode;
+                localStorage.setItem('vertexMode', vertexMode);
+            }
+            if (data.vertexApiKey) {
+                vertexApiKey = data.vertexApiKey;
+                localStorage.setItem('vertexApiKey', vertexApiKey);
+            }
+            if (data.vertexRegion) {
+                vertexRegion = data.vertexRegion;
+                localStorage.setItem('vertexRegion', vertexRegion);
+            }
+            if (data.vertexServiceAccount) {
+                vertexServiceAccount = data.vertexServiceAccount;
+                localStorage.setItem('vertexServiceAccount', vertexServiceAccount);
             }
             
             // 리버스 프록시 설정 복원 (v2.0.0부터)
@@ -2260,6 +2383,66 @@ function saveApiKeys() {
         showToast('최소 하나의 API 키를 입력해주세요.', 'error');
     }
 }
+
+// Vertex AI 설정 저장
+function saveVertexSettings() {
+    const newVertexApiKey = elements.vertexApiKeyInput?.value.trim() || '';
+    const newVertexRegion = elements.vertexRegionSelect?.value || 'us-central1';
+    const newVertexServiceAccount = elements.vertexServiceAccountInput?.value.trim() || '';
+    
+    // 현재 선택된 모드 확인
+    const selectedMode = document.querySelector('input[name="vertexMode"]:checked')?.value || 'express';
+    
+    // API 키는 두 모드 모두 필수
+    if (!newVertexApiKey) {
+        showToast('Vertex AI API 키를 입력해주세요.', 'error');
+        return;
+    }
+    
+    vertexApiKey = newVertexApiKey;
+    localStorage.setItem('vertexApiKey', vertexApiKey);
+    
+    if (selectedMode === 'express') {
+        // Express mode는 API 키만 필요
+    } else {
+        // Full version은 Service Account도 필요
+        if (!newVertexServiceAccount) {
+            showToast('Service Account JSON을 입력해주세요.', 'error');
+            return;
+        }
+        // Service Account JSON 유효성 검사
+        try {
+            JSON.parse(newVertexServiceAccount);
+        } catch (e) {
+            showToast('Service Account JSON 형식이 올바르지 않습니다.', 'error');
+            return;
+        }
+        vertexRegion = newVertexRegion;
+        vertexServiceAccount = newVertexServiceAccount;
+        localStorage.setItem('vertexRegion', vertexRegion);
+        localStorage.setItem('vertexServiceAccount', vertexServiceAccount);
+    }
+    
+    vertexMode = selectedMode;
+    localStorage.setItem('vertexMode', vertexMode);
+    showToast('Vertex AI 설정이 저장되었습니다.');
+}
+
+// Vertex AI 모드 전환
+function toggleVertexMode() {
+    const selectedMode = document.querySelector('input[name="vertexMode"]:checked')?.value || 'express';
+    
+    if (elements.vertexExpressModeDiv && elements.vertexFullModeDiv) {
+        if (selectedMode === 'express') {
+            elements.vertexExpressModeDiv.style.display = 'block';
+            elements.vertexFullModeDiv.style.display = 'none';
+        } else {
+            elements.vertexExpressModeDiv.style.display = 'none';
+            elements.vertexFullModeDiv.style.display = 'block';
+        }
+    }
+}
+
 // 테마 관리
 function toggleTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
@@ -2475,6 +2658,9 @@ async function translateText() {
                 break;
             case 'cohere':
                 translatedText = await translateWithCohere(sourceText, apiKey);
+                break;
+            case 'vertex':
+                translatedText = await translateWithVertexAI(sourceText, apiKey);
                 break;
             default:
                 throw new Error('지원하지 않는 모델입니다.');
@@ -3266,6 +3452,321 @@ async function translateWithGemini(text, apiKey) {
     }
 }
 
+// Vertex AI로 번역
+async function translateWithVertexAI(text, apiKey) {
+    console.log('🔷 Vertex AI API 호출 시작 - 모델:', selectedModel);
+    console.log('🔷 Vertex 모드:', vertexMode);
+    
+    // 모델 이름에서 'vertex-' 접두사 제거
+    const actualModelName = selectedModel.replace('vertex-', '');
+    
+    try {
+        let endpoint, headers;
+        
+        if (vertexMode === 'express') {
+            // Express Mode: API 키 사용
+            console.log('🔷 Express Mode 사용');
+            if (!vertexApiKey) {
+                throw new Error('❌ Vertex AI API 키를 입력해주세요.');
+            }
+            
+            endpoint = `https://aiplatform.googleapis.com/v1/publishers/google/models/${actualModelName}:generateContent?key=${vertexApiKey}`;
+            headers = {
+                'Content-Type': 'application/json'
+            };
+        } else {
+            // Full Version: Service Account 사용
+            console.log('🔷 Full Version (Service Account) 사용');
+            if (!vertexServiceAccount) {
+                throw new Error('❌ Service Account JSON을 입력해주세요.');
+            }
+            
+            let serviceAccountData;
+            try {
+                serviceAccountData = JSON.parse(vertexServiceAccount);
+            } catch (e) {
+                throw new Error('❌ Service Account JSON 형식이 올바르지 않습니다.');
+            }
+            
+            // OAuth 토큰 생성
+            const accessToken = await generateVertexAccessToken(serviceAccountData);
+            const projectId = serviceAccountData.project_id;
+            
+            endpoint = `https://${vertexRegion}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${vertexRegion}/publishers/google/models/${actualModelName}:generateContent`;
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            };
+        }
+        
+        // 안전 설정
+        let safetySettings = Object.values({
+            HARM_CATEGORY_HARASSMENT: 'HARM_CATEGORY_HARASSMENT',
+            HARM_CATEGORY_HATE_SPEECH: 'HARM_CATEGORY_HATE_SPEECH',
+            HARM_CATEGORY_SEXUALLY_EXPLICIT: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+            HARM_CATEGORY_DANGEROUS_CONTENT: 'HARM_CATEGORY_DANGEROUS_CONTENT'
+        }).map(category => ({
+            category: category,
+            threshold: 'BLOCK_NONE'
+        }));
+        
+        // Flash 및 Flash Lite 모델은 threshold를 OFF로 설정
+        const flashModels = [
+            'gemini-2.5-flash', 'gemini-2.5-flash-lite', 
+            'gemini-2.5-flash-preview-09-2025', 'gemini-2.5-flash-lite-preview-09-2025',
+            'gemini-2.5-flash-image-preview',
+            'gemini-2.0-flash-001', 'gemini-2.0-flash-lite-001'
+        ];
+        
+        if (flashModels.includes(actualModelName)) {
+            safetySettings = safetySettings.map(setting => ({ ...setting, threshold: 'OFF' }));
+        }
+        
+        // 요청 본문 구성
+        // Vertex AI는 topK를 1~64로 제한 (65 exclusive)
+        const vertexTopK = Math.min(Math.max(modelParams.topK, 1), 64);
+        
+        const requestBody = {
+            contents: usePrefill && prefillPrompt ? [
+                {
+                    role: "user",
+                    parts: [{ text: `${customPrompt}\n${text}` }]
+                },
+                {
+                    role: "model",
+                    parts: [{ text: prefillPrompt.trim() }]
+                }
+            ] : [{
+                role: "user",  // Vertex AI는 명시적으로 role이 필요
+                parts: [{ text: `${customPrompt}\n${text}` }]
+            }],
+            generationConfig: {
+                temperature: modelParams.temperature,
+                topK: vertexTopK,  // Vertex AI 제한에 맞춰 조정
+                topP: modelParams.topP,
+                maxOutputTokens: modelParams.maxTokens
+            },
+            safetySettings: safetySettings
+        };
+        
+        console.log('🔷 요청 엔드포인트:', endpoint);
+        
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(requestBody)
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            
+            // 에러 상세 정보 로깅
+            console.error('❌ Vertex AI API 에러 응답:', {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorData,
+                model: actualModelName,
+                endpoint: endpoint
+            });
+            
+            // 상세한 오류 메시지 제공
+            if (response.status === 400) {
+                if (errorData.error?.message?.includes('API key')) {
+                    throw new Error('❌ API 키가 유효하지 않습니다. 설정에서 올바른 Vertex AI API 키를 입력해주세요.');
+                } else if (errorData.error?.message?.includes('quota')) {
+                    throw new Error('⏰ API 할당량이 초과되었습니다. 잠시 후 다시 시도해주세요.');
+                } else if (errorData.error?.message?.includes('model') || errorData.error?.message?.includes('Model')) {
+                    throw new Error(`🚫 모델 '${actualModelName}' 오류: ${errorData.error?.message}\n\n사용 가능한 모델을 확인해주세요.`);
+                } else if (errorData.error?.message?.includes('region') || errorData.error?.message?.includes('location')) {
+                    throw new Error('🌍 선택한 지역에서는 이 모델을 사용할 수 없습니다. 다른 지역이나 모델을 선택해보세요.');
+                } else if (errorData.error?.message?.includes('blocked')) {
+                    throw new Error('🛡️ 입력 내용이 차단되었습니다. 다른 표현으로 시도해보세요.');
+                }
+                throw new Error(`⚠️ 잘못된 요청입니다: ${errorData.error?.message || '입력을 확인해주세요.'}`);
+            } else if (response.status === 401) {
+                throw new Error('🔑 인증에 실패했습니다. API 키 또는 Service Account 설정을 확인해주세요.');
+            } else if (response.status === 403) {
+                throw new Error('🚨 API 권한이 부족합니다. Vertex AI API가 활성화되어 있는지 확인해주세요.');
+            } else if (response.status === 429) {
+                throw new Error('⚡ 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status === 503) {
+                throw new Error('🔧 서버가 일시적으로 사용 불가능합니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status >= 500) {
+                throw new Error('🔧 서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            }
+            
+            throw new Error(`❌ Vertex AI API 오류 (${response.status}): ${errorData.error?.message || '알 수 없는 오류'}`);
+        }
+        
+        const data = await response.json();
+        
+        // 응답 검증
+        if (!data.candidates || data.candidates.length === 0) {
+            throw new Error('📝 번역 결과를 생성할 수 없습니다. 입력 텍스트를 확인하거나 다른 모델을 시도해보세요.');
+        }
+        
+        const candidate = data.candidates[0];
+        
+        // 안전 필터링으로 인한 차단 확인
+        if (candidate.finishReason === 'SAFETY') {
+            throw new Error('🛡️ 입력 내용이 안전 필터에 의해 차단되었습니다. 다른 표현으로 시도해보세요.');
+        }
+        
+        // 길이 제한으로 인한 차단 확인
+        if (candidate.finishReason === 'MAX_TOKENS') {
+            console.warn('⚠️ 응답이 최대 토큰 수로 인해 잘렸습니다.');
+            showToast('⚠️ 응답이 길어서 일부가 잘렸을 수 있습니다.', 'warning', 5000);
+        }
+        
+        if (!candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
+            throw new Error('📭 빈 응답을 받았습니다. 다시 시도해주세요.');
+        }
+        
+        // 텍스트 추출
+        const textParts = candidate.content.parts.filter(part => part.text);
+        if (textParts.length === 0) {
+            throw new Error('📄 텍스트 응답을 찾을 수 없습니다.');
+        }
+        
+        console.log('✅ Vertex AI 번역 완료');
+        return textParts.map(part => part.text).join('');
+        
+    } catch (error) {
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('🌐 네트워크 연결을 확인해주세요.');
+        }
+        if (error.name === 'AbortError') {
+            throw new Error('⏱️ 요청 시간이 초과되었습니다. 다시 시도해주세요.');
+        }
+        throw error;
+    }
+}
+
+// Vertex AI Service Account용 JWT 생성 및 액세스 토큰 획득
+async function generateVertexAccessToken(serviceAccountData) {
+    try {
+        // JWT 헤더
+        const header = {
+            alg: 'RS256',
+            typ: 'JWT'
+        };
+        
+        // JWT 클레임
+        const now = Math.floor(Date.now() / 1000);
+        const claims = {
+            iss: serviceAccountData.client_email,
+            scope: 'https://www.googleapis.com/auth/cloud-platform',
+            aud: 'https://oauth2.googleapis.com/token',
+            exp: now + 3600,
+            iat: now
+        };
+        
+        // Base64URL 인코딩
+        const base64UrlEncode = (obj) => {
+            const json = JSON.stringify(obj);
+            return btoa(json)
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        };
+        
+        const encodedHeader = base64UrlEncode(header);
+        const encodedClaims = base64UrlEncode(claims);
+        const signatureInput = `${encodedHeader}.${encodedClaims}`;
+        
+        // Private Key 파싱 및 서명 생성
+        const privateKey = serviceAccountData.private_key;
+        
+        // PEM 형식에서 실제 키 내용만 추출
+        const pemHeader = "-----BEGIN PRIVATE KEY-----";
+        const pemFooter = "-----END PRIVATE KEY-----";
+        
+        // PEM 헤더와 푸터 제거
+        let pemContents = privateKey;
+        if (pemContents.includes(pemHeader)) {
+            pemContents = pemContents.split(pemHeader)[1];
+        }
+        if (pemContents.includes(pemFooter)) {
+            pemContents = pemContents.split(pemFooter)[0];
+        }
+        
+        // 모든 공백, 줄바꿈 제거
+        pemContents = pemContents.replace(/[\r\n\s]/g, '');
+        
+        // Base64 디코딩
+        let binaryDer;
+        try {
+            binaryDer = atob(pemContents);
+        } catch (e) {
+            throw new Error('Private key 형식이 올바르지 않습니다. Base64 디코딩 실패.');
+        }
+        
+        const binaryDerArray = new Uint8Array(binaryDer.length);
+        for (let i = 0; i < binaryDer.length; i++) {
+            binaryDerArray[i] = binaryDer.charCodeAt(i);
+        }
+        
+        // Private Key 가져오기
+        const cryptoKey = await crypto.subtle.importKey(
+            'pkcs8',
+            binaryDerArray,
+            {
+                name: 'RSASSA-PKCS1-v1_5',
+                hash: 'SHA-256'
+            },
+            false,
+            ['sign']
+        );
+        
+        // 서명 생성
+        const encoder = new TextEncoder();
+        const signatureData = encoder.encode(signatureInput);
+        const signature = await crypto.subtle.sign(
+            'RSASSA-PKCS1-v1_5',
+            cryptoKey,
+            signatureData
+        );
+        
+        // 서명을 Base64URL로 인코딩
+        const signatureArray = new Uint8Array(signature);
+        let signatureBase64 = '';
+        for (let i = 0; i < signatureArray.length; i++) {
+            signatureBase64 += String.fromCharCode(signatureArray[i]);
+        }
+        signatureBase64 = btoa(signatureBase64)
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
+        
+        const jwt = `${signatureInput}.${signatureBase64}`;
+        
+        // JWT를 사용하여 액세스 토큰 요청
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                assertion: jwt
+            })
+        });
+        
+        if (!tokenResponse.ok) {
+            const errorData = await tokenResponse.json().catch(() => ({}));
+            throw new Error(`OAuth 토큰 요청 실패: ${errorData.error_description || errorData.error || '알 수 없는 오류'}`);
+        }
+        
+        const tokenData = await tokenResponse.json();
+        console.log('✅ Vertex AI 액세스 토큰 생성 완료');
+        return tokenData.access_token;
+        
+    } catch (error) {
+        console.error('❌ Vertex AI 토큰 생성 오류:', error);
+        throw new Error(`🔑 Service Account 인증 실패: ${error.message}`);
+    }
+}
+
 // OpenAI로 번역
 async function translateWithOpenAI(text, apiKey) {
     console.log('🟠 OpenAI API 호출 시작 - 모델:', selectedModel);
@@ -3727,6 +4228,11 @@ function getModelProvider(model) {
     const customModel = customModels.find(m => m.name === model);
     if (customModel) {
         return customModel.provider;
+    }
+    
+    // Vertex AI 모델 확인
+    if (model.startsWith('vertex-')) {
+        return 'vertex';
     }
     
     // 기존 로직

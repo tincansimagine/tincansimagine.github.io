@@ -581,3 +581,48 @@
     background-color: rgba(231, 139, 139, 0.2);
     color: #ff6b6b;
 }
+
+/* Vertex AI 설정 다크 아보카도 테마 */
+[data-theme="dark-avocado"] .vertex-mode-selector {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] .vertex-mode-selector label {
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .vertex-mode-selector label:hover {
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .mode-description {
+    background: rgba(91, 138, 75, 0.2);
+    border-left-color: var(--primary-color);
+    color: var(--accent-color);
+}
+
+[data-theme="dark-avocado"] .import-json-icon-btn {
+    background: var(--primary-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark-avocado"] .import-json-icon-btn:hover {
+    background: var(--hover-color);
+}
+
+[data-theme="dark-avocado"] #vertexRegion {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] #vertexServiceAccount {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark-avocado"] #vertexServiceAccount::placeholder {
+    color: var(--muted-text);
+}

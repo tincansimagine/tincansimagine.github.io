@@ -1415,3 +1415,47 @@
     color: #D32F2F;
     /* Darker Red on hover */
 }
+/* Vertex AI ?¤ì • ?ŒìŠ¤???Œë§ˆ */
+[data-theme="pastel-dream"] .vertex-mode-selector {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] .vertex-mode-selector label {
+    color: var(--text-color);
+}
+
+[data-theme="pastel-dream"] .vertex-mode-selector label:hover {
+    color: var(--primary-color);
+}
+
+[data-theme="pastel-dream"] .mode-description {
+    background: rgba(167, 199, 231, 0.2);
+    border-left-color: var(--primary-color);
+    color: #6B9AC4;
+}
+
+[data-theme="pastel-dream"] .import-json-icon-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-theme="pastel-dream"] .import-json-icon-btn:hover {
+    background: var(--hover-color);
+}
+
+[data-theme="pastel-dream"] #vertexRegion {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] #vertexServiceAccount {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="pastel-dream"] #vertexServiceAccount::placeholder {
+    color: var(--muted-text);
+}
