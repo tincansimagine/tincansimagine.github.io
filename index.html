@@ -574,7 +574,11 @@
                         <option value="asia-northeast1">asia-northeast1</option>
                         <option value="asia-northeast3">asia-northeast3</option>
                         <option value="asia-southeast1">asia-southeast1</option>
+                        <option value="global">global (글로벌 엔드포인트)</option>
+                        <option value="__custom__">사용자 입력…</option>
                     </select>
+                    <input type="text" id="vertexRegionCustom" class="vertex-region-custom-input" placeholder="리전 ID (예: europe-west4)" autocomplete="off" spellcheck="false" style="display: none; width: 100%; box-sizing: border-box; margin-top: 0.45rem;">
+                    <small>Gemini 3.1 Pro (Preview) 등 글로벌 배포 모델은 <strong>global</strong>을 선택하세요. 목록에 없는 리전은「사용자 입력」에서 입력합니다.</small>
                 </div>
                 <div class="input-group">
                     <label for="vertexServiceAccount">
@@ -920,6 +924,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=260507a1"></script>
+    <script src="translator.js?v=260508a1"></script>
   </body>
 </html>

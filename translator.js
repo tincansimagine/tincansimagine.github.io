@@ -14,9 +14,20 @@ let vertexMode = localStorage.getItem('vertexMode') || 'express'; // 'express' �
 let vertexApiKey = localStorage.getItem('vertexApiKey') || '';
 let vertexRegion = localStorage.getItem('vertexRegion') || 'us-central1';
 let vertexServiceAccount = localStorage.getItem('vertexServiceAccount') || '';
+const VERTEX_REGION_CUSTOM = '__custom__';
+const VERTEX_PRESET_REGIONS = new Set([
+    'us-central1', 'us-east1', 'us-west1',
+    'europe-west1', 'europe-west2', 'europe-west3',
+    'asia-northeast1', 'asia-northeast3', 'asia-southeast1',
+    'global'
+]);
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let glossaryTerms = JSON.parse(localStorage.getItem('glossaryTerms')) || []; // 용어집을 위한 배열 추가
 let selectedModel = localStorage.getItem('selectedModel') || 'gemini-3.1-pro';
+if (selectedModel === 'vertex-gemini-3.1-pro') {
+    selectedModel = 'vertex-gemini-3.1-pro-preview';
+    localStorage.setItem('selectedModel', selectedModel);
+}
 
 // 리버스 프록시 설정
 let useReverseProxy = localStorage.getItem('useReverseProxy') === 'true' || false;
@@ -329,7 +340,7 @@ const modelOptions = [
     {
         group: 'Vertex AI (Gemini)',
         options: [
-            { value: 'vertex-gemini-3.1-pro', label: 'Vertex Gemini 3.1 Pro' },
+            { value: 'vertex-gemini-3.1-pro-preview', label: 'Vertex Gemini 3.1 Pro (Preview)' },
             { value: 'vertex-gemini-3.1-flash', label: 'Vertex Gemini 3.1 Flash' },
             { value: 'vertex-gemini-3.1-flash-lite', label: 'Vertex Gemini 3.1 Flash Lite' },
             { value: 'vertex-gemini-3-pro', label: 'Vertex Gemini 3 Pro' },
@@ -689,6 +700,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    if (elements.vertexRegionSelect && elements.vertexRegionCustomInput) {
+        elements.vertexRegionSelect.addEventListener('change', () => {
+            const isCustom = elements.vertexRegionSelect.value === VERTEX_REGION_CUSTOM;
+            setVertexRegionCustomVisibility(isCustom);
+        });
+    }
+    
     // Service Account JSON 파일 import 이벤트
     const importServiceAccountBtn = document.getElementById('importServiceAccountBtn');
     const serviceAccountFileInput = document.getElementById('serviceAccountFileInput');
@@ -728,24 +746,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Vertex AI 설정 복원
-    if (elements.vertexApiKeyInput && vertexApiKey) {
-        elements.vertexApiKeyInput.value = vertexApiKey;
-    }
-    if (elements.vertexRegionSelect && vertexRegion) {
-        elements.vertexRegionSelect.value = vertexRegion;
-    }
-    if (elements.vertexServiceAccountInput && vertexServiceAccount) {
-        elements.vertexServiceAccountInput.value = vertexServiceAccount;
-    }
-    
-    // Vertex 모드 복원
-    const vertexModeRadio = document.querySelector(`input[name="vertexMode"][value="${vertexMode}"]`);
-    if (vertexModeRadio) {
-        vertexModeRadio.checked = true;
-        toggleVertexMode();
-    }
-
     // 저장된 상태 복원
     const savedDirection = localStorage.getItem('currentDirection') || 'enToKo';
     
@@ -904,6 +904,7 @@ const elements = {
     // Vertex AI 관련 요소
     vertexApiKeyInput: document.getElementById('vertexApiKey'),
     vertexRegionSelect: document.getElementById('vertexRegion'),
+    vertexRegionCustomInput: document.getElementById('vertexRegionCustom'),
     vertexServiceAccountInput: document.getElementById('vertexServiceAccount'),
     saveVertexSettingsBtn: document.getElementById('saveVertexSettings'),
     vertexModeRadios: document.querySelectorAll('input[name="vertexMode"]'),
@@ -2440,10 +2441,67 @@ function saveApiKeys() {
     }
 }
 
+function setVertexRegionCustomVisibility(show) {
+    if (!elements.vertexRegionCustomInput) return;
+    elements.vertexRegionCustomInput.style.display = show ? 'block' : 'none';
+    if (!show) {
+        elements.vertexRegionCustomInput.value = '';
+    }
+}
+
+function applyVertexFormFromStorage() {
+    if (elements.vertexApiKeyInput && vertexApiKey) {
+        elements.vertexApiKeyInput.value = vertexApiKey;
+    }
+    if (elements.vertexServiceAccountInput && vertexServiceAccount) {
+        elements.vertexServiceAccountInput.value = vertexServiceAccount;
+    }
+    const region = vertexRegion || 'us-central1';
+    if (elements.vertexRegionSelect) {
+        if (VERTEX_PRESET_REGIONS.has(region)) {
+            elements.vertexRegionSelect.value = region;
+            setVertexRegionCustomVisibility(false);
+        } else {
+            elements.vertexRegionSelect.value = VERTEX_REGION_CUSTOM;
+            if (elements.vertexRegionCustomInput) {
+                elements.vertexRegionCustomInput.value = region;
+            }
+            setVertexRegionCustomVisibility(true);
+        }
+    }
+    const vertexModeRadio = document.querySelector(`input[name="vertexMode"][value="${vertexMode}"]`);
+    if (vertexModeRadio) {
+        vertexModeRadio.checked = true;
+        toggleVertexMode();
+    }
+}
+
+function resolveVertexRegionFromForm() {
+    const sel = elements.vertexRegionSelect?.value || 'us-central1';
+    if (sel === VERTEX_REGION_CUSTOM) {
+        const custom = elements.vertexRegionCustomInput?.value.trim().toLowerCase() || '';
+        if (!custom) {
+            return { ok: false, error: '사용자 입력 리전을 입력해주세요.' };
+        }
+        if (!/^[a-z0-9-]+$/.test(custom)) {
+            return { ok: false, error: '리전 ID는 소문자, 숫자, 하이픈만 사용할 수 있습니다.' };
+        }
+        return { ok: true, region: custom };
+    }
+    return { ok: true, region: sel };
+}
+
+function vertexFullGenerateContentUrl(projectId, location, modelName) {
+    const path = `/v1/projects/${projectId}/locations/${location}/publishers/google/models/${modelName}:generateContent`;
+    if (location === 'global') {
+        return `https://aiplatform.googleapis.com${path}`;
+    }
+    return `https://${location}-aiplatform.googleapis.com${path}`;
+}
+
 // Vertex AI 설정 저장
 function saveVertexSettings() {
     const newVertexApiKey = elements.vertexApiKeyInput?.value.trim() || '';
-    const newVertexRegion = elements.vertexRegionSelect?.value || 'us-central1';
     const newVertexServiceAccount = elements.vertexServiceAccountInput?.value.trim() || '';
     
     // 현재 선택된 모드 확인
@@ -2473,7 +2531,12 @@ function saveVertexSettings() {
             showToast('Service Account JSON 형식이 올바르지 않습니다.', 'error');
             return;
         }
-        vertexRegion = newVertexRegion;
+        const resolved = resolveVertexRegionFromForm();
+        if (!resolved.ok) {
+            showToast(resolved.error, 'error');
+            return;
+        }
+        vertexRegion = resolved.region;
         vertexServiceAccount = newVertexServiceAccount;
         localStorage.setItem('vertexRegion', vertexRegion);
         localStorage.setItem('vertexServiceAccount', vertexServiceAccount);
@@ -3516,8 +3579,13 @@ async function translateWithVertexAI(text, apiKey) {
     console.log('🔷 Vertex AI API 호출 시작 - 모델:', selectedModel);
     console.log('🔷 Vertex 모드:', vertexMode);
     
-    // 모델 이름에서 'vertex-' 접두사 제거
-    const actualModelName = selectedModel.replace('vertex-', '');
+    let actualModelName = selectedModel.replace('vertex-', '');
+    const vertexModelIdAliases = {
+        'gemini-3.1-pro': 'gemini-3.1-pro-preview'
+    };
+    if (vertexModelIdAliases[actualModelName]) {
+        actualModelName = vertexModelIdAliases[actualModelName];
+    }
     
     try {
         let endpoint, headers;
@@ -3551,7 +3619,7 @@ async function translateWithVertexAI(text, apiKey) {
             const accessToken = await generateVertexAccessToken(serviceAccountData);
             const projectId = serviceAccountData.project_id;
             
-            endpoint = `https://${vertexRegion}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${vertexRegion}/publishers/google/models/${actualModelName}:generateContent`;
+            endpoint = vertexFullGenerateContentUrl(projectId, vertexRegion, actualModelName);
             headers = {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
@@ -4743,6 +4811,8 @@ function restoreSettings() {
     if (reverseProxyApiKeyInput) {
         reverseProxyApiKeyInput.value = reverseProxyApiKey;
     }
+
+    applyVertexFormFromStorage();
 }
 
 // 단어 규칙 초기화 함수

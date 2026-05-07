@@ -611,7 +611,8 @@
     background: var(--hover-color);
 }
 
-[data-theme="dark-avocado"] #vertexRegion {
+[data-theme="dark-avocado"] #vertexRegion,
+[data-theme="dark-avocado"] #vertexRegionCustom {
     background-color: var(--input-bg);
     color: var(--text-color);
     border: 1px solid var(--border-color);

@@ -3300,7 +3300,8 @@ kbd {
         min-height: 150px;
     }
     
-    #vertexRegion {
+    #vertexRegion,
+    #vertexRegionCustom {
         font-size: 0.9rem;
         padding: 0.6rem;
     }
