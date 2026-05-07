@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=260507a1">
+    <link rel="stylesheet" href="styles.css?v=260507b1">
     <link rel="stylesheet" href="darkAvocado.css?v=260507a1">
     <link rel="stylesheet" href="avocado.css?v=260507a1">
     <link rel="stylesheet" href="darkTheme.css?v=260507a1">
@@ -531,6 +531,7 @@
         <!-- Vertex AI 설정 섹션 -->
         <div class="settings-section">
             <h2>🔷 Vertex AI 설정</h2>
+            <p class="section-description">Global 엔드포인트와 직접 입력 지역을 지원합니다. 일부 Preview 모델은 global에서만 열릴 수 있어요.</p>
             <div class="vertex-mode-selector">
                 <label>
                     <input type="radio" name="vertexMode" value="express" checked>
@@ -565,6 +566,8 @@
                 <div class="input-group">
                     <label for="vertexRegion">Region</label>
                     <select id="vertexRegion">
+                        <option value="global">global (Preview/최신 Gemini 권장)</option>
+                        <option value="custom">직접 입력...</option>
                         <option value="us-central1">us-central1</option>
                         <option value="us-east1">us-east1</option>
                         <option value="us-west1">us-west1</option>
@@ -575,6 +578,8 @@
                         <option value="asia-northeast3">asia-northeast3</option>
                         <option value="asia-southeast1">asia-southeast1</option>
                     </select>
+                    <input type="text" id="vertexCustomRegion" class="custom-region-input" placeholder="예: us-central1, asia-northeast3" style="display: none;">
+                    <small>Gemini 3.1 Pro Preview는 <code>gemini-3.1-pro-preview</code> 모델 ID를 사용하며, 접근 권한에 따라 global 위치가 필요할 수 있습니다.</small>
                 </div>
                 <div class="input-group">
                     <label for="vertexServiceAccount">
@@ -920,6 +925,6 @@
       <div id="toastContainer" class="toast-container"></div>
       </div>
     </div>
-    <script src="translator.js?v=260507a1"></script>
+    <script src="translator.js?v=260507b1"></script>
   </body>
 </html>

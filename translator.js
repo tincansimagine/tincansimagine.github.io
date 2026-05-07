@@ -12,11 +12,12 @@ let zaiApiKey = localStorage.getItem('zaiApiKey') || '';
 // Vertex AI 설정
 let vertexMode = localStorage.getItem('vertexMode') || 'express'; // 'express' 또는 'full'
 let vertexApiKey = localStorage.getItem('vertexApiKey') || '';
-let vertexRegion = localStorage.getItem('vertexRegion') || 'us-central1';
+let vertexRegion = localStorage.getItem('vertexRegion') || 'global';
+let vertexCustomRegion = localStorage.getItem('vertexCustomRegion') || '';
 let vertexServiceAccount = localStorage.getItem('vertexServiceAccount') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let glossaryTerms = JSON.parse(localStorage.getItem('glossaryTerms')) || []; // 용어집을 위한 배열 추가
-let selectedModel = localStorage.getItem('selectedModel') || 'gemini-3.1-pro';
+let selectedModel = localStorage.getItem('selectedModel') || 'gemini-3.1-pro-preview';
 
 // 리버스 프록시 설정
 let useReverseProxy = localStorage.getItem('useReverseProxy') === 'true' || false;
@@ -106,12 +107,25 @@ let batchTranslationQueue = [];
 let batchTranslationResults = [];
 let batchTranslationAbort = false; // 번역 중단 플래그 추가
 
+
+const MODEL_ALIASES = {
+    'gemini-3.1-pro': 'gemini-3.1-pro-preview',
+    'vertex-gemini-3.1-pro': 'vertex-gemini-3.1-pro-preview'
+};
+
+function normalizeModelName(modelName) {
+    return MODEL_ALIASES[modelName] || modelName;
+}
+
+selectedModel = normalizeModelName(selectedModel);
+localStorage.setItem('selectedModel', selectedModel);
+
 // 모델 옵션 정의
 const modelOptions = [
     {
         group: 'Google Gemini 3.1 / 3',
         options: [
-            { value: 'gemini-3.1-pro', label: 'Gemini 3.1 Pro' },
+            { value: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro Preview' },
             { value: 'gemini-3.1-flash', label: 'Gemini 3.1 Flash' },
             { value: 'gemini-3.1-flash-lite', label: 'Gemini 3.1 Flash Lite' },
             { value: 'gemini-3-pro', label: 'Gemini 3 Pro' },
@@ -329,7 +343,7 @@ const modelOptions = [
     {
         group: 'Vertex AI (Gemini)',
         options: [
-            { value: 'vertex-gemini-3.1-pro', label: 'Vertex Gemini 3.1 Pro' },
+            { value: 'vertex-gemini-3.1-pro-preview', label: 'Vertex Gemini 3.1 Pro Preview' },
             { value: 'vertex-gemini-3.1-flash', label: 'Vertex Gemini 3.1 Flash' },
             { value: 'vertex-gemini-3.1-flash-lite', label: 'Vertex Gemini 3.1 Flash Lite' },
             { value: 'vertex-gemini-3-pro', label: 'Vertex Gemini 3 Pro' },
@@ -681,6 +695,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elements.saveVertexSettingsBtn) {
         elements.saveVertexSettingsBtn.addEventListener('click', saveVertexSettings);
     }
+
+    if (elements.vertexRegionSelect) {
+        elements.vertexRegionSelect.addEventListener('change', toggleVertexCustomRegion);
+    }
     
     // Vertex AI 모드 전환 이벤트
     if (elements.vertexModeRadios) {
@@ -733,8 +751,13 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.vertexApiKeyInput.value = vertexApiKey;
     }
     if (elements.vertexRegionSelect && vertexRegion) {
-        elements.vertexRegionSelect.value = vertexRegion;
+        const hasSavedRegion = Array.from(elements.vertexRegionSelect.options).some(option => option.value === vertexRegion);
+        elements.vertexRegionSelect.value = hasSavedRegion ? vertexRegion : 'custom';
     }
+    if (elements.vertexCustomRegionInput && vertexCustomRegion) {
+        elements.vertexCustomRegionInput.value = vertexCustomRegion;
+    }
+    toggleVertexCustomRegion();
     if (elements.vertexServiceAccountInput && vertexServiceAccount) {
         elements.vertexServiceAccountInput.value = vertexServiceAccount;
     }
@@ -904,6 +927,7 @@ const elements = {
     // Vertex AI 관련 요소
     vertexApiKeyInput: document.getElementById('vertexApiKey'),
     vertexRegionSelect: document.getElementById('vertexRegion'),
+    vertexCustomRegionInput: document.getElementById('vertexCustomRegion'),
     vertexServiceAccountInput: document.getElementById('vertexServiceAccount'),
     saveVertexSettingsBtn: document.getElementById('saveVertexSettings'),
     vertexModeRadios: document.querySelectorAll('input[name="vertexMode"]'),
@@ -1980,6 +2004,7 @@ function exportSettings() {
             vertexMode,
             vertexApiKey,
             vertexRegion,
+            vertexCustomRegion,
             vertexServiceAccount,
             
             // 리버스 프록시 설정 (새로 추가)
@@ -2109,6 +2134,10 @@ function importSettings(file) {
             if (data.vertexRegion) {
                 vertexRegion = data.vertexRegion;
                 localStorage.setItem('vertexRegion', vertexRegion);
+            }
+            if (data.vertexCustomRegion) {
+                vertexCustomRegion = data.vertexCustomRegion;
+                localStorage.setItem('vertexCustomRegion', vertexCustomRegion);
             }
             if (data.vertexServiceAccount) {
                 vertexServiceAccount = data.vertexServiceAccount;
@@ -2443,7 +2472,9 @@ function saveApiKeys() {
 // Vertex AI 설정 저장
 function saveVertexSettings() {
     const newVertexApiKey = elements.vertexApiKeyInput?.value.trim() || '';
-    const newVertexRegion = elements.vertexRegionSelect?.value || 'us-central1';
+    const regionSelectValue = elements.vertexRegionSelect?.value || 'global';
+    const newVertexCustomRegion = elements.vertexCustomRegionInput?.value.trim() || '';
+    const newVertexRegion = regionSelectValue === 'custom' ? newVertexCustomRegion : regionSelectValue;
     const newVertexServiceAccount = elements.vertexServiceAccountInput?.value.trim() || '';
     
     // 현재 선택된 모드 확인
@@ -2462,6 +2493,14 @@ function saveVertexSettings() {
         // Express mode는 API 키만 필요
     } else {
         // Full version은 Service Account도 필요
+        if (!newVertexRegion) {
+            showToast('Vertex AI Region을 입력해주세요.', 'error');
+            return;
+        }
+        if (!/^[a-z0-9-]+$/.test(newVertexRegion)) {
+            showToast('Region은 영문 소문자, 숫자, 하이픈만 사용할 수 있습니다.', 'error');
+            return;
+        }
         if (!newVertexServiceAccount) {
             showToast('Service Account JSON을 입력해주세요.', 'error');
             return;
@@ -2475,13 +2514,36 @@ function saveVertexSettings() {
         }
         vertexRegion = newVertexRegion;
         vertexServiceAccount = newVertexServiceAccount;
+        vertexCustomRegion = regionSelectValue === 'custom' ? newVertexCustomRegion : '';
         localStorage.setItem('vertexRegion', vertexRegion);
+        localStorage.setItem('vertexCustomRegion', vertexCustomRegion);
         localStorage.setItem('vertexServiceAccount', vertexServiceAccount);
     }
     
     vertexMode = selectedMode;
     localStorage.setItem('vertexMode', vertexMode);
     showToast('Vertex AI 설정이 저장되었습니다.');
+}
+
+// Vertex AI 모드 전환
+function toggleVertexCustomRegion() {
+    if (!elements.vertexRegionSelect || !elements.vertexCustomRegionInput) return;
+
+    const useCustomRegion = elements.vertexRegionSelect.value === 'custom';
+    elements.vertexCustomRegionInput.style.display = useCustomRegion ? 'block' : 'none';
+    elements.vertexCustomRegionInput.required = useCustomRegion;
+}
+
+function getVertexLocation() {
+    if (vertexRegion === 'custom') {
+        return vertexCustomRegion || 'global';
+    }
+
+    return vertexRegion || 'global';
+}
+
+function getVertexApiHost(location) {
+    return location === 'global' ? 'aiplatform.googleapis.com' : `${location}-aiplatform.googleapis.com`;
 }
 
 // Vertex AI 모드 전환
@@ -3517,7 +3579,7 @@ async function translateWithVertexAI(text, apiKey) {
     console.log('🔷 Vertex 모드:', vertexMode);
     
     // 모델 이름에서 'vertex-' 접두사 제거
-    const actualModelName = selectedModel.replace('vertex-', '');
+    const actualModelName = normalizeModelName(selectedModel).replace('vertex-', '');
     
     try {
         let endpoint, headers;
@@ -3551,7 +3613,9 @@ async function translateWithVertexAI(text, apiKey) {
             const accessToken = await generateVertexAccessToken(serviceAccountData);
             const projectId = serviceAccountData.project_id;
             
-            endpoint = `https://${vertexRegion}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${vertexRegion}/publishers/google/models/${actualModelName}:generateContent`;
+            const vertexLocation = getVertexLocation();
+            const vertexHost = getVertexApiHost(vertexLocation);
+            endpoint = `https://${vertexHost}/v1/projects/${projectId}/locations/${vertexLocation}/publishers/google/models/${actualModelName}:generateContent`;
             headers = {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
