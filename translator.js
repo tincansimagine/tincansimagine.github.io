@@ -7,6 +7,7 @@ let geminiApiKey = localStorage.getItem('geminiApiKey') || '';
 let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
 let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
 let cohereApiKey = localStorage.getItem('cohereApiKey') || '';
+let zaiApiKey = localStorage.getItem('zaiApiKey') || '';
 
 // Vertex AI 설정
 let vertexMode = localStorage.getItem('vertexMode') || 'express'; // 'express' 또는 'full'
@@ -15,7 +16,7 @@ let vertexRegion = localStorage.getItem('vertexRegion') || 'us-central1';
 let vertexServiceAccount = localStorage.getItem('vertexServiceAccount') || '';
 let wordRules = JSON.parse(localStorage.getItem('wordRules')) || [];
 let glossaryTerms = JSON.parse(localStorage.getItem('glossaryTerms')) || []; // 용어집을 위한 배열 추가
-let selectedModel = localStorage.getItem('selectedModel') || 'gemini-1.5-pro-002';
+let selectedModel = localStorage.getItem('selectedModel') || 'gemini-3.1-pro';
 
 // 리버스 프록시 설정
 let useReverseProxy = localStorage.getItem('useReverseProxy') === 'true' || false;
@@ -61,8 +62,8 @@ let userTemplates = JSON.parse(localStorage.getItem('userTemplates')) || {};
 let autoSaveInterval = null;
 let lastSaveTime = 0;
 let currentFilter = 'all';
-const CURRENT_VERSION = '1.8.8'; 
-const UPDATE_NOTIFICATIONS = 1;  // 업데이트 알림 개수
+const CURRENT_VERSION = '1.9.0'; 
+const UPDATE_NOTIFICATIONS = 2;  // 업데이트 알림 개수
 const router = {
     currentPage: 'main',
     
@@ -107,6 +108,16 @@ let batchTranslationAbort = false; // 번역 중단 플래그 추가
 
 // 모델 옵션 정의
 const modelOptions = [
+    {
+        group: 'Google Gemini 3.1 / 3',
+        options: [
+            { value: 'gemini-3.1-pro', label: 'Gemini 3.1 Pro' },
+            { value: 'gemini-3.1-flash', label: 'Gemini 3.1 Flash' },
+            { value: 'gemini-3.1-flash-lite', label: 'Gemini 3.1 Flash Lite' },
+            { value: 'gemini-3-pro', label: 'Gemini 3 Pro' },
+            { value: 'gemini-3-flash', label: 'Gemini 3 Flash' }
+        ]
+    },
     {
         group: 'Google Gemini 2.5',
         options: [
@@ -213,6 +224,21 @@ const modelOptions = [
     {
         group: 'OpenAI GPT-5',
         options: [
+            { value: 'gpt-5.5', label: 'GPT-5.5' },
+            { value: 'gpt-5.5-pro', label: 'GPT-5.5 Pro' },
+            { value: 'chat-latest', label: 'Chat Latest (GPT-5.5 Instant)' },
+            { value: 'gpt-5.4', label: 'GPT-5.4' },
+            { value: 'gpt-5.4-mini', label: 'GPT-5.4 Mini' },
+            { value: 'gpt-5.4-nano', label: 'GPT-5.4 Nano' },
+            { value: 'gpt-5.4-pro', label: 'GPT-5.4 Pro' },
+            { value: 'gpt-5.3-chat-latest', label: 'GPT-5.3 Chat Latest' },
+            { value: 'gpt-5.2', label: 'GPT-5.2' },
+            { value: 'gpt-5.2-2025-12-11', label: 'GPT-5.2 2025-12-11' },
+            { value: 'gpt-5.2-pro', label: 'GPT-5.2 Pro' },
+            { value: 'gpt-5.1', label: 'GPT-5.1' },
+            { value: 'gpt-5.1-chat-latest', label: 'GPT-5.1 Chat Latest' },
+            { value: 'gpt-5.1-codex', label: 'GPT-5.1 Codex' },
+            { value: 'gpt-5.1-codex-mini', label: 'GPT-5.1 Codex Mini' },
             { value: 'gpt-5', label: 'GPT-5' },
             { value: 'gpt-5-2025-08-07', label: 'GPT-5 2025-08-07' },
             { value: 'gpt-chat-latest', label: 'GPT Chat Latest' },
@@ -234,8 +260,12 @@ const modelOptions = [
         ]
     },
     {
-        group: 'Claude 4',
+        group: 'Claude 4.x',
         options: [
+            { value: 'claude-opus-4-7', label: 'Claude Opus 4.7' },
+            { value: 'claude-sonnet-4-6', label: 'Claude Sonnet 4.6' },
+            { value: 'claude-haiku-4-5', label: 'Claude Haiku 4.5' },
+            { value: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5 2025-10-01' },
             { value: 'claude-opus-4-20250514', label: 'Claude Opus 4 2025-05-14' },
             { value: 'claude-4-sonnet-20250514', label: 'Claude 4 Sonnet 2025-05-14' },
             { value: 'claude-4-sonnet-thinking', label: 'Claude 4 Sonnet Thinking' },
@@ -275,6 +305,16 @@ const modelOptions = [
         ]
     },
     {
+        group: 'Z.AI GLM',
+        options: [
+            { value: 'glm-4.7', label: 'GLM-4.7' },
+            { value: 'glm-4.7-flashx', label: 'GLM-4.7 FlashX' },
+            { value: 'glm-4.7-flash', label: 'GLM-4.7 Flash' },
+            { value: 'glm-4.6', label: 'GLM-4.6' },
+            { value: 'glm-4.6v', label: 'GLM-4.6V' }
+        ]
+    },
+    {
         group: 'Cohere',
         options: [
             { value: 'command-a-03-2025', label: 'Command-A 03-2025' },
@@ -289,6 +329,10 @@ const modelOptions = [
     {
         group: 'Vertex AI (Gemini)',
         options: [
+            { value: 'vertex-gemini-3.1-pro', label: 'Vertex Gemini 3.1 Pro' },
+            { value: 'vertex-gemini-3.1-flash', label: 'Vertex Gemini 3.1 Flash' },
+            { value: 'vertex-gemini-3.1-flash-lite', label: 'Vertex Gemini 3.1 Flash Lite' },
+            { value: 'vertex-gemini-3-pro', label: 'Vertex Gemini 3 Pro' },
             { value: 'vertex-gemini-2.5-flash', label: 'Vertex Gemini 2.5 Flash' },
             { value: 'vertex-gemini-2.5-flash-lite', label: 'Vertex Gemini 2.5 Flash Lite' },
             { value: 'vertex-gemini-2.5-pro', label: 'Vertex Gemini 2.5 Pro' },
@@ -855,6 +899,7 @@ const elements = {
     openaiApiKeyInput: document.getElementById('openaiApiKey'),
     anthropicApiKeyInput: document.getElementById('anthropicApiKey'),
     cohereApiKeyInput: document.getElementById('cohereApiKey'),
+    zaiApiKeyInput: document.getElementById('zaiApiKey'),
     saveApiKeysBtn: document.getElementById('saveApiKeys'),
     // Vertex AI 관련 요소
     vertexApiKeyInput: document.getElementById('vertexApiKey'),
@@ -1120,6 +1165,7 @@ function getApiKey(provider) {
         case 'openai': return openaiApiKey;
         case 'anthropic': return anthropicApiKey;
         case 'cohere': return cohereApiKey;
+        case 'zai': return zaiApiKey;
         case 'vertex': 
             // Express mode는 API 키, Full mode는 Service Account 사용
             return vertexMode === 'express' ? vertexApiKey : 'SERVICE_ACCOUNT';
@@ -1928,6 +1974,7 @@ function exportSettings() {
             openaiApiKey,
             anthropicApiKey,
             cohereApiKey,
+            zaiApiKey,
             
             // Vertex AI 설정
             vertexMode,
@@ -2044,6 +2091,10 @@ function importSettings(file) {
             if (data.cohereApiKey) {
                 cohereApiKey = data.cohereApiKey;
                 localStorage.setItem('cohereApiKey', cohereApiKey);
+            }
+            if (data.zaiApiKey) {
+                zaiApiKey = data.zaiApiKey;
+                localStorage.setItem('zaiApiKey', zaiApiKey);
             }
             
             // Vertex AI 설정 복원
@@ -2360,8 +2411,9 @@ function saveApiKeys() {
     const newOpenAIKey = elements.openaiApiKeyInput.value.trim();
     const newAnthropicKey = elements.anthropicApiKeyInput.value.trim();
     const newCohereKey = elements.cohereApiKeyInput.value.trim();
+    const newZaiKey = elements.zaiApiKeyInput.value.trim();
 
-    if (newGeminiKey || newOpenAIKey || newAnthropicKey || newCohereKey) {
+    if (newGeminiKey || newOpenAIKey || newAnthropicKey || newCohereKey || newZaiKey) {
         if (newGeminiKey) {
             geminiApiKey = newGeminiKey;
             localStorage.setItem('geminiApiKey', geminiApiKey);
@@ -2377,6 +2429,10 @@ function saveApiKeys() {
         if (newCohereKey) {
             cohereApiKey = newCohereKey;
             localStorage.setItem('cohereApiKey', cohereApiKey);
+        }
+        if (newZaiKey) {
+            zaiApiKey = newZaiKey;
+            localStorage.setItem('zaiApiKey', zaiApiKey);
         }
         showToast('API 키가 저장되었습니다.');
     } else {
@@ -2658,6 +2714,9 @@ async function translateText() {
                 break;
             case 'cohere':
                 translatedText = await translateWithCohere(sourceText, apiKey);
+                break;
+            case 'zai':
+                translatedText = await translateWithZAI(sourceText, apiKey);
                 break;
             case 'vertex':
                 translatedText = await translateWithVertexAI(sourceText, apiKey);
@@ -3340,7 +3399,7 @@ async function translateWithGemini(text, apiKey) {
         'gemini-1.5-flash-exp-0827', 'gemini-1.5-flash-8b-exp-0827', 'gemini-1.5-flash-8b-exp-0924'
     ];
     
-    if (flashModels.includes(selectedModel)) {
+    if (flashModels.includes(selectedModel) || selectedModel.includes('flash')) {
         safetySettings = safetySettings.map(setting => ({ ...setting, threshold: 'OFF' }));
     }
 
@@ -3518,7 +3577,7 @@ async function translateWithVertexAI(text, apiKey) {
             'gemini-2.0-flash-001', 'gemini-2.0-flash-lite-001'
         ];
         
-        if (flashModels.includes(actualModelName)) {
+        if (flashModels.includes(actualModelName) || actualModelName.includes('flash')) {
             safetySettings = safetySettings.map(setting => ({ ...setting, threshold: 'OFF' }));
         }
         
@@ -3942,6 +4001,78 @@ async function translateWithAnthropic(text, apiKey) {
     }
 }
 
+
+// Z.AI GLM으로 번역 (OpenAI 호환 Chat Completions)
+async function translateWithZAI(text, apiKey) {
+    console.log('🟢 Z.AI GLM API 호출 시작 - 모델:', selectedModel);
+
+    try {
+        const baseUrl = useReverseProxy && reverseProxyUrl ?
+            `${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions` :
+            'https://api.z.ai/api/paas/v4/chat/completions';
+
+        const messages = [
+            { role: 'system', content: 'You are a precise, natural translation engine. Return only the requested translation.' },
+            { role: 'user', content: `${customPrompt}\n${text}` }
+        ];
+
+        if (usePrefill && prefillPrompt) {
+            messages.push({
+                role: 'assistant',
+                content: prefillPrompt.trim()
+            });
+        }
+
+        const response = await fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: selectedModel,
+                messages,
+                temperature: modelParams.temperature,
+                max_tokens: modelParams.maxTokens,
+                top_p: modelParams.topP
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            const message = errorData.error?.message || errorData.message || '알 수 없는 오류';
+
+            if (response.status === 400) {
+                throw new Error(`⚠️ 잘못된 요청: ${message}`);
+            } else if (response.status === 401) {
+                throw new Error('🔑 Z.AI API 키가 유효하지 않습니다.');
+            } else if (response.status === 403) {
+                throw new Error('🚨 Z.AI API 키 권한이 부족합니다.');
+            } else if (response.status === 429) {
+                throw new Error('⚡ Z.AI 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.');
+            } else if (response.status >= 500) {
+                throw new Error('🔧 Z.AI 서버 오류입니다. 잠시 후 다시 시도해주세요.');
+            }
+
+            throw new Error(`❌ Z.AI API 오류 (${response.status}): ${message}`);
+        }
+
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content;
+        if (!content) {
+            throw new Error('📄 Z.AI 응답에서 번역 텍스트를 찾을 수 없습니다.');
+        }
+
+        return content;
+    } catch (error) {
+        console.error('Z.AI translation error:', error);
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('🌐 네트워크 연결을 확인해주세요.');
+        }
+        throw error;
+    }
+}
+
 // Cohere로 번역
 async function translateWithCohere(text, apiKey) {
     console.log('🔵 Cohere API 호출 시작 - 모델:', selectedModel);
@@ -4217,7 +4348,8 @@ function getProviderDisplayName(provider) {
         'openai': 'OpenAI',
         'anthropic': 'Anthropic',
         'gemini': 'Google Gemini',
-        'cohere': 'Cohere'
+        'cohere': 'Cohere',
+        'zai': 'Z.AI GLM'
     };
     return providerNames[provider] || provider;
 }
@@ -4236,7 +4368,10 @@ function getModelProvider(model) {
     }
     
     // 기존 로직
-    if (model.includes('gpt-') || model.includes('chatgpt') || model.includes('o1-')) {
+    if (model.startsWith('glm-')) {
+        return 'zai';
+    }
+    if (model.includes('gpt-') || model.includes('chatgpt') || model === 'chat-latest' || model.includes('o1-')) {
         return 'openai';
     } else if (model.includes('claude-') || model.includes('claude') || model.includes('haiku') || model.includes('sonnet') || model.includes('opus')) {
         return 'anthropic';
@@ -4578,6 +4713,7 @@ function restoreApiKeys() {
     if (openaiApiKey) elements.openaiApiKeyInput.value = openaiApiKey;
     if (anthropicApiKey) elements.anthropicApiKeyInput.value = anthropicApiKey;
     if (cohereApiKey) elements.cohereApiKeyInput.value = cohereApiKey;
+    if (zaiApiKey) elements.zaiApiKeyInput.value = zaiApiKey;
 }
 
 // 기본 설정 복원 함수
@@ -5366,6 +5502,12 @@ async function translateSingleBatchItem(sourceText) {
                 break;
             case 'cohere':
                 translatedText = await translateWithCohere(sourceText, apiKey);
+                break;
+            case 'zai':
+                translatedText = await translateWithZAI(sourceText, apiKey);
+                break;
+            case 'vertex':
+                translatedText = await translateWithVertexAI(sourceText, apiKey);
                 break;
             default:
                 throw new Error('지원하지 않는 모델입니다.');

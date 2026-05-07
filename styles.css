@@ -3305,3 +3305,226 @@ kbd {
         padding: 0.6rem;
     }
 }
+/* v1.9.0 UI 정돈: 번역 화면을 더 읽기 쉬운 카드형 워크스페이스로 구성 */
+body {
+    align-items: flex-start;
+    background:
+        radial-gradient(circle at top left, rgba(66, 133, 244, 0.14), transparent 34rem),
+        linear-gradient(180deg, #f6f8fc 0%, #eef2f7 100%);
+}
+
+.container {
+    max-width: 1180px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    box-shadow: 0 18px 55px rgba(15, 23, 42, 0.12);
+}
+
+.header,
+.translation-direction-controls,
+.translation-box,
+.translate-controls,
+.prompt-section,
+.glossary-category-section,
+.batch-translation-section,
+.settings-section,
+.advanced-params-section {
+    animation: none;
+}
+
+.header {
+    margin-bottom: 1.25rem;
+    padding: 0 0 1.1rem;
+}
+
+.header h1 {
+    letter-spacing: -0.04em;
+}
+
+.translation-direction-controls {
+    padding: 0.85rem;
+    background: rgba(248, 250, 252, 0.86);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.translation-box {
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.translation-box > .input-group {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.translation-box > .input-group > label,
+.prompt-section > label,
+.glossary-category-section label,
+.model-select label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.65rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.textarea-container {
+    height: min(54vh, 560px);
+    min-height: 380px;
+}
+
+textarea,
+.formatted-result {
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    border-radius: 14px;
+    padding: 1.1rem 2.6rem 2.4rem 1rem;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.copy-btn,
+.toggle-result-btn,
+.direction-switch-btn,
+.download-btn {
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.translate-controls {
+    margin: 1.25rem auto 1.5rem;
+    padding: 0.6rem;
+    max-width: 520px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 999px;
+}
+
+.translate-btn {
+    min-width: 180px;
+    border-radius: 999px;
+}
+
+.direction-switch-btn {
+    left: 0.6rem;
+}
+
+.prompt-section,
+.glossary-category-section,
+.batch-translation-section,
+.settings-section,
+.advanced-params-section,
+.word-rules-section,
+.style-settings,
+.api-section,
+.custom-model-section,
+.vertex-mode-selector {
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 16px;
+    background: rgba(248, 250, 252, 0.9);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.prompt-controls {
+    align-items: center;
+}
+
+#customPrompt {
+    min-height: 150px;
+}
+
+.model-select-card {
+    margin: 1.25rem 0;
+    padding: 1rem;
+    border: 1px solid rgba(66, 133, 244, 0.22);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(66, 133, 244, 0.08), rgba(255, 255, 255, 0.92));
+    box-shadow: 0 12px 32px rgba(66, 133, 244, 0.08);
+}
+
+.model-select-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+}
+
+.model-update-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: #e8f0fe;
+    color: #1a73e8;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+#modelSelect {
+    width: 100%;
+    border-color: rgba(66, 133, 244, 0.35);
+    font-weight: 600;
+}
+
+.api-section {
+    grid-template-columns: 1fr;
+}
+
+.api-keys {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.api-keys #saveApiKeys {
+    grid-column: 1 / -1;
+    justify-self: end;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 1rem;
+        border-radius: 18px;
+    }
+
+    .translation-box > .input-group {
+        padding: 0.75rem;
+    }
+
+    .textarea-container {
+        height: 330px;
+        min-height: 280px;
+    }
+
+    .translate-controls {
+        max-width: 100%;
+        border-radius: 18px;
+        padding: 0.6rem 3.1rem;
+    }
+
+    .model-select-heading,
+    .api-keys {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .model-update-badge {
+        white-space: normal;
+    }
+
+    .api-keys #saveApiKeys {
+        justify-self: stretch;
+    }
+}
