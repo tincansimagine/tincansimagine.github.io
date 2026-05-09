@@ -197,11 +197,26 @@
             <article class="settings-section wide">
               <h2>API 키</h2>
               <div class="key-grid">
-                <label>Gemini<div class="api-input-container"><input id="geminiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Gemini 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
-                <label>OpenAI<div class="api-input-container"><input id="openaiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="OpenAI 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
-                <label>Anthropic<div class="api-input-container"><input id="anthropicApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Anthropic 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
-                <label>Cohere<div class="api-input-container"><input id="cohereApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Cohere 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
-                <label>Z.AI<div class="api-input-container"><input id="zaiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Z.AI 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
+                <div class="api-key-field">
+                  <label for="geminiApiKey">Gemini</label>
+                  <div class="api-input-container"><input id="geminiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Gemini 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="api-key-field">
+                  <label for="openaiApiKey">OpenAI</label>
+                  <div class="api-input-container"><input id="openaiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="OpenAI 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="api-key-field">
+                  <label for="anthropicApiKey">Anthropic</label>
+                  <div class="api-input-container"><input id="anthropicApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Anthropic 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="api-key-field">
+                  <label for="cohereApiKey">Cohere</label>
+                  <div class="api-input-container"><input id="cohereApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Cohere 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="api-key-field">
+                  <label for="zaiApiKey">Z.AI</label>
+                  <div class="api-input-container"><input id="zaiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Z.AI 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div>
+                </div>
               </div>
               <button id="saveApiKeys" class="primary-btn" type="button">API 키 저장</button>
             </article>
@@ -319,7 +334,10 @@
               <label class="checkline"><input id="useReverseProxy" type="checkbox" /><span class="checkline-label">OpenAI 호환 프록시 사용</span></label>
               <div id="proxySettings" class="nested-setting">
                 <input id="reverseProxyUrl" placeholder="https://example.com" autocomplete="off">
-                <input id="reverseProxyApiKey" type="password" placeholder="프록시 API 키" autocomplete="off">
+                <div class="api-input-container">
+                  <input id="reverseProxyApiKey" type="password" placeholder="프록시 API 키" autocomplete="off">
+                  <button class="toggle-password" type="button" aria-label="프록시 API 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button>
+                </div>
                 <div class="inline-actions"><button id="testProxyBtn" class="small-btn" type="button">연결 테스트</button><button id="detectModelsBtn" class="small-btn" type="button">모델 감지</button></div>
               </div>
               <div class="term-row">
@@ -336,7 +354,12 @@
                 <label><input type="radio" name="vertexMode" value="express" checked /><span>Express API 키</span></label>
                 <label><input type="radio" name="vertexMode" value="full" /><span>Service Account JSON</span></label>
               </div>
-              <div id="vertexExpressMode" class="nested-setting"><input id="vertexApiKey" type="password" placeholder="Vertex API 키" autocomplete="off"></div>
+              <div id="vertexExpressMode" class="nested-setting">
+                <div class="api-input-container">
+                  <input id="vertexApiKey" type="password" placeholder="Vertex API 키" autocomplete="off">
+                  <button class="toggle-password" type="button" aria-label="Vertex API 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button>
+                </div>
+              </div>
               <div id="vertexFullMode" class="nested-setting">
                 <select id="vertexRegion"><option value="us-central1">us-central1</option><option value="us-east1">us-east1</option><option value="us-west1">us-west1</option><option value="asia-northeast3">asia-northeast3</option><option value="global">global</option><option value="__custom__">직접 입력</option></select>
                 <input id="vertexRegionCustom" placeholder="custom-region" autocomplete="off">

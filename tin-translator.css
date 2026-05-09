@@ -1246,6 +1246,7 @@ h2 {
 }
 
 .key-grid label,
+.key-grid .api-key-field,
 .settings-section > label:not(.checkline),
 .param-grid label {
   display: grid;
@@ -1253,6 +1254,12 @@ h2 {
   color: var(--text-soft);
   font-size: 0.9375rem;
   font-weight: 800;
+}
+
+.key-grid .api-key-field > label {
+  margin: 0;
+  font: inherit;
+  color: inherit;
 }
 
 .api-input-container {
@@ -1265,9 +1272,12 @@ h2 {
   display: inline-grid;
   place-items: center;
   min-height: var(--control);
+  border: none;
+  padding: 0;
   border-radius: var(--radius-sm);
   background: var(--surface-muted);
   color: var(--text-soft);
+  cursor: pointer;
 }
 
 .prompt-box,

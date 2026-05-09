@@ -679,10 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeEventListeners();
     initializeHistoryControls();
     displayTranslationHistory('all');
-    // API 키 입력란 이벤트 리스너
-    elements.togglePasswordBtns.forEach(btn => {
-        btn.addEventListener('click', () => togglePasswordVisibility(btn));
-    });
+    setupPasswordToggles();
 
     // 번역 방향 버튼 이벤트 리스너
     elements.koToEnBtn.addEventListener('click', () => switchTranslationDirection('koToEn'));
@@ -1721,19 +1718,32 @@ function removeRule(index) {
 }
 
 function togglePasswordVisibility(button) {
+    if (!button) return;
     const container = button.closest('.api-input-container');
+    if (!container) return;
     const input = container.querySelector('input');
+    if (!input) return;
     const icon = button.querySelector('i');
     
     if (input.type === 'password') {
         input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+        if (icon) {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
     } else {
         input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        if (icon) {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
     }
+}
+
+function onTogglePasswordClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    togglePasswordVisibility(e.currentTarget);
 }
 
 function savePrompt() {
@@ -2343,7 +2353,6 @@ function importSettings(file) {
             removeAllEventListeners();
             setupEventListeners();
             setupShortcuts();
-            setupPasswordToggles();
             setupDataManagement();
             
             // 프롬프트 템플릿 옵션 업데이트
@@ -4690,23 +4699,11 @@ function clearPendingVisionImage() {
     updateVisionAttachmentUi();
 }
 
-// 비밀번호 토글 설정
+// 비밀번호 토글 설정 (label 안에 버튼이 있을 때 클릭이 잡아먹히지 않게 preventDefault · currentTarget 사용)
 function setupPasswordToggles() {
-    elements.togglePasswordBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const input = e.target.closest('.api-input-container').querySelector('input');
-            const icon = e.target.closest('.toggle-password').querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
+    document.querySelectorAll('.toggle-password').forEach((btn) => {
+        btn.removeEventListener('click', onTogglePasswordClick);
+        btn.addEventListener('click', onTogglePasswordClick);
     });
 }
 
