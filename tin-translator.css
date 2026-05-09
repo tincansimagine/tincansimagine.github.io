@@ -546,15 +546,60 @@ h2 {
 }
 
 .editor-pane {
-  display: flex;
+  display: grid;
   min-width: 0;
-  min-height: 520px;
-  flex-direction: column;
+  min-height: min(520px, 78vh);
+  max-height: min(900px, 88vh);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow-sm), var(--shadow);
+}
+
+/* 원문: 헤더 / 본문(가변) / URL / 카운터 — 카운터는 항상 카드 하단 */
+.editor-pane:not(.result-pane) {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+/* 결과: 헤더 / 본문(가변) / 카운터 — 눈(미리보기) 전환 시에도 카운터 행 고정 */
+.editor-pane.result-pane {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.editor-pane > .pane-header {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.editor-pane:not(.result-pane) > textarea {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.editor-pane:not(.result-pane) > .source-url-bar {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+.editor-pane:not(.result-pane) > .counter-line {
+  grid-row: 4;
+  grid-column: 1;
+}
+
+.editor-pane.result-pane > #translatedText,
+.editor-pane.result-pane > .formatted-result {
+  grid-row: 2;
+  grid-column: 1;
+  min-height: 0;
+  align-self: stretch;
+}
+
+.editor-pane.result-pane > .counter-line {
+  grid-row: 3;
+  grid-column: 1;
 }
 
 .pane-header {
@@ -589,21 +634,24 @@ h2 {
   display: none;
 }
 
+/* 본문: 바깥 카드와 한 겹으로 보이게 — 내부 박스 테두리·인셋 제거 */
 .editor-pane textarea {
-  flex: 1 1 auto;
-  min-height: 430px;
-  border: 1px solid color-mix(in srgb, var(--line) 70%, var(--surface));
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  margin: 0 12px 12px;
-  padding: 16px 18px;
+  min-height: 0;
+  resize: vertical;
+  overflow: auto;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
   line-height: 1.75;
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
 }
 
 [data-theme="dark"] .editor-pane textarea {
-  border-color: color-mix(in srgb, var(--line) 85%, transparent);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  color: var(--text);
 }
 
 .formatted-result {
@@ -617,26 +665,30 @@ h2 {
 
 .result-pane.markdown-mode .formatted-result {
   display: block;
-  flex: 1 1 auto;
-  min-height: min(430px, 70vh);
+  min-height: 0;
   max-height: none;
-  margin: 0 12px 12px;
-  padding: 16px 18px;
-  border: 1px solid color-mix(in srgb, var(--line) 70%, var(--surface));
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+  resize: vertical;
+  overflow: auto;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
+  line-height: 1.75;
 }
 
 [data-theme="dark"] .result-pane.markdown-mode .formatted-result {
-  border-color: color-mix(in srgb, var(--line) 85%, transparent);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  box-shadow: none;
 }
 
 .result-pane .formatted-result {
-  flex: 0 0 auto;
   min-height: 120px;
   max-height: 260px;
+  resize: vertical;
   margin: 0;
   padding: 14px 16px;
   line-height: 1.75;
@@ -652,8 +704,10 @@ h2 {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  padding: 0 12px 10px;
-  margin-top: -4px;
+  padding: 10px 14px;
+  margin: 0;
+  border-top: 1px solid var(--line-soft);
+  background: var(--surface-soft);
 }
 
 .source-url-input {
@@ -661,17 +715,21 @@ h2 {
   min-width: 0;
   min-height: var(--control);
   padding: 0 12px;
-  border: 1px solid var(--line);
+  border: none;
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 70%, var(--surface-soft));
+  box-shadow: inset 0 0 0 1px var(--line-soft);
   color: var(--text);
   font: inherit;
 }
 
 .source-url-input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: var(--focus-ring, 0 0 0 2px color-mix(in srgb, var(--primary) 28%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 55%, var(--line-soft)), var(--focus-ring, 0 0 0 2px color-mix(in srgb, var(--primary) 22%, transparent));
+}
+
+[data-theme="dark"] .source-url-input {
+  background: color-mix(in srgb, var(--surface) 55%, var(--surface-soft));
 }
 
 .counter-line {
@@ -1541,11 +1599,8 @@ kbd {
   }
 
   .editor-pane {
-    min-height: 380px;
-  }
-
-  .editor-pane textarea {
-    min-height: 300px;
+    min-height: min(380px, 70vh);
+    max-height: min(820px, 85vh);
   }
 
   .command-bar {
@@ -1695,11 +1750,11 @@ kbd {
   }
 
   .editor-pane {
-    min-height: 340px;
+    min-height: min(340px, 62vh);
+    max-height: min(760px, 82vh);
   }
 
   .editor-pane textarea {
-    min-height: 260px;
     padding: 12px;
   }
 

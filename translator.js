@@ -5120,40 +5120,14 @@ function restoreSettings() {
     updateVisionAttachmentUi();
 }
 
+/** 예전 버전은 ResizeObserver + touchend마다 높이를 맞추면서 모바일에서 픽셀이 계속 커지는 버그가 있었음. 이제 높이는 CSS flex로만 맞춤. */
 function setupEditorHeightSync() {
-    const editors = [elements.sourceText, elements.translatedText].filter(Boolean);
-    if (editors.length < 2) return;
-
-    let syncing = false;
-    const syncHeight = (source) => {
-        if (!source || syncing) return;
-        if (getComputedStyle(source).display === 'none') return;
-        const height = Math.max(360, Math.round(source.getBoundingClientRect().height));
-        syncing = true;
-        requestAnimationFrame(() => {
-            editors.forEach(editor => {
-                if (Math.abs(editor.getBoundingClientRect().height - height) > 2) {
-                    editor.style.height = `${height}px`;
-                }
-            });
-            if (elements.formattedResult) {
-                elements.formattedResult.style.minHeight = `${height}px`;
-            }
-            syncing = false;
-        });
-    };
-
-    if (window.ResizeObserver) {
-        const observer = new ResizeObserver(entries => {
-            syncHeight(entries[0]?.target);
-        });
-        editors.forEach(editor => observer.observe(editor));
-    }
-
-    editors.forEach(editor => {
-        editor.addEventListener('mouseup', () => syncHeight(editor));
-        editor.addEventListener('touchend', () => syncHeight(editor));
+    [elements.sourceText, elements.translatedText].forEach((el) => {
+        if (el) el.style.height = '';
     });
+    if (elements.formattedResult) {
+        elements.formattedResult.style.minHeight = '';
+    }
 }
 
 // 단어 규칙 초기화 함수
