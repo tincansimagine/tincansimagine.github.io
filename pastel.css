@@ -1415,7 +1415,7 @@
     color: #D32F2F;
     /* Darker Red on hover */
 }
-/* Vertex AI ?�정 ?�스???�마 */
+/* Vertex AI ?�정 ?�스???�마 */
 [data-theme="pastel-dream"] .vertex-mode-selector {
     background: var(--input-bg);
     border: 1px solid var(--border-color);

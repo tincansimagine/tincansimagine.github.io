@@ -1,0 +1,220 @@
+/* 깡갤 번역기 웹폰트 — styles.css와 동일 출처 (눈누/jsDelivr 등) */
+@font-face {
+  font-family: "RIDIBatang";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Pretendard-Regular";
+  font-weight: 400;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+  font-style: normal;
+}
+
+/* 구 설정값 Pretendard 와 호환 */
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SUIT-Regular";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Chosunilbo_myungjo";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ChosunSm";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.1/ChosunSm.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ChosunGu";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.1/ChosunGu.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ChosunSg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.1/ChosunSg.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NotoSerifKR";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NotoSerifKR.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GangwonEdu_OTFBoldA";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MaruBuriSemiBold";
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.eot);
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.eot?#iefix) format("embedded-opentype"),
+    url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.woff2) format("woff2"),
+    url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.woff) format("woff"),
+    url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-SemiBold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "SunBatang-Light";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/SunBatang-Light.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "S-CoreDream-3Light";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "KyoboHandwriting2020A";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2112@1.0/KyoboHandwriting2020A.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_corncorn-Rg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2412-1@1.0/Ownglyph_corncorn-Rg.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SDKukdetopokki";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SDKukdetopokki.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MapoGoldenPier";
+  font-weight: normal;
+  src: url("https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoGoldenPierA.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Iropke Batang";
+  font-weight: 400;
+  font-style: normal;
+  src: url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot);
+  src: url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot?#iefix) format("embedded-opentype"),
+    url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.woff) format("woff"),
+    url(//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Jeju Myeongjo";
+  font-weight: 400;
+  font-style: normal;
+  src: url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.eot?#iefix) format("embedded-opentype"),
+    url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.woff2) format("woff2"),
+    url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.woff) format("woff"),
+    url(//fonts.gstatic.com/ea/jejumyeongjo/v3/JejuMyeongjo-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Father_loveletter";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/naverfont_03@1.0/Father_loveletter.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "KyoboHand";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/KyoboHand.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Danjo-bold-Regular";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/Danjo-bold-Regular.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_wiseelist-Rg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2501-1@1.1/Ownglyph_wiseelist-Rg.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_ParkDaHyun";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Uiyeun";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Uiyeun.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Yoonwoo";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.1/Yoonwoo.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ownglyph_ryuttung-Rg";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2405-2@1.0/Ownglyph_ryuttung-Rg.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GowunDodum-Regular";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SF_HambakSnow";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2106@1.1/SF_HambakSnow.woff") format("woff");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "LeeSeoyun";
+  font-weight: normal;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff") format("woff");
+  font-style: normal;
+}

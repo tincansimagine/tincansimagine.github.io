@@ -87,11 +87,14 @@ const router = {
       // 네비게이션 버튼 상태 업데이트
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
       });
       
       // 선택된 페이지 표시
       document.getElementById(`${page}Page`).classList.add('active');
-      document.querySelector(`[data-page="${page}"]`).classList.add('active');
+      const activeNav = document.querySelector(`[data-page="${page}"]`);
+      activeNav.classList.add('active');
+      activeNav.setAttribute('aria-selected', 'true');
       
       // 현재 페이지 저장
       this.currentPage = page;
@@ -730,6 +733,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         const textarea = document.getElementById('vertexServiceAccount');
                         if (textarea) {
                             textarea.value = jsonContent;
+                            const fullModeRadio = document.querySelector('input[name="vertexMode"][value="full"]');
+                            if (fullModeRadio) {
+                                fullModeRadio.checked = true;
+                                toggleVertexMode();
+                            }
                             showToast('Service Account JSON 파일을 불러왔습니다.', 'success');
                         }
                     } catch (error) {
@@ -954,6 +962,10 @@ const elements = {
     setTemplateButtons: document.querySelectorAll('.set-template-btn'),
     fileUpload: document.getElementById('file-upload'),
     fileUploadBtn: document.querySelector('.file-upload-btn'),
+    visionUpload: document.getElementById('vision-upload'),
+    clearVisionImageBtn: document.getElementById('clearVisionImage'),
+    sourceUrlInput: document.getElementById('sourceUrlInput'),
+    fetchUrlTextBtn: document.getElementById('fetchUrlTextBtn'),
     dropZone: document.getElementById('sourceText'),
     toggleHistory: document.getElementById('toggleHistory'),
     historyContent: document.getElementById('historyContent'),
@@ -1121,32 +1133,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 토스트 메시지 표시
 function showToast(message, type = 'success', duration = 3000) {
-    // 기존 토스트 제거
     clearTimeout(toastTimeout);
     const existingToasts = document.querySelectorAll('.toast');
-    existingToasts.forEach(toast => {
-        if (elements.toastContainer.contains(toast)) {
-            elements.toastContainer.removeChild(toast);
+    existingToasts.forEach(t => {
+        if (elements.toastContainer.contains(t)) {
+            elements.toastContainer.removeChild(t);
         }
     });
 
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `
-        ${message}
-        <button class="close-toast" onclick="this.parentElement.remove()">✕</button>
-    `;
+
+    const msgEl = document.createElement('span');
+    msgEl.className = 'toast-message';
+    msgEl.textContent = message;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'close-toast';
+    closeBtn.setAttribute('aria-label', '닫기');
+    closeBtn.textContent = '\u00D7';
+    closeBtn.addEventListener('click', () => {
+        if (elements.toastContainer.contains(toast)) {
+            elements.toastContainer.removeChild(toast);
+        }
+    });
+
+    toast.appendChild(msgEl);
+    toast.appendChild(closeBtn);
     elements.toastContainer.appendChild(toast);
 
-    // 에러 메시지도 일정 시간 후 자동으로 사라지도록 수정
     toastTimeout = setTimeout(() => {
         if (elements.toastContainer.contains(toast)) {
-            toast.style.animation = 'fadeOut 0.3s ease-out forwards';
+            toast.style.animation = 'toastFadeOut 0.28s ease-out forwards';
             setTimeout(() => {
                 if (elements.toastContainer.contains(toast)) {
                     elements.toastContainer.removeChild(toast);
                 }
-            }, 300);
+            }, 280);
         }
     }, duration);
 }
@@ -1168,8 +1192,11 @@ function getApiKey(provider) {
         case 'cohere': return cohereApiKey;
         case 'zai': return zaiApiKey;
         case 'vertex': 
-            // Express mode는 API 키, Full mode는 Service Account 사용
-            return vertexMode === 'express' ? vertexApiKey : 'SERVICE_ACCOUNT';
+            // Express mode는 API 키, Full mode는 Service Account JSON만 있으면 된다.
+            if (vertexMode === 'full' || (!vertexApiKey && vertexServiceAccount)) {
+                return vertexServiceAccount ? 'SERVICE_ACCOUNT' : '';
+            }
+            return vertexApiKey;
         default: return '';
     }
 }
@@ -1260,6 +1287,8 @@ function updateProxyModelList() {
     } else {
         initializeModelSelect();
     }
+
+    updateVisionAttachmentUi();
 }
 
 function toggleReverseProxy() {
@@ -1281,6 +1310,7 @@ function toggleReverseProxy() {
     }
     
     saveReverseProxySettings();
+    updateVisionAttachmentUi();
 }
 
 // 리버스 프록시에서 사용 가능한 모델 자동 탐지
@@ -1438,6 +1468,18 @@ function handleFontSizeChange() {
 }
 
 if (elements.fontFamilySelect) {
+    const normalizeEditorFont = () => {
+        if (selectedFont === 'Pretendard') {
+            selectedFont = 'Pretendard-Regular';
+            localStorage.setItem('selectedFont', selectedFont);
+        }
+        const optValues = new Set(Array.from(elements.fontFamilySelect.options).map(o => o.value));
+        if (!optValues.has(selectedFont)) {
+            selectedFont = 'RIDIBatang';
+            localStorage.setItem('selectedFont', selectedFont);
+        }
+    };
+    normalizeEditorFont();
     elements.fontFamilySelect.value = selectedFont;
     elements.fontFamilySelect.addEventListener('change', (e) => {
         selectedFont = e.target.value;
@@ -1449,29 +1491,40 @@ if (elements.fontFamilySelect) {
 }
 
 function initializeFontSettings() {
-    // localStorage에서 저장된 폰트 가져오기
     const savedFont = localStorage.getItem('selectedFont');
-    if (savedFont) {
+    if (savedFont !== null && savedFont !== undefined) {
         selectedFont = savedFont;
-        elements.sourceText.style.fontFamily = selectedFont;
-        elements.translatedText.style.fontFamily = selectedFont;
-        elements.formattedResult.style.fontFamily = selectedFont;
-        
-        // select 요소에도 저장된 값 적용
-        const fontSelect = document.getElementById('fontSelect');
-        if (fontSelect) {
-            fontSelect.value = selectedFont;
-        }
     }
+    if (selectedFont === 'Pretendard') {
+        selectedFont = 'Pretendard-Regular';
+        localStorage.setItem('selectedFont', selectedFont);
+    }
+    if (elements.fontFamilySelect) {
+        const optValues = new Set(Array.from(elements.fontFamilySelect.options).map(o => o.value));
+        if (!optValues.has(selectedFont)) {
+            selectedFont = 'RIDIBatang';
+            localStorage.setItem('selectedFont', selectedFont);
+        }
+        elements.fontFamilySelect.value = selectedFont;
+    }
+    elements.sourceText.style.fontFamily = selectedFont;
+    elements.translatedText.style.fontFamily = selectedFont;
+    elements.formattedResult.style.fontFamily = selectedFont;
 }
 
 // 결과 보기 모드 변수
 let showEditableResult = true; // true: 편집 모드, false: 미리보기 모드
 
+/** 번역 요청에 함께 보낼 이미지 (Gemini / GPT-4o·5 / Claude 3+ 등 비전 모델) */
+let pendingVisionImage = null; // { mimeType: string, dataBase64: string } | null
+
 function formatText(text) {
     if (!enableMarkdown) {
+        const resultPaneOff = elements.translatedText?.closest('.result-pane');
+        if (resultPaneOff) resultPaneOff.classList.remove('markdown-mode');
         elements.formattedResult.style.display = 'none';
         elements.translatedText.style.display = 'block';
+        elements.translatedText.readOnly = false;
         return text;
     }
     // 기본 텍스트 색상 설정
@@ -1508,13 +1561,16 @@ function formatText(text) {
     // 마크다운 변환
     let formatted = marked.parse(text);
 
-    // 토글 상태에 따라 표시 결정
+    const resultPane = elements.translatedText?.closest('.result-pane');
+    elements.translatedText.readOnly = !showEditableResult;
     if (showEditableResult) {
-        elements.formattedResult.style.display = 'none';
+        if (resultPane) resultPane.classList.remove('markdown-mode');
         elements.translatedText.style.display = 'block';
+        elements.formattedResult.style.display = 'none';
     } else {
-        elements.formattedResult.style.display = 'block';
+        if (resultPane) resultPane.classList.add('markdown-mode');
         elements.translatedText.style.display = 'none';
+        elements.formattedResult.style.display = 'block';
     }
     elements.formattedResult.style.fontFamily = selectedFont;
     elements.sourceText.style.fontFamily = selectedFont;
@@ -1628,6 +1684,7 @@ function escapeRegExp(string) {
 
 // 단어 규칙 표시
 function displayWordRules() {
+    if (!elements.rulesList) return;
     elements.rulesList.innerHTML = '';
     wordRules.forEach((rule, index) => {
         const ruleElement = document.createElement('div');
@@ -1640,6 +1697,27 @@ function displayWordRules() {
         `;
         elements.rulesList.appendChild(ruleElement);
     });
+}
+
+function addWordRule(source, target) {
+    const existingIndex = wordRules.findIndex(rule => rule.source === source);
+    if (existingIndex >= 0) {
+        wordRules[existingIndex].target = target;
+        showToast('단어 규칙이 업데이트되었습니다.', 'success');
+    } else {
+        wordRules.push({ source, target });
+        showToast('단어 규칙이 추가되었습니다.', 'success');
+    }
+    localStorage.setItem('wordRules', JSON.stringify(wordRules));
+    displayWordRules();
+}
+
+function removeRule(index) {
+    if (index < 0 || index >= wordRules.length) return;
+    wordRules.splice(index, 1);
+    localStorage.setItem('wordRules', JSON.stringify(wordRules));
+    displayWordRules();
+    showToast('단어 규칙이 삭제되었습니다.', 'success');
 }
 
 function togglePasswordVisibility(button) {
@@ -2348,6 +2426,10 @@ function handleColorChange(e) {
             emphasisColor = color;
             localStorage.setItem('emphasisColor', color);
             break;
+        case 'boldColor':
+            boldColor = color;
+            localStorage.setItem('boldColor', color);
+            break;
     }
     
     formattedResult();
@@ -2371,6 +2453,7 @@ function handleModelChange(e) {
     
     // 모델 변경 시 파라미터 가시성 업데이트
     updateParamVisibility();
+    updateVisionAttachmentUi();
 }
 
 // 프롬프트 템플릿 처리
@@ -2507,19 +2590,16 @@ function saveVertexSettings() {
     // 현재 선택된 모드 확인
     const selectedMode = document.querySelector('input[name="vertexMode"]:checked')?.value || 'express';
     
-    // API 키는 두 모드 모두 필수
-    if (!newVertexApiKey) {
-        showToast('Vertex AI API 키를 입력해주세요.', 'error');
-        return;
-    }
-    
-    vertexApiKey = newVertexApiKey;
-    localStorage.setItem('vertexApiKey', vertexApiKey);
-    
     if (selectedMode === 'express') {
         // Express mode는 API 키만 필요
+        if (!newVertexApiKey) {
+            showToast('Vertex AI Express API 키를 입력해주세요.', 'error');
+            return;
+        }
+        vertexApiKey = newVertexApiKey;
+        localStorage.setItem('vertexApiKey', vertexApiKey);
     } else {
-        // Full version은 Service Account도 필요
+        // Full version은 Service Account JSON만 필요
         if (!newVertexServiceAccount) {
             showToast('Service Account JSON을 입력해주세요.', 'error');
             return;
@@ -2538,6 +2618,8 @@ function saveVertexSettings() {
         }
         vertexRegion = resolved.region;
         vertexServiceAccount = newVertexServiceAccount;
+        vertexApiKey = newVertexApiKey;
+        localStorage.setItem('vertexApiKey', vertexApiKey);
         localStorage.setItem('vertexRegion', vertexRegion);
         localStorage.setItem('vertexServiceAccount', vertexServiceAccount);
     }
@@ -2564,6 +2646,10 @@ function toggleVertexMode() {
 
 // 테마 관리
 function toggleTheme(theme) {
+    if (!theme || typeof theme !== 'string') {
+        const currentTheme = localStorage.getItem('selectedTheme') || 'light';
+        theme = currentTheme === 'dark' ? 'light' : 'dark';
+    }
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('selectedTheme', theme);
     showToast(`${theme === 'dark' ? '다크 모드' : theme === 'light' ? '라이트 모드' : theme === 'avocado' ? '아보카도 모드' : theme === 'pastel-dream' ? '파스텔 모드' :'다크 아보카도 모드'}가 적용되었습니다.`);
@@ -2601,28 +2687,30 @@ function saveAsTemplate() {
 // 포맷된 결과 업데이트
 function formattedResult() {
     if (!enableMarkdown) {
+        const resultPane = elements.translatedText?.closest('.result-pane');
+        if (resultPane) resultPane.classList.remove('markdown-mode');
         elements.formattedResult.style.display = 'none';
         elements.translatedText.style.display = 'block';
+        elements.translatedText.readOnly = false;
         return;
     }
     
     // formatText 함수를 여기서 호출하여 스타일 적용
     const formattedText = formatText(elements.translatedText.value);
     elements.formattedResult.innerHTML = formattedText;
-    // 토글 상태에 따라 표시 결정
-    if (showEditableResult) {
-        elements.formattedResult.style.display = 'none';
-        elements.translatedText.style.display = 'block';
-    } else {
-        elements.formattedResult.style.display = 'block';
-        elements.translatedText.style.display = 'none';
-    }
 }
 
 //* 단어 규칙 관리
 // 단어 규칙 섹션 토글
 function toggleRules() {
-    toggleGlossary();
+    if (!elements.rulesContent || !elements.toggleRulesBtn) return;
+
+    const isHidden = elements.rulesContent.style.display === 'none' || elements.rulesContent.style.display === '';
+    elements.rulesContent.style.display = isHidden ? 'block' : 'none';
+    elements.toggleRulesBtn.innerHTML = isHidden
+        ? '<span>규칙 목록</span><i class="fas fa-chevron-up"></i>'
+        : '<span>규칙 목록</span><i class="fas fa-chevron-down"></i>';
+    if (isHidden) displayWordRules();
 }
 
 // 용어집 섹션 토글
@@ -2631,10 +2719,12 @@ function toggleGlossary() {
     
     if (elements.glossaryContent.style.display === 'none' || elements.glossaryContent.style.display === '') {
         elements.glossaryContent.style.display = 'block';
-        elements.toggleGlossary.innerHTML = '<i class="fas fa-chevron-up"></i>';
+        elements.toggleGlossary.setAttribute('aria-expanded', 'true');
+        elements.toggleGlossary.innerHTML = '<span>용어집 목록</span><i class="fas fa-chevron-up"></i>';
     } else {
         elements.glossaryContent.style.display = 'none';
-        elements.toggleGlossary.innerHTML = '<i class="fas fa-chevron-down"></i>';
+        elements.toggleGlossary.setAttribute('aria-expanded', 'false');
+        elements.toggleGlossary.innerHTML = '<span>용어집 목록</span><i class="fas fa-chevron-down"></i>';
     }
 }
 
@@ -2726,10 +2816,19 @@ async function translateText() {
     if (elements.loading.style.display === 'flex') return;
     
     const sourceText = elements.sourceText.value.trim();
-    if (!sourceText) {
-        showToast('번역할 텍스트를 입력해주세요.', 'error');
+    const hasVisionImage = !!(pendingVisionImage && pendingVisionImage.dataBase64);
+
+    if (!sourceText && !hasVisionImage) {
+        showToast('번역할 텍스트를 입력하거나 이미지를 첨부해주세요.', 'error');
         return;
     }
+
+    if (hasVisionImage && !modelSupportsVision(selectedModel)) {
+        showToast('현재 모델은 이미지 번역을 지원하지 않습니다. Gemini, GPT-4o/5, Claude 3·4 등으로 바꿔 주세요.', 'error');
+        return;
+    }
+
+    const historySource = sourceText || (hasVisionImage ? '[이미지 번역]' : '');
 
     const modelProvider = getModelProvider(selectedModel);
     const apiKey = getApiKey(modelProvider);
@@ -2767,13 +2866,13 @@ async function translateText() {
         let translatedText;
         switch(modelProvider) {
             case 'gemini':
-                translatedText = await translateWithGemini(sourceText, apiKey);
+                translatedText = await translateWithGemini(sourceText, apiKey, pendingVisionImage);
                 break;
             case 'openai':
-                translatedText = await translateWithOpenAI(sourceText, apiKey);
+                translatedText = await translateWithOpenAI(sourceText, apiKey, pendingVisionImage);
                 break;
             case 'anthropic':
-                translatedText = await translateWithAnthropic(sourceText, apiKey);
+                translatedText = await translateWithAnthropic(sourceText, apiKey, pendingVisionImage);
                 break;
             case 'cohere':
                 translatedText = await translateWithCohere(sourceText, apiKey);
@@ -2782,7 +2881,7 @@ async function translateText() {
                 translatedText = await translateWithZAI(sourceText, apiKey);
                 break;
             case 'vertex':
-                translatedText = await translateWithVertexAI(sourceText, apiKey);
+                translatedText = await translateWithVertexAI(sourceText, apiKey, pendingVisionImage);
                 break;
             default:
                 throw new Error('지원하지 않는 모델입니다.');
@@ -2821,7 +2920,7 @@ async function translateText() {
             }
             
             formattedResult();
-            saveToHistory(sourceText, translatedText, selectedModel);
+            saveToHistory(historySource, translatedText, selectedModel);
             localStorage.setItem('lastTranslation', translatedText);
             
             // 번역 완료 로그 출력
@@ -2832,7 +2931,8 @@ async function translateText() {
             showToast('번역이 완료되었습니다.');
 
             saveContent();
-
+            pendingVisionImage = null;
+            updateVisionAttachmentUi();
         }
     } catch (error) {
         console.error('Translation error:', error);
@@ -2906,7 +3006,7 @@ function restoreTranslationData(id) {
     
     // 마크다운 변환이 활성화되어 있다면 번역 결과 포맷팅
     if (enableMarkdown) {
-        formatText(item.translated);
+        formattedResult();
     }
     
     // 복원 성공 메시지 표시
@@ -2933,42 +3033,6 @@ function saveToHistory(source, translated, model) {
     
     // 히스토리 UI 업데이트
     displayTranslationHistory('all');
-}
-
-function updateHistoryList(searchTerm = '') {
-    const historyList = document.getElementById('historyList');
-    historyList.innerHTML = '';
-    
-    const filteredHistory = searchTerm
-      ? translationHistory.filter(item => 
-          item.source.includes(searchTerm) || 
-          item.translated.includes(searchTerm))
-      : translationHistory;
-      
-    filteredHistory.forEach(item => {
-      const historyItem = document.createElement('div');
-      historyItem.className = 'history-item';
-      historyItem.innerHTML = `
-        <div class="history-item-header">
-            <div class="history-info-left">
-                <span class="history-timestamp">${new Date(item.timestamp).toLocaleString()}</span>
-                <button class="bookmark-btn ${item.bookmarked ? 'active' : ''}" data-id="${item.id}">
-                    ★
-                </button>
-            </div>
-            <span class="history-model">${item.model}</span>
-        </div>
-        <div class="history-text">
-            <div class="history-source">${item.source}</div>
-            <div class="history-translated">${item.translated}</div>
-        </div>
-        <div class="history-actions">
-            <button class="btn-small restore-btn" data-id="${item.id}">복원</button>
-            <button class="btn-small delete-btn" data-id="${item.id}">삭제</button>
-        </div>
-    `;
-      historyList.appendChild(historyItem);
-    });
 }
 
 // 즐겨찾기 토글 함수
@@ -3003,22 +3067,9 @@ function restoreTranslation(id) {
         elements.translatedText.value = historyItem.translated;
         elements.translatedText.style.color = isDarkMode ? baseColor : '#000000';
         
-        // 포맷팅된 결과가 있는 경우 스타일 적용
+        // 포맷된 결과는 formattedResult()에서 통일
         if (enableMarkdown) {
-            const formattedResult = document.getElementById('formattedResult');
-            if (formattedResult) {
-                let formatted = marked.parse(historyItem.translated);
-                
-                // 색상 스타일 적용
-                formatted = formatted.replace(/"([^"]+)"/g, `<span style="color: ${quoteColor}">\"$1\"</span>`);
-                formatted = formatted.replace(/'([^']+)'/g, `<span style="color: ${thoughtColor}">\'$1\'</span>`);
-                formatted = formatted.replace(/_([^_]+)_/g, `<span style="color: ${emphasisColor}">_$1_</span>`);
-                formatted = formatted.replace(/\*\*([^\*]+)\*\*/g, `<span style="color: ${boldColor}">**$1**</span>`);
-                
-                formattedResult.innerHTML = formatted;
-                formattedResult.style.color = isDarkMode ? baseColor : '#000000';
-                formattedResult.style.display = 'block';
-            }
+            formattedResult();
         }
         
         // 글자 수 업데이트
@@ -3046,9 +3097,11 @@ function deleteTranslation(id) {
     
     // 현재 활성화된 필터 확인
     const activeFilter = document.querySelector('.history-filter button.active');
-    const currentFilter = activeFilter ? activeFilter.dataset.filter : 'all';
-    
-    displayTranslationHistory(currentFilter);
+    const filterFromUi = activeFilter ? activeFilter.dataset.filter : 'all';
+    currentFilter = filterFromUi;
+    const search = document.getElementById('historySearch')?.value ?? '';
+
+    displayTranslationHistory(filterFromUi, search);
 }
 
 function formatDate(timestamp) {
@@ -3066,16 +3119,24 @@ function formatDate(timestamp) {
 }
 
 // 번역 히스토리 표시 함수
-function displayTranslationHistory(filter = 'all') {
+function displayTranslationHistory(filter = 'all', searchTerm) {
+    currentFilter = filter;
+
     const historyContainer = document.querySelector('.history-list');
     if (!historyContainer) return;
 
     const history = JSON.parse(localStorage.getItem('translationHistory')) || [];
+    const resolvedSearch =
+        searchTerm !== undefined && searchTerm !== null
+            ? searchTerm
+            : document.getElementById('historySearch')?.value ?? '';
+    const normalizedSearch = resolvedSearch.trim().toLowerCase();
 
     historyContainer.innerHTML = '';
-    
+
     const filteredHistory = history.filter(item => {
-        const isValid = item && 
+        const isValid =
+            item &&
             typeof item === 'object' &&
             'source' in item &&
             'translated' in item &&
@@ -3087,25 +3148,33 @@ function displayTranslationHistory(filter = 'all') {
             return false;
         }
 
-        // 즐겨찾기 필터가 활성화된 경우 즐겨찾기된 항목만 표시
-        if (filter === 'favorites') {
-            return item.bookmarked;
+        if (filter === 'bookmarked' || filter === 'favorites') {
+            if (!item.bookmarked) return false;
         }
+
+        if (normalizedSearch) {
+            const src = (item.source || '').toLowerCase();
+            const tr = (item.translated || '').toLowerCase();
+            if (!src.includes(normalizedSearch) && !tr.includes(normalizedSearch)) {
+                return false;
+            }
+        }
+
         return true;
     });
 
-    // 필터링된 히스토리 표시
     filteredHistory.forEach(item => {
-        const date = new Date(item.timestamp);
-        const formattedDate = `${date.getFullYear()}. ${String(date.getMonth() + 1).padStart(2, '0')}. ${String(date.getDate()).padStart(2, '0')}. ${date.getHours() >= 12 ? '오후' : '오전'} ${String(date.getHours() % 12 || 12).padStart(1, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+        const formattedDate = formatDate(item.timestamp);
+        const starIcon = item.bookmarked ? 'fas' : 'far';
+        const bookmarkLabel = item.bookmarked ? '즐겨찾기 해제' : '즐겨찾기';
 
         const historyItemHTML = `
             <div class="history-item" data-id="${item.id}">
                 <div class="history-item-header">
                     <div class="history-info-left">
                         <span class="history-timestamp">${formattedDate}</span>
-                        <button class="bookmark-btn ${item.bookmarked ? 'active' : ''}" data-id="${item.id}">
-                            ★
+                        <button class="bookmark-btn ${item.bookmarked ? 'active' : ''}" data-id="${item.id}" type="button" aria-label="${bookmarkLabel}" aria-pressed="${item.bookmarked ? 'true' : 'false'}">
+                            <i class="${starIcon} fa-star" aria-hidden="true"></i>
                         </button>
                     </div>
                     <span class="history-model">${item.model}</span>
@@ -3123,11 +3192,14 @@ function displayTranslationHistory(filter = 'all') {
         historyContainer.insertAdjacentHTML('beforeend', historyItemHTML);
     });
 
-    // 필터 버튼 상태 업데이트
     const filterButtons = document.querySelectorAll('.history-filter button');
     filterButtons.forEach(button => {
         button.classList.toggle('active', button.dataset.filter === filter);
     });
+}
+
+function updateHistoryList(searchTerm = '') {
+    displayTranslationHistory(currentFilter, searchTerm);
 }
 
 // 히스토리 가져오기 함수
@@ -3385,16 +3457,28 @@ elements.setTemplateButtons.forEach((button, index) => {
 });
 
 // Gemini로 번역
-async function translateWithGemini(text, apiKey) {
+async function translateWithGemini(text, apiKey, imageAttachment = null) {
     console.log('🔵 Gemini API 호출 시작 - 모델:', selectedModel);
     
     // 리버스 프록시 사용 시 OpenAI 호환 형식으로 요청
     if (useReverseProxy && reverseProxyUrl) {
         console.log('🔄 리버스 프록시를 통한 요청:', reverseProxyUrl);
         try {
+            const userContent = imageAttachment?.dataBase64
+                ? [
+                    { type: 'text', text: buildVisionUserText(text, true) },
+                    {
+                        type: 'image_url',
+                        image_url: {
+                            url: `data:${imageAttachment.mimeType};base64,${imageAttachment.dataBase64}`
+                        }
+                    }
+                ]
+                : `${customPrompt}\n${text}`;
+
             // 메시지 배열 생성
             const messages = [
-                { role: "user", content: `${customPrompt}\n${text}` }
+                { role: "user", content: userContent }
             ];
             
             // 프리필 추가 (리버스 프록시에서도 지원)
@@ -3467,6 +3551,8 @@ async function translateWithGemini(text, apiKey) {
     }
 
     try {
+        const userParts = buildGeminiVisionParts(text, imageAttachment);
+
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`,
             {
@@ -3478,14 +3564,14 @@ async function translateWithGemini(text, apiKey) {
                     contents: usePrefill && prefillPrompt ? [
                         {
                             role: "user",
-                            parts: [{ text: `${customPrompt}\n${text}` }]
+                            parts: userParts
                         },
                         {
                             role: "model",
                             parts: [{ text: prefillPrompt.trim() }]
                         }
                     ] : [{
-                        parts: [{ text: `${customPrompt}\n${text}` }]
+                        parts: userParts
                     }],
                     generationConfig: {
                         temperature: modelParams.temperature,
@@ -3575,7 +3661,11 @@ async function translateWithGemini(text, apiKey) {
 }
 
 // Vertex AI로 번역
-async function translateWithVertexAI(text, apiKey) {
+async function translateWithVertexAI(text, apiKey, imageAttachment = null) {
+    if (vertexMode === 'express' && !vertexApiKey && vertexServiceAccount) {
+        vertexMode = 'full';
+        localStorage.setItem('vertexMode', vertexMode);
+    }
     console.log('🔷 Vertex AI API 호출 시작 - 모델:', selectedModel);
     console.log('🔷 Vertex 모드:', vertexMode);
     
@@ -3653,11 +3743,13 @@ async function translateWithVertexAI(text, apiKey) {
         // Vertex AI는 topK를 1~64로 제한 (65 exclusive)
         const vertexTopK = Math.min(Math.max(modelParams.topK, 1), 64);
         
+        const userParts = buildGeminiVisionParts(text, imageAttachment);
+
         const requestBody = {
             contents: usePrefill && prefillPrompt ? [
                 {
                     role: "user",
-                    parts: [{ text: `${customPrompt}\n${text}` }]
+                    parts: userParts
                 },
                 {
                     role: "model",
@@ -3665,7 +3757,7 @@ async function translateWithVertexAI(text, apiKey) {
                 }
             ] : [{
                 role: "user",  // Vertex AI는 명시적으로 role이 필요
-                parts: [{ text: `${customPrompt}\n${text}` }]
+                parts: userParts
             }],
             generationConfig: {
                 temperature: modelParams.temperature,
@@ -3895,7 +3987,7 @@ async function generateVertexAccessToken(serviceAccountData) {
 }
 
 // OpenAI로 번역
-async function translateWithOpenAI(text, apiKey) {
+async function translateWithOpenAI(text, apiKey, imageAttachment = null) {
     console.log('🟠 OpenAI API 호출 시작 - 모델:', selectedModel);
     
     try {
@@ -3903,10 +3995,25 @@ async function translateWithOpenAI(text, apiKey) {
             `${reverseProxyUrl.replace(/\/$/, '')}/v1/chat/completions` : 
             'https://api.openai.com/v1/chat/completions';
         
+        const userMessage = imageAttachment?.dataBase64
+            ? {
+                role: 'user',
+                content: [
+                    { type: 'text', text: buildVisionUserText(text, true) },
+                    {
+                        type: 'image_url',
+                        image_url: {
+                            url: `data:${imageAttachment.mimeType};base64,${imageAttachment.dataBase64}`
+                        }
+                    }
+                ]
+            }
+            : { role: "user", content: `${customPrompt}\n${text}` };
+
         // 메시지 배열 생성
         const messages = [
             { role: "system", content: "How can I help you?" },
-            { role: "user", content: `${customPrompt}\n${text}` }
+            userMessage
         ];
         
         // 프리필 추가 (OpenAI도 assistant 메시지로 프리필 지원)
@@ -3966,7 +4073,7 @@ async function translateWithOpenAI(text, apiKey) {
 }
 
 // Anthropic으로 번역
-async function translateWithAnthropic(text, apiKey) {
+async function translateWithAnthropic(text, apiKey, imageAttachment = null) {
     console.log('🟣 Anthropic API 호출 시작 - 모델:', selectedModel);
     
     // Cloudflare Workers URL 또는 리버스 프록시 URL 사용
@@ -3975,11 +4082,42 @@ async function translateWithAnthropic(text, apiKey) {
         'https://tincanstranslator.antinomyanonymity.workers.dev/';
 
     try {
-        // 메시지 배열 생성
-        const messages = [{
-            role: "user",
-            content: `${customPrompt}\n${text}`
-        }];
+        let messages;
+
+        if (useReverseProxy) {
+            const userContent = imageAttachment?.dataBase64
+                ? [
+                    { type: 'text', text: buildVisionUserText(text, true) },
+                    {
+                        type: 'image_url',
+                        image_url: {
+                            url: `data:${imageAttachment.mimeType};base64,${imageAttachment.dataBase64}`
+                        }
+                    }
+                ]
+                : `${customPrompt}\n${text}`;
+            messages = [{ role: "user", content: userContent }];
+        } else if (imageAttachment?.dataBase64) {
+            messages = [{
+                role: "user",
+                content: [
+                    {
+                        type: 'image',
+                        source: {
+                            type: 'base64',
+                            media_type: imageAttachment.mimeType,
+                            data: imageAttachment.dataBase64
+                        }
+                    },
+                    { type: 'text', text: buildVisionUserText(text, true) }
+                ]
+            }];
+        } else {
+            messages = [{
+                role: "user",
+                content: `${customPrompt}\n${text}`
+            }];
+        }
         
         // 프리필 추가 (Anthropic는 assistant 메시지로 프리필 지원)
         if (usePrefill && prefillPrompt && !useReverseProxy) {
@@ -4305,6 +4443,8 @@ function initializeModelSelect() {
         console.log('🔄 저장된 모델 복원됨:', selectedModel);
         console.log('📊 모델 제공자:', getModelProvider(selectedModel));
     }
+
+    updateVisionAttachmentUi();
 }
 
 // 커스텀 모델 추가
@@ -4451,6 +4591,105 @@ function getModelProvider(model) {
     return 'gemini'; // 기본값
 }
 
+function modelSupportsVision(model) {
+    if (!model) return false;
+    const customModel = customModels.find(m => m.name === model);
+    if (customModel) {
+        return ['gemini', 'vertex', 'openai', 'anthropic'].includes(customModel.provider);
+    }
+    const m = model.toLowerCase();
+    if (m.startsWith('vertex-') && m.includes('gemini')) return true;
+    if (m.includes('gemini') && !m.includes('gemma')) return true;
+    if (getModelProvider(model) === 'openai') {
+        if (m.includes('gpt-4o') || m.includes('chatgpt-4o')) return true;
+        if (m.includes('gpt-4-turbo') || m.includes('gpt-4.5')) return true;
+        if (m.includes('gpt-5')) return true;
+        return false;
+    }
+    if (/claude-[34]/i.test(model)) return true;
+    return false;
+}
+
+function buildVisionUserText(sourceText, hasImage) {
+    const extra = (sourceText || '').trim();
+    if (hasImage && extra) {
+        return `${customPrompt}\n다음은 이미지와 추가 설명입니다. 이미지 안의 텍스트를 인식한 뒤 아래 지침에 맞게 번역하세요.\n\n${extra}`;
+    }
+    if (hasImage) {
+        return `${customPrompt}\n이미지에 보이는 모든 텍스트를 인식한 뒤 위 지침에 맞게 번역하세요.`;
+    }
+    return `${customPrompt}\n${extra}`;
+}
+
+function buildGeminiVisionParts(sourceText, imageAttachment) {
+    const hasImg = !!(imageAttachment && imageAttachment.dataBase64 && imageAttachment.mimeType);
+    const parts = [{ text: buildVisionUserText(sourceText, hasImg) }];
+    if (hasImg) {
+        parts.push({
+            inlineData: {
+                mimeType: imageAttachment.mimeType,
+                data: imageAttachment.dataBase64
+            }
+        });
+    }
+    return parts;
+}
+
+async function fetchReadableTextFromUrl(input) {
+    let url = String(input || '').trim();
+    if (!url) throw new Error('URL이 비어 있습니다.');
+    if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+    }
+    let parsed;
+    try {
+        parsed = new URL(url);
+    } catch {
+        throw new Error('올바른 URL 형식이 아닙니다.');
+    }
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error('http(s) URL만 지원합니다.');
+    }
+    const jinaReader = 'https://r.jina.ai/' + encodeURIComponent(parsed.href);
+    const res = await fetch(jinaReader, {
+        method: 'GET',
+        headers: { Accept: 'text/plain' }
+    });
+    if (!res.ok) {
+        const snippet = await res.text().catch(() => '');
+        throw new Error(`Reader HTTP ${res.status}${snippet ? ': ' + snippet.slice(0, 160) : ''}`);
+    }
+    const body = await res.text();
+    if (!body || body.trim().length < 3) {
+        throw new Error('본문을 가져오지 못했습니다. 사이트가 막혔거나 빈 페이지일 수 있습니다.');
+    }
+    return body.trim();
+}
+
+function updateVisionAttachmentUi() {
+    const supports = modelSupportsVision(selectedModel);
+    const wrap = document.querySelector('.vision-upload-wrap');
+    const clearBtn = elements.clearVisionImageBtn;
+    if (wrap) {
+        wrap.hidden = !supports;
+        wrap.setAttribute('aria-hidden', supports ? 'false' : 'true');
+    }
+    if (clearBtn) {
+        const has = supports && !!pendingVisionImage;
+        clearBtn.hidden = !has;
+        clearBtn.setAttribute('aria-hidden', has ? 'false' : 'true');
+    }
+    if (!supports && pendingVisionImage) {
+        pendingVisionImage = null;
+        showToast('현재 모델은 이미지 번역을 지원하지 않아 첨부 이미지를 해제했습니다.', 'warning', 4500);
+    }
+}
+
+function clearPendingVisionImage() {
+    pendingVisionImage = null;
+    updateVisionAttachmentUi();
+}
+
 // 비밀번호 토글 설정
 function setupPasswordToggles() {
     elements.togglePasswordBtns.forEach(btn => {
@@ -4542,9 +4781,11 @@ function setupShortcuts() {
             if (showEditableResult) {
                 icon.className = 'fas fa-edit';
                 toggleResultBtn.title = '편집/미리보기 전환';
+                toggleResultBtn.setAttribute('aria-pressed', 'false');
             } else {
                 icon.className = 'fas fa-eye';
                 toggleResultBtn.title = '편집/미리보기 전환';
+                toggleResultBtn.setAttribute('aria-pressed', 'true');
             }
             
             // 결과 표시 업데이트
@@ -4561,9 +4802,11 @@ function setupShortcuts() {
     // 히스토리 토글 이벤트 리스너
     elements.toggleHistory?.addEventListener('click', () => {
         elements.historyContent.classList.toggle('collapsed');
-        elements.toggleHistory.innerHTML = elements.historyContent.classList.contains('collapsed') 
-            ? '<i class="fas fa-chevron-down"></i>' 
-            : '<i class="fas fa-chevron-up"></i>';
+        const isCollapsed = elements.historyContent.classList.contains('collapsed');
+        elements.toggleHistory.setAttribute('aria-expanded', String(!isCollapsed));
+        elements.toggleHistory.innerHTML = isCollapsed
+            ? '<span>번역 히스토리</span><i class="fas fa-chevron-down"></i>'
+            : '<span>번역 히스토리</span><i class="fas fa-chevron-up"></i>';
     });
 
     // 단축키 모달 관련
@@ -4577,6 +4820,67 @@ function setupShortcuts() {
 
     // 파일 업로드
     elements.fileUpload?.addEventListener('change', (e) => handleFileUpload(e.target.files[0]));
+
+    elements.visionUpload?.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file || !file.type.startsWith('image/')) {
+            if (file) showToast('이미지 파일만 첨부할 수 있습니다.', 'error');
+            e.target.value = '';
+            return;
+        }
+        if (!modelSupportsVision(selectedModel)) {
+            showToast('현재 모델은 이미지 번역을 지원하지 않습니다.', 'error');
+            e.target.value = '';
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            const dataUrl = reader.result;
+            const m = typeof dataUrl === 'string' && dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+            if (!m) {
+                showToast('이미지를 읽지 못했습니다.', 'error');
+                return;
+            }
+            pendingVisionImage = { mimeType: m[1], dataBase64: m[2] };
+            updateVisionAttachmentUi();
+            showToast('이미지가 첨부되었습니다. 번역하기를 누르세요.', 'success');
+        };
+        reader.onerror = () => showToast('이미지 읽기 오류가 발생했습니다.', 'error');
+        reader.readAsDataURL(file);
+        e.target.value = '';
+    });
+
+    elements.clearVisionImageBtn?.addEventListener('click', () => {
+        clearPendingVisionImage();
+        showToast('이미지 첨부를 해제했습니다.', 'info');
+    });
+
+    elements.fetchUrlTextBtn?.addEventListener('click', async () => {
+        const raw = elements.sourceUrlInput?.value?.trim();
+        if (!raw) {
+            showToast('URL을 입력해주세요.', 'error');
+            return;
+        }
+        const btn = elements.fetchUrlTextBtn;
+        btn.disabled = true;
+        try {
+            showToast('본문을 가져오는 중…', 'info', 2500);
+            const text = await fetchReadableTextFromUrl(raw);
+            if (!text) {
+                showToast('가져온 본문이 비어 있습니다.', 'warning');
+                return;
+            }
+            elements.sourceText.value = text;
+            localStorage.setItem('savedText', text);
+            updateCharacterCount(elements.sourceText, 'source');
+            showToast('본문을 불러왔습니다. 번역하기를 누르세요.', 'success');
+        } catch (err) {
+            console.error('fetchReadableTextFromUrl', err);
+            showToast('URL 불러오기 실패: ' + (err.message || err), 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
 
     // 드래그 앤 드롭
     elements.dropZone?.addEventListener('dragover', handleDragOver);
@@ -4652,8 +4956,7 @@ function setupEventListeners() {
         updateCharacterCount(e.target, 'translated');
     });
 
-    // 용어집 관련 이벤트 리스너
-    document.getElementById('toggleGlossary')?.addEventListener('click', toggleGlossary);
+    // 용어집 토글은 initializeGlossary에서 한 번만 연결한다.
     // document.getElementById('addTerm')?.addEventListener('click', () => {
     //     const sourceTerm = document.getElementById('sourceTerm')?.value.trim();
     //     const targetTerm = document.getElementById('targetTerm')?.value.trim();
@@ -4792,6 +5095,7 @@ function restoreSettings() {
     if (quoteColor) elements.quoteColorInput.value = quoteColor;
     if (thoughtColor) elements.thoughtColorInput.value = thoughtColor;
     if (emphasisColor) elements.emphasisColorInput.value = emphasisColor;
+    if (boldColor && elements.boldColorInput) elements.boldColorInput.value = boldColor;
     elements.enableMarkdownInput.checked = enableMarkdown;
 
     // 리버스 프록시 설정 복원
@@ -4813,6 +5117,43 @@ function restoreSettings() {
     }
 
     applyVertexFormFromStorage();
+    updateVisionAttachmentUi();
+}
+
+function setupEditorHeightSync() {
+    const editors = [elements.sourceText, elements.translatedText].filter(Boolean);
+    if (editors.length < 2) return;
+
+    let syncing = false;
+    const syncHeight = (source) => {
+        if (!source || syncing) return;
+        if (getComputedStyle(source).display === 'none') return;
+        const height = Math.max(360, Math.round(source.getBoundingClientRect().height));
+        syncing = true;
+        requestAnimationFrame(() => {
+            editors.forEach(editor => {
+                if (Math.abs(editor.getBoundingClientRect().height - height) > 2) {
+                    editor.style.height = `${height}px`;
+                }
+            });
+            if (elements.formattedResult) {
+                elements.formattedResult.style.minHeight = `${height}px`;
+            }
+            syncing = false;
+        });
+    };
+
+    if (window.ResizeObserver) {
+        const observer = new ResizeObserver(entries => {
+            syncHeight(entries[0]?.target);
+        });
+        editors.forEach(editor => observer.observe(editor));
+    }
+
+    editors.forEach(editor => {
+        editor.addEventListener('mouseup', () => syncHeight(editor));
+        editor.addEventListener('touchend', () => syncHeight(editor));
+    });
 }
 
 // 단어 규칙 초기화 함수
@@ -4851,6 +5192,9 @@ function initialize() {
 
     // 7. 히스토리 목록 초기 표시
     updateHistoryList();
+
+    // 8. 원문/번역문 편집창 높이 동기화
+    setupEditorHeightSync();
 }
 
 // 용어집 초기화 함수
@@ -4952,6 +5296,10 @@ function initializeGlossary() {
     if (elements.glossaryContent) {
         elements.glossaryContent.style.display = 'none';
     }
+    if (elements.rulesContent) {
+        elements.rulesContent.style.display = 'none';
+    }
+    displayWordRules();
     
     // 용어집 표시
     displayGlossaryTerms();
@@ -5265,14 +5613,12 @@ function importGlossary(file) {
 function toggleBatch() {
     const toggleBtn = document.getElementById('toggleBatch');
     const batchContent = document.getElementById('batchContent');
-    
-    if (batchContent.style.display === 'none' || batchContent.style.display === '') {
-        batchContent.style.display = 'block';
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-    } else {
-        batchContent.style.display = 'none';
-        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
-    }
+    if (!toggleBtn || !batchContent) return;
+
+    batchContent.classList.remove('collapsed');
+    batchContent.style.display = 'block';
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    toggleBtn.innerHTML = '<span>일괄 번역</span><i class="fas fa-chevron-up"></i>';
 }
 
 // 배치 번역 시작 함수

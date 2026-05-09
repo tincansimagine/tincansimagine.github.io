@@ -1,929 +1,402 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>깡갤 번역기</title>
-    <link rel="stylesheet" href="styles.css?v=260507a1">
-    <link rel="stylesheet" href="darkAvocado.css?v=260507a1">
-    <link rel="stylesheet" href="avocado.css?v=260507a1">
-    <link rel="stylesheet" href="darkTheme.css?v=260507a1">
-    <link rel="stylesheet" href="pastel.css?v=260507a1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>깡갤 번역기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="translator-fonts.css">
+  <link rel="stylesheet" href="tin-translator.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
 </head>
 <body>
-    <div class="container">
-      <!-- 네비게이션 추가 -->
-      <nav class="nav-bar">
-        <button class="nav-btn active" data-page="main">
-          <i class="fas fa-language"></i> 번역
-        </button>
-        <button class="nav-btn" data-page="settings">
-          <i class="fas fa-cog"></i> 설정
-        </button>
+  <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="사이트 헤더">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><i class="fas fa-language"></i></span>
+        <span>
+          <strong>깡갤 번역기</strong>
+          <small id="versionTag">v1.9.0</small>
+        </span>
+      </div>
+      <nav class="nav-bar" role="tablist" aria-label="주요 화면">
+        <button class="nav-btn active" data-page="main" type="button" role="tab" aria-selected="true" aria-controls="mainPage"><i class="fas fa-pen-nib" aria-hidden="true"></i><span>번역</span></button>
+        <button class="nav-btn" data-page="settings" type="button" role="tab" aria-selected="false" aria-controls="settingsPage"><i class="fas fa-sliders" aria-hidden="true"></i><span>설정</span></button>
       </nav>
-  
-      <!-- 메인 페이지 컨테이너 -->
-      <div id="mainPage" class="page active">
-        <!-- 기존 번역 관련 요소들 이동 -->
-        <div class="header">
-            <h1>🤖 깡갤 번역기</h1>
-            <div class="version-info">
-                <span class="version-tag" id="versionTag"></span>
-                <button class="changelog-btn" title="업데이트 내역">
-                    💡
-                    <span class="update-notification" id="updateNotification"></span>
-                </button>
-            </div>
-                    
-            <!-- 업데이트 내역 모달 추가 -->
-            <div id="changelogModal" class="modal changelog-modal">
-                <div class="modal-content changelog-content">
-                    <button class="close-modal">&times;</button>
-                    <h3>💡 업데이트 내역</h3>
-                    <div class="changelog-list">
-                        <div class="changelog-item">
-                            <h4>v1.9.0 (2026-05-07) pm 12:00</h4>
-                            <ul>
-                                <li>2025년 10월 이후 공개 모델 업데이트: Gemini 3.1/3, GPT-5.5·5.4·5.2·5.1, Claude Opus 4.7/Sonnet 4.6/Haiku 4.5, GLM-4.7 계열 추가</li>
-                                <li>Z.AI GLM API 키 설정 및 OpenAI 호환 Chat Completions 호출 지원 추가</li>
-                                <li>번역 화면 카드형 레이아웃, 모델 선택 영역, 프롬프트/용어집 섹션 간격과 모바일 가독성 개선</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.7 (2025-10-28) pm 04:20</h4>
-                            <ul>
-                                <li>구글 vertex ai 설정 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.7 (2025-08-29) pm 05:52</h4>
-                            <ul>
-                                <li>번역 결과 편집 버튼 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.6 (2025-08-29) pm 05:20</h4>
-                            <ul>
-                                <li>프리필 기능 추가: 모든 모델 지원 (프롬프트 섹션을 확인해주세요!)</li>
-                                <li>gpt-5 모델들 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.5 (2025-07-02) am 01:30</h4>
-                            <ul>
-                                <li>제미나이 정식 2.5 프로 및 플래시 모델 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.4 (2025-05-23) pm 02:02</h4>
-                            <ul>
-                                <li>설정 내보내기 기능 보완 / 히스토리 내보내기 즐겨찾기 정보값 누락되는 거 수정 / 가져오기 버튼 버그 수정</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.3 (2025-05-23) am 07:70</h4>
-                            <ul>
-                                <li>고급 설정 입력값 오류 수정</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.2 (2025-05-23) am 07:05</h4>
-                            <ul>
-                                <li>커스텀 모델 관리 기능 추가: 사용자가 직접 모델을 추가하고 관리할 수 있도록 개선</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.1 (2025-05-21) pm 10:00</h4>
-                            <ul>
-                                <li>리버스 프록시 지원 기능 추가: OpenAI 호환 API 엔드포인트 사용 가능</li>
-                                <li>자동 모델 탐지 기능: 프록시 서버에서 사용 가능한 모델 자동 감지</li>
-                                <li>슬라이더 스타일 개선: 모든 테마에서 일관된 슬라이더 디자인 적용</li>
-                                <li>모바일 슬라이더 최적화: 터치 친화적이고 깔끔한 슬라이더 디자인</li>
-                                <li>UI 배치 개선: 리버스 프록시 설정을 독립 섹션으로 분리</li>
-                                <li>사용자 친화적 가이드: 설정별 상세 설명과 예시 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.8.0 (2025-05-21) pm 8:00</h4>
-                            <ul>
-                                <li>고급 모델 파라미터 설정 기능 추가: Temperature, Max Tokens, Top-P, Top-K 조정 가능</li>
-                                <li>모델별 파라미터 지원: Gemini (모든 파라미터), OpenAI/Claude/Cohere (일부 파라미터)</li>
-                                <li>파워유저 친화적 UI: 접히는 고급 설정, 슬라이더+숫자 입력 조합</li>
-                                <li>개인화된 설정 저장: 각 파라미터별 localStorage 자동 저장</li>
-                                <li>실시간 파라미터 동기화: 슬라이더와 숫자 입력이 실시간으로 연동</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.7.4 (2025-05-21) pm 7:00</h4>
-                            <ul>
-                                <li>용어집 섹션 테두리 스타일 개선: 번역 히스토리와 일치하는 테두리 적용</li>
-                                <li>용어집 입력창 라이트 모드 구분감 대폭 개선: 그림자, 호버, 포커스 효과 추가</li>
-                                <li>번역하기 버튼 크기 최적화: PC에서 더 적절한 크기로 조정</li>
-                                <li>방향 전환 버튼 크기 조정: 템플릿 단축 버튼을 더 컴팩트하게 개선</li>
-                                <li>용어집 드롭다운 메뉴 개선: 커스텀 화살표와 현대적 스타일 적용</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.7.3 (2025-05-21) pm 6:15</h4>
-                            <ul>
-                                <li>번역 중 스피너 디자인 대폭 개선: 구글 컬러 그라디언트를 활용한 현대적 디자인</li>
-                                <li>불필요한 프로그레스 바 제거: 단계 표시는 유지하되 작동하지 않던 프로그레스 바 삭제</li>
-                                <li>라이트 모드 입력 요소 구분감 개선: 미묘한 그림자와 호버 효과 추가</li>
-                                <li>드롭다운 메뉴 시각적 개선: 커스텀 화살표 아이콘과 선명한 구분</li>
-                                <li>포커스 및 호버 상태 향상: 부드러운 전환 효과와 명확한 시각적 피드백</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.7.2 (2025-05-21) pm 5:30</h4>
-                            <ul>
-                                <li>새로운 Gemini 2.5 모델 추가: Flash Preview 05-20, Pro Preview 05-06</li>
-                                <li>Claude 4 Sonnet 2025-05-14 모델 추가</li>
-                                <li>대폭 개선된 UI/UX: 현대적인 그라디언트 디자인, 향상된 애니메이션</li>
-                                <li>개선된 로딩 애니메이션: 블러 효과 및 현대적인 스피너</li>
-                                <li>강화된 오류 처리: 이모지 포함 친화적인 메시지, 상세한 상황별 안내</li>
-                                <li>새로워진 버튼 디자인: 그라디언트, 호버 효과, 빛 반사 애니메이션</li>
-                                <li>개선된 토스트 메시지: 더 부드러운 애니메이션, 시각적 계층 효과</li>
-                                <li>모바일 최적화: 터치 친화적 인터페이스 개선</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.7.1 (2025-05-21) pm 3:00</h4>
-                            <ul>
-                                <li>구글 제미나이 최신 모델 추가: Gemini 2.5 Pro Preview 05-06, Gemini 2.5 Flash Preview 05-20</li>
-                                <li>Anthropic Claude 4 소넷 모델 추가: claude-4-sonnet-20250219</li>
-                                <li>전반적인 UI/UX 대폭 개선: 현대적인 디자인, 향상된 반응형 레이아웃</li>
-                                <li>로딩 애니메이션 및 에러 메시지 시각적 개선</li>
-                                <li>버튼 스타일 및 인터랙션 효과 개선</li>
-                                <li>모바일 환경에서의 사용성 대폭 향상</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.7.0 (2025-04-15) am 9:30</h4>
-                            <ul>
-                                <li>용어집/사전 기능 추가: 이전 단어 변환 규칙 기능을 대체하며 맥락별 용어 관리 가능</li>
-                                <li>배치 번역 기능 추가: 여러 텍스트를 한 번에 번역하고 결과 관리 가능</li>
-                                <li>다양한 한글 웹 폰트 추가: RIDIBatang, Pretendard, SUIT 등 30여 가지 폰트 지원</li>
-                                <li>용어집 맥락별 필터링 및 검색 기능 추가</li>
-                                <li>용어집 내보내기/가져오기 기능 추가</li>
-                                <li>배치 번역 결과 복사 및 다운로드 기능 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.9 (2025-03-29) am 6:00</h4>
-                            <ul>
-                                <li>구글 제미나이 2.5 Pro Experimental 모델 추가</li>
-                                <li>Cohere 신모델 Command-A 03-2025 추가</li>
-                                <li>OpenAI 모델 추가: o1-mini-2025-01-31, o1-pro-2025-03-19, gpt-4.5-preview-2025-02-27</li>
-                                <li>Anthropic 모델 추가: claude-3-7-sonnet-20250219</li>
-                                <li>번역 결과 다운로드 기능 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <div class="changelog-item">
-                                <h4>v1.6.8 (2025-02-08) am 01:40</h4>
-                                <ul>
-                                    <li>제미나이 2.0 프로 exp 및 기타 새모델 추가</li>
-                                    <li>제미나이 플래시 모델에 대한 세이프티 설정 추가 조정</li>
-                                </ul>
-                            </div>
-                            <div class="changelog-item">
-                                <h4>v1.6.7 (2025-01-15) pm 11:15</h4>
-                                <ul>
-                                    <li>제미나이 세이프티 설정 변경</li>
-                                </ul>
-                            </div>
-                            <div class="changelog-item">
-                                <h4>v1.6.6 (2024-12-20) am 09:10</h4>
-                                <ul>
-                                    <li>번역 제공 모델 리스트에 gemini-exp-1121 제거</li>
-                                    <li>번역 제공 모델 리스트에 gemini 2.0 Flash Thinking Experimental 추가</li>
-                                </ul>
-                            </div>
-                            <h4>v1.6.5 (2024-12-18) am 10:30</h4>
-                            <ul>
-                                <li>번역 제공 모델 리스트에 gemini-exp-1206 추가</li>
-                                <li>번역 제공 모델 리스트에 gemini 2.0 Flash Experimental 추가</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.4 (2024-11-22) pm 7:45</h4>
-                            <ul>
-                                <li>다크 아보카도 UI 개선 / 기타 UI/UX 개선</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.３ (2024-11-22) pm 6:00</h4>
-                            <ul>
-                                <li>다크 아보카도 테마 추가</li>
-                                <li>입력창 포커스 되면 복사 버튼 대신 X (전체 텍스트 삭제) 버튼 등장하도록 개선</li>
-                                <li>PC에서도 편하게 지우도록 단축키 Ctrl+E로 사용 가능</li>
-                                <li>아보카도 테마 버그 픽스</li>
-                            </ul>
-                        </div>
-                        <div class="changelog-item">
-                            <h4>v1.6.2 -2 (2024-11-22) am 8:32</h4>
-                            <ul>
-                                <li>아보카도 테마 번역 결과창 라이트 모드로 돌아가는 문제 수정</li>
-                                <li>번역 제공 모델 리스트에 gemini-exp-1121 추가</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="translation-direction-controls">
-            <div class="direction-btn-container">
-                <button id="koToEnBtn" class="direction-btn">
-                    <span class="direction-text">한 → 영</span>
-                    <small class="template-name">선택된 템플릿: 없음</small>
-                </button>
-                <button class="set-template-btn" data-direction="koToEn">템플릿 설정</button>
-            </div>
-            <div class="direction-btn-container">
-                <button id="enToKoBtn" class="direction-btn active">
-                    <span class="direction-text">영 → 한</span>
-                    <small class="template-name">선택된 템플릿: 없음</small>
-                </button>
-                <button class="set-template-btn" data-direction="enToKo">템플릿 설정</button>
-            </div>
-        </div>
-        <div class="translation-box">
-            <div class="input-group">
-                <label for="sourceText">입력 텍스트</label>
-                <div class="textarea-container">
-                    <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요"></textarea>
-                    <div class="text-counter">
-                        <span id="sourceCharCount">0</span> 글자
-                        <span id="sourceWordCount">0</span> 단어
-                    </div>
-                    <button class="copy-btn" id="copySource">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="input-group">
-                <label for="translatedText">
-                    번역 결과
-                    <button id="toggleResultView" class="toggle-result-btn" title="편집/미리보기 전환">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </label>
-                <div class="textarea-container">
-                    <div id="formattedResult" class="formatted-result"></div>
-                    <textarea id="translatedText" placeholder="번역 결과가 여기에 표시됩니다"></textarea>
-                    <div class="text-counter">
-                        <span id="translatedCharCount">0</span> 글자
-                        <span id="translatedWordCount">0</span> 단어
-                    </div>
-                    <button class="copy-btn" id="copyTranslated">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-                <div class="result-bottom-controls">
-                    <div id="autoSaveNotification" class="auto-save-notification">자동 저장되었습니다</div>
-                </div>
-            </div>
-        </div>
-        <div class="translation-progress">
-            <div class="progress-steps">
-              <div class="step" data-step="1">
-                <div class="step-icon">1</div>
-                <div class="step-label">텍스트 분석</div>
-              </div>
-              <div class="step" data-step="2">
-                <div class="step-icon">2</div>
-                <div class="step-label">번역 중</div>
-              </div>
-              <div class="step" data-step="3">
-                <div class="step-icon">3</div>
-                <div class="step-label">검수</div>
-              </div>
-            </div>
-          </div>
-        <div class="translate-controls">
-            <button id="switchDirectionBtn" class="direction-switch-btn" title="번역 방향 전환">
-                <span>⇄</span>
-            </button>
-            <button id="translateBtn" class="translate-btn">
-                번역하기
-            </button>
-            <button class="download-btn" id="downloadTranslated" title="번역 결과 다운로드">
-                <i class="fas fa-download"></i>
-            </button>
-        </div>
-        <div class="prompt-section">
-            <label for="customPrompt">번역 프롬프트 설정</label>
-            <div class="prompt-controls">
-                <select id="promptTemplate">
-                    <option value="">템플릿 선택...</option>
-                    <option value="basicEnToKo">기본 번역 (영→한)</option>
-                    <option value="basicKoToEn">기본 번역(한→영)</option>
-                    <option value="natural">자연스러운 번역</option>
-                    <option value="formal">격식체 번역</option>
-                    <option value="casual">구어체 번역</option>
-                </select>
-                <button id="saveAsTemplate" class="btn-small">현재 프롬프트 저장</button>
-            </div>
-            <textarea id="customPrompt" rows="3"></textarea>
-            <button id="savePrompt" class="btn-small">프롬프트 저장</button>
-            
-            <!-- 프리필 설정 추가 -->
-            <div class="prefill-section">
-                <div class="prefill-toggle">
-                    <input type="checkbox" id="usePrefill">
-                    <label for="usePrefill">프리필(Prefill) 사용</label>
-                    <span class="prefill-info" title="AI가 응답을 시작할 때 미리 정해진 텍스트로 시작하도록 합니다">ℹ️</span>
-                </div>
-                <div id="prefillContent" style="display: none;">
-                    <label for="prefillPrompt">프리필 내용</label>
-                    <textarea id="prefillPrompt" rows="2" placeholder="AI 응답의 시작 부분을 입력하세요..."></textarea>
-                    <button id="resetPrefill" class="btn-small">기본값으로 재설정</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 번역에 적용할 용어집 카테고리 선택 -->
-        <div class="glossary-category-section">
-            <label for="translationGlossaryContext">번역에 적용할 용어집 카테고리</label>
-            <select id="translationGlossaryContext" class="glossary-select">
-                <option value="all">모든 카테고리</option>
-                <option value="general">일반</option>
-                <option value="tech">기술/IT</option>
-                <option value="med">의학</option>
-                <option value="law">법률</option>
-                <option value="biz">비즈니스</option>
-                <option value="acad">학술</option>
-            </select>
-        </div>
-        
-        <!-- 배치 번역 섹션을 메인 페이지로 이동 -->
-        <div class="batch-translation-section">
-            <h3>
-                배치 번역
-                <button class="toggle-btn" id="toggleBatch"><i class="fas fa-chevron-down"></i></button>
-            </h3>
-            <div class="batch-content" id="batchContent">
-                <div class="batch-controls">
-                    <div class="batch-input">
-                        <textarea id="batchInput" placeholder="여러 텍스트를 입력하세요. 빈 줄이나 @@@를 구분자로 사용할 수 있습니다."></textarea>
-                    </div>
-                    <div class="batch-options">
-                        <label>
-                            <input type="checkbox" id="useSeparator" checked>
-                            구분자 사용
-                        </label>
-                        <label>
-                            <input type="radio" name="separatorType" id="useEmptyLine" checked>
-                            빈 줄
-                        </label>
-                        <label>
-                            <input type="radio" name="separatorType" id="useTripleAt">
-                            @@@
-                        </label>
-                        <label>
-                            <input type="checkbox" id="applyGlossary" checked>
-                            용어집 적용
-                        </label>
-                        <label>
-                            <input type="checkbox" id="saveToHistory" checked>
-                            히스토리에 저장
-                        </label>
-                        <button id="startBatchTranslation" class="btn-small">배치 번역 시작</button>
-                    </div>
-                </div>
-                <div class="batch-results" id="batchResults">
-                    <div class="batch-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="batchProgressFill"></div>
-                        </div>
-                        <div class="progress-text">
-                            <span id="batchProgressText">0/0</span> 완료
-                        </div>
-                    </div>
-                    <div class="batch-result-list" id="batchResultList"></div>
-                    <div class="batch-result-actions">
-                        <button id="copyAllResults" class="btn-small">모든 결과 복사</button>
-                        <button id="downloadResults" class="btn-small">결과 다운로드</button>
-                        <button id="clearBatchResults" class="btn-small">결과 초기화</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="source-text-controls">
-            <label for="file-upload" class="file-upload-btn">
-                <i class="fas fa-file-upload"></i> 파일 업로드
-            </label>
-            <input type="file" id="file-upload" accept=".txt,.doc,.docx,.pdf" hidden>
-            <div class="supported-formats">
-                지원 형식: TXT, DOC, DOCX, PDF (최대 30MB)
-            </div>
-        </div>
-        
-        <div id="loading" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <span>번역 중...</span>
-        </div>
-        <div id="errorMessage" class="error-message"></div>
-        
-        <div class="shortcut-help">
-            <button id="showShortcuts" class="btn-small">
-                <i class="fas fa-keyboard"></i> 단축키
-            </button>
-        </div>
+    </aside>
 
-        <div id="shortcutModal" class="modal">
-            <div class="modal-content">
-                <h3>단축키 목록</h3>
-                <ul>
-                    <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> : 번역하기</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>S</kbd> : 프롬프트 저장</li>
-                    <li><kbd>Esc</kbd> : 번역 취소</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>I</kbd> : 아보카도 모드 토글</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>L</kbd> : 라이트 모드 토글</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>D</kbd> : 다크모드 토글</li>
-                    <li><kbd>Alt</kbd> + <kbd>1</kbd> : 한→영 전환</li>
-                    <li><kbd>Alt</kbd> + <kbd>2</kbd> : 영→한 전환</li>
-                    <li><kbd>Ctrl</kbd> + <kbd>E</kbd> : 입력 텍스트 전체 삭제 (단, 입력 텍스트 창이 눌린 상태에서만 동작)</li>
-                </ul>
-                <button class="close-modal">&times;</button>
+    <div class="app-frame">
+      <main id="main-content" class="workspace">
+        <section id="mainPage" class="page active" aria-label="번역" role="tabpanel">
+          <header class="topbar page-header">
+            <div>
+              <p class="eyebrow">번역 작업대</p>
+              <h1>원문과 결과를 나란히</h1>
             </div>
-        </div>
-        <div class="copyright">
-            <p>copyrightⓒ 2024 All rights reserved by <a href="https://github.com/tincansimagine" target="_blank">tincansimagine</a></p>
-            <p>모든 페이지 내용의 소유권은 tincansimagine에게 있습니다.</p>
-        </div>
-      </div>
-  
-      <!-- 설정 페이지 컨테이너 -->
-      <div id="settingsPage" class="page">
-        <!-- 기존 설정 관련 요소들 이동 -->
-        <div class="settings-section">
-            <h2>테마 설정</h2>
-            <div class="theme-toggle-container">
-                <button class="theme-toggle" data-theme="light" title="라이트 모드">☀️</button>
-                <button class="theme-toggle" data-theme="dark" title="다크 모드">🌙</button>
-                <button class="theme-toggle" data-theme="avocado" title="아보카도 모드">🥑</button>
-                <button class="theme-toggle" data-theme="dark-avocado" title="다크 아보카도 모드">🥑</button>
-                <button class="theme-toggle" data-theme="pastel-dream" title="파스텔 모드">🌈</button>
+            <div class="topbar-controls">
+              <select id="modelSelect" aria-label="모델 선택"></select>
+              <button id="switchDirectionBtn" class="ghost-btn" type="button" title="방향 전환" aria-label="번역 방향 전환"><i class="fas fa-right-left" aria-hidden="true"></i></button>
             </div>
-        </div>
-        <div class="settings-section">
-            <h2>API키 설정</h2>
-            <div class="api-section">
-                <div class="api-keys">
-                    <div class="input-group">
-                        <label for="geminiApiKey">Google Gemini API Key</label>
-                        <div class="api-input-container">
-                            <input type="password" id="geminiApiKey" placeholder="Gemini API 키를 입력하세요">
-                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="openaiApiKey">OpenAI API Key</label>
-                        <div class="api-input-container">
-                            <input type="password" id="openaiApiKey" placeholder="OpenAI API 키를 입력하세요">
-                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="anthropicApiKey">Anthropic API Key</label>
-                        <div class="api-input-container">
-                            <input type="password" id="anthropicApiKey" placeholder="Anthropic API 키를 입력하세요">
-                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="cohereApiKey">Cohere API Key</label>
-                        <div class="api-input-container">
-                            <input type="password" id="cohereApiKey" placeholder="Cohere API 키를 입력하세요">
-                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="zaiApiKey">Z.AI GLM API Key</label>
-                        <div class="api-input-container">
-                            <input type="password" id="zaiApiKey" placeholder="Z.AI / GLM API 키를 입력하세요">
-                            <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button id="saveApiKeys" class="btn-small">API 키 저장</button>
-                </div>
-        </div>
-        
-        <!-- Vertex AI 설정 섹션 -->
-        <div class="settings-section">
-            <h2>🔷 Vertex AI 설정</h2>
-            <div class="vertex-mode-selector">
-                <label>
-                    <input type="radio" name="vertexMode" value="express" checked>
-                    <span>Express Mode (API 키만)</span>
-                </label>
-                <label>
-                    <input type="radio" name="vertexMode" value="full">
-                    <span>Full Version (Service Account)</span>
-                </label>
-            </div>
-            
-            <!-- 공통 API 키 입력 (두 모드 모두 표시) -->
-            <div class="input-group">
-                <label for="vertexApiKey">Vertex AI API Key</label>
-                <div class="api-input-container">
-                    <input type="password" id="vertexApiKey" placeholder="Vertex AI API 키를 입력하세요">
-                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                <small>두 모드 모두 필수입니다</small>
-            </div>
-            
-            <!-- Express Mode 설정 -->
-            <div id="vertexExpressMode" class="vertex-mode-content">
-                <p class="mode-description">✨ Express Mode는 API 키만으로 간편하게 사용할 수 있습니다.</p>
-            </div>
-            
-            <!-- Full Version 설정 -->
-            <div id="vertexFullMode" class="vertex-mode-content" style="display: none;">
-                <p class="mode-description">🔧 Full Version은 Service Account로 고급 기능을 사용할 수 있습니다.</p>
-                <div class="input-group">
-                    <label for="vertexRegion">Region</label>
-                    <select id="vertexRegion">
-                        <option value="us-central1">us-central1</option>
-                        <option value="us-east1">us-east1</option>
-                        <option value="us-west1">us-west1</option>
-                        <option value="europe-west1">europe-west1</option>
-                        <option value="europe-west2">europe-west2</option>
-                        <option value="europe-west3">europe-west3</option>
-                        <option value="asia-northeast1">asia-northeast1</option>
-                        <option value="asia-northeast3">asia-northeast3</option>
-                        <option value="asia-southeast1">asia-southeast1</option>
-                        <option value="global">global (글로벌 엔드포인트)</option>
-                        <option value="__custom__">사용자 입력…</option>
-                    </select>
-                    <input type="text" id="vertexRegionCustom" class="vertex-region-custom-input" placeholder="리전 ID (예: europe-west4)" autocomplete="off" spellcheck="false" style="display: none; width: 100%; box-sizing: border-box; margin-top: 0.45rem;">
-                    <small>Gemini 3.1 Pro (Preview) 등 글로벌 배포 모델은 <strong>global</strong>을 선택하세요. 목록에 없는 리전은「사용자 입력」에서 입력합니다.</small>
-                </div>
-                <div class="input-group">
-                    <label for="vertexServiceAccount">
-                        Service Account JSON
-                        <button type="button" class="import-json-icon-btn" id="importServiceAccountBtn" title="JSON 파일 불러오기">
-                            <i class="fas fa-file-import"></i>
-                        </button>
+          </header>
+
+          <div class="translate-layout stack stack-loose">
+            <section class="direction-strip" aria-label="번역 방향">
+              <div class="direction-btn-container">
+                <button id="koToEnBtn" class="direction-btn" type="button">
+                  <strong>한 → 영</strong>
+                  <span class="template-name">기본 번역</span>
+                </button>
+                <button class="set-template-btn" type="button" title="현재 프롬프트 지정" aria-label="한영 방향에 프롬프트 고정"><i class="fas fa-thumbtack" aria-hidden="true"></i></button>
+              </div>
+              <div class="direction-btn-container">
+                <button id="enToKoBtn" class="direction-btn active" type="button">
+                  <strong>영 → 한</strong>
+                  <span class="template-name">기본 번역</span>
+                </button>
+                <button class="set-template-btn" type="button" title="현재 프롬프트 지정" aria-label="영한 방향에 프롬프트 고정"><i class="fas fa-thumbtack" aria-hidden="true"></i></button>
+              </div>
+            </section>
+
+            <section class="translator-grid" aria-label="편집 영역">
+              <article class="editor-pane">
+                <div class="pane-header">
+                  <span class="pane-title">원문</span>
+                  <div class="tool-row">
+                    <label class="file-upload-btn" title="파일 불러오기">
+                      <i class="fas fa-file-arrow-up" aria-hidden="true"></i>
+                      <input id="file-upload" type="file" accept=".txt,.pdf,.doc,.docx">
                     </label>
-                    <input type="file" id="serviceAccountFileInput" accept=".json" style="display: none;">
-                    <textarea id="vertexServiceAccount" rows="8" placeholder='Service Account JSON을 입력하거나 파일로 불러오세요:
-{
-  "type": "service_account",
-  "project_id": "your-project-id",
-  "private_key_id": "...",
-  "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
-  "client_email": "...",
-  "client_id": "...",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token"
-}'></textarea>
-                    <small>전체 Service Account JSON을 붙여넣거나 JSON 파일을 불러오세요</small>
+                    <label class="file-upload-btn vision-upload-wrap" title="이미지 번역 (비전 지원 모델)">
+                      <i class="fas fa-image" aria-hidden="true"></i>
+                      <input id="vision-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+                    </label>
+                    <button id="clearVisionImage" class="icon-btn" type="button" title="이미지 첨부 해제" hidden aria-label="이미지 첨부 해제"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+                    <button id="copySource" class="icon-btn copy-btn" type="button" title="원문 복사"><i class="fas fa-copy" aria-hidden="true"></i></button>
+                  </div>
                 </div>
-            </div>
-            
-            <button id="saveVertexSettings" class="btn-small">Vertex AI 설정 저장</button>
-        </div>
-        
-        <!-- 커스텀 모델 관리 -->
-        <div class="settings-section">
-            <h2>🎯 커스텀 모델 관리</h2>
-            <div class="custom-model-section">
-                <div class="custom-model-input">
-                    <div class="input-group">
-                        <label for="customModelName">모델명</label>
-                        <input type="text" id="customModelName" placeholder="예: gpt-4.5-turbo, claude-4-opus">
-                    </div>
-                    <div class="input-group">
-                        <label for="customModelProvider">공급자</label>
-                        <select id="customModelProvider">
-                            <option value="openai">OpenAI</option>
-                            <option value="anthropic">Anthropic</option>
-                            <option value="gemini">Google Gemini</option>
-                            <option value="cohere">Cohere</option>
-                            <option value="zai">Z.AI GLM</option>
-                        </select>
-                    </div>
-                    <button id="addCustomModel" class="btn-small">
-                        <i class="fas fa-plus"></i> 모델 추가
-                    </button>
+                <textarea id="sourceText" spellcheck="false" placeholder="텍스트·URL(아래 본문 가져오기)·이미지(비전 모델)로 번역할 내용을 준비하세요."></textarea>
+                <div class="source-url-bar">
+                  <input id="sourceUrlInput" class="source-url-input" type="url" inputmode="url" autocomplete="url" placeholder="https://… URL 붙여넣기 → 본문 추출" aria-label="페이지 URL" />
+                  <button id="fetchUrlTextBtn" class="small-btn" type="button">본문 가져오기</button>
                 </div>
-                
-                <div class="custom-model-list" id="customModelList">
-                    <h4>추가된 커스텀 모델</h4>
-                    <div class="custom-models-container" id="customModelsContainer">
-                        <div class="no-custom-models">
-                            <p>추가된 커스텀 모델이 없습니다.</p>
-                            <small>새로운 모델을 위에서 추가해보세요!</small>
-                        </div>
-                    </div>
+                <div class="counter-line">
+                  <span><b id="sourceCharCount">0</b>자</span>
+                  <span><b id="sourceWordCount">0</b>단어</span>
                 </div>
-            </div>
-        </div>
-        
-        <!-- 리버스 프록시 설정 -->
-        <div class="settings-section">
-            <div class="proxy-header">
-                <h2>🔄 리버스 프록시 설정</h2>
-                <div class="proxy-toggle">
-                    <input type="checkbox" id="useReverseProxy">
-                    <label for="useReverseProxy">사용하기</label>
+              </article>
+
+              <article class="editor-pane result-pane">
+                <div class="pane-header">
+                  <span class="pane-title">결과</span>
+                  <div class="tool-row">
+                    <button id="toggleResultView" class="icon-btn" type="button" title="보기 전환"><i class="fas fa-eye" aria-hidden="true"></i></button>
+                    <button id="copyTranslated" class="icon-btn" type="button" title="결과 복사"><i class="fas fa-copy" aria-hidden="true"></i></button>
+                    <button id="downloadTranslated" class="icon-btn" type="button" title="결과 다운로드"><i class="fas fa-download" aria-hidden="true"></i></button>
+                  </div>
                 </div>
-            </div>
-            <div class="proxy-description">
-                <small>OpenAI 호환 API를 제공하는 리버스 프록시나 커스텀 엔드포인트를 사용할 수 있습니다.</small>
-            </div>
-            <div id="proxySettings" style="display: none;">
-                <div class="input-group">
-                    <label for="reverseProxyUrl">🌐 프록시 엔드포인트 URL</label>
-                    <div class="api-input-container">
-                        <input type="text" id="reverseProxyUrl" placeholder="https://your-proxy.domain.com">
-                    </div>
-                    <small>예: https://api.openai.com, https://your-proxy.com</small>
+                <textarea id="translatedText" spellcheck="false" placeholder="번역 결과가 여기에 표시됩니다."></textarea>
+                <div id="formattedResult" class="formatted-result"></div>
+                <div class="counter-line">
+                  <span><b id="translatedCharCount">0</b>자</span>
+                  <span><b id="translatedWordCount">0</b>단어</span>
                 </div>
-                <div class="input-group">
-                    <label for="reverseProxyApiKey">🔑 API 키 (선택사항)</label>
-                    <div class="api-input-container">
-                        <input type="password" id="reverseProxyApiKey" placeholder="리버스 프록시용 API 키 (필요한 경우)">
-                        <button class="toggle-password" type="button" onclick="togglePasswordVisibility(this)">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <small>리버스 프록시에서 별도 API 키가 필요한 경우에만 입력하세요.</small>
-                </div>
-                <div class="proxy-actions">
-                    <button id="testProxyBtn" class="btn-small">🔗 연결 테스트</button>
-                    <button id="detectModelsBtn" class="btn-small">🔍 모델 자동 탐지</button>
-                </div>
-            </div>
-        </div>
-            <div class="model-select model-select-card">
-                <div class="model-select-heading">
-                    <label for="modelSelect">번역 모델 선택</label>
-                    <span class="model-update-badge">2026 최신 모델 반영</span>
-                </div>
-                <select id="modelSelect">
-                    <!-- 옵션들은 JavaScript에서 동적으로 생성됨 -->
+              </article>
+            </section>
+
+            <div class="translate-actions stack stack-tight">
+              <section class="command-bar" aria-label="번역 실행">
+                <select id="translationGlossaryContext" aria-label="용어집 적용 범위">
+                  <option value="all">전체 용어집</option>
+                  <option value="general">일반</option>
+                  <option value="technical">기술/IT</option>
+                  <option value="medical">의학</option>
+                  <option value="legal">법률</option>
+                  <option value="business">비즈니스</option>
+                  <option value="academic">학술</option>
                 </select>
-            </div>
-            
-            <!-- 고급 모델 파라미터 설정 -->
-            <div class="advanced-params-section">
-                <h3>
-                    🎛️ 고급 설정
-                    <button class="toggle-btn" id="toggleAdvancedParams"><i class="fas fa-chevron-down"></i></button>
-                </h3>
-                <div class="advanced-params-content" id="advancedParamsContent" style="display: none;">
-                    <div class="param-group">
-                        <div class="param-item">
-                            <label for="temperatureSlider">🌡️ 창의성 (Temperature)</label>
-                            <div class="param-control">
-                                <input type="range" id="temperatureSlider" min="0" max="100" value="20" class="param-slider">
-                                <input type="number" id="temperatureInput" min="0" max="1" step="0.01" value="0.2" class="param-number">
-                            </div>
-                            <p class="param-desc">낮을수록 일관적, 높을수록 창의적</p>
-                        </div>
-                        
-                        <div class="param-item">
-                            <label for="maxTokensSlider">📏 최대 응답 길이</label>
-                            <div class="param-control">
-                                <input type="range" id="maxTokensSlider" min="100" max="100000" value="2000" class="param-slider">
-                                <input type="number" id="maxTokensInput" min="100" max="8000" value="2000" class="param-number">
-                            </div>
-                            <p class="param-desc">응답 최대 토큰 수 (대략 글자수 × 0.7)</p>
-                        </div>
-                        
-                        <div class="param-item" id="topPGroup">
-                            <label for="topPSlider">🎯 핵심도 (Top-P)</label>
-                            <div class="param-control">
-                                <input type="range" id="topPSlider" min="0" max="100" value="95" class="param-slider">
-                                <input type="number" id="topPInput" min="0" max="1" step="0.01" value="0.95" class="param-number">
-                            </div>
-                            <p class="param-desc">낮을수록 핵심 단어만, 높을수록 다양한 표현</p>
-                        </div>
-                        
-                        <div class="param-item" id="topKGroup">
-                            <label for="topKSlider">🔢 다양성 (Top-K)</label>
-                            <div class="param-control">
-                                <input type="range" id="topKSlider" min="1" max="100" value="40" class="param-slider">
-                                <input type="number" id="topKInput" min="1" max="100" value="40" class="param-number">
-                            </div>
-                            <p class="param-desc">고려할 단어 후보 수 (Gemini만 지원)</p>
-                        </div>
-                        
-                        <div class="param-actions">
-                            <button id="resetParams" class="btn-small">기본값 복원</button>
-                            <button id="saveParams" class="btn-small">저장</button>
-                        </div>
-                    </div>
+                <button id="translateBtn" class="primary-btn" type="button"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i><span>번역하기</span></button>
+              </section>
+
+              <div class="feedback-stack" aria-live="polite">
+                <div id="loading" class="loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i><span>번역 중입니다</span></div>
+                <div id="translationProgress" class="progress-wrap translation-progress">
+                  <div class="progress-track"><div class="progress-fill"></div></div>
+                  <span class="progress-text">대기 중</span>
                 </div>
+                <div id="errorMessage" class="error-message" role="alert"></div>
+              </div>
             </div>
+
+            <section class="utility-grid" aria-label="히스토리와 일괄 번역">
+              <article class="panel">
+                <button id="toggleHistory" class="section-toggle" type="button" aria-expanded="true" aria-controls="historyContent"><span>번역 히스토리</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                <div id="historyContent" class="panel-content">
+                  <div class="history-toolbar">
+                    <input id="historySearch" type="search" placeholder="히스토리 검색" autocomplete="off">
+                    <div class="history-filter">
+                      <button type="button" class="active" data-filter="all">전체</button>
+                      <button type="button" id="showBookmarked" data-filter="bookmarked">즐겨찾기</button>
+                    </div>
+                  </div>
+                  <div class="history-actions">
+                    <button id="clearHistory" class="small-btn" type="button">비우기</button>
+                    <button id="exportHistory" class="small-btn" type="button">내보내기</button>
+                    <button id="importHistory" class="small-btn history-import-btn" type="button">가져오기</button>
+                  </div>
+                  <div id="historyList" class="history-list"></div>
+                </div>
+              </article>
+
+              <article class="panel">
+                <button id="toggleBatch" class="section-toggle" type="button" aria-expanded="true" aria-controls="batchContent"><span>일괄 번역</span><i class="fas fa-chevron-up" aria-hidden="true"></i></button>
+                <div id="batchContent" class="panel-content">
+                  <textarea id="batchInput" placeholder="여러 텍스트를 넣고 구분 방식을 선택하세요."></textarea>
+                  <div class="option-grid">
+                    <label><input id="useSeparator" type="checkbox" /><span>구분선 사용</span></label>
+                    <label><input id="useEmptyLine" type="checkbox" checked /><span>빈 줄로 분리</span></label>
+                    <label><input id="useTripleAt" type="checkbox" /><span>@@@로 분리</span></label>
+                    <label><input id="applyGlossary" type="checkbox" checked /><span>용어집 적용</span></label>
+                    <label><input id="saveToHistory" type="checkbox" checked /><span>히스토리 저장</span></label>
+                  </div>
+                  <div class="batch-controls">
+                    <button id="startBatchTranslation" class="primary-btn" type="button">시작</button>
+                    <button id="copyAllResults" class="small-btn" type="button">전체 복사</button>
+                    <button id="downloadResults" class="small-btn" type="button">다운로드</button>
+                    <button id="clearBatchResults" class="small-btn" type="button">결과 지우기</button>
+                  </div>
+                  <div class="batch-progress"><div id="batchProgressFill"></div><span id="batchProgressText">0 / 0</span></div>
+                  <div id="batchResultList" class="batch-result-list"></div>
+                </div>
+              </article>
+            </section>
+          </div>
+        </section>
+
+        <section id="settingsPage" class="page" aria-label="설정" role="tabpanel">
+          <header class="topbar compact page-header">
+            <div>
+              <p class="eyebrow">환경 설정</p>
+              <h1>설정</h1>
+            </div>
+            <div class="topbar-controls">
+              <button id="exportData" class="ghost-btn" type="button"><i class="fas fa-file-export" aria-hidden="true"></i> 내보내기</button>
+              <button id="importData" class="ghost-btn" type="button"><i class="fas fa-file-import" aria-hidden="true"></i> 가져오기</button>
+              <input id="importFile" type="file" accept="application/json" hidden>
+            </div>
+          </header>
+
+          <p class="settings-lead">API·프롬프트·표시 옵션과 고급 연동을 한곳에서 관리합니다.</p>
+
+          <div class="settings-grid">
+            <article class="settings-section wide">
+              <h2>API 키</h2>
+              <div class="key-grid">
+                <label>Gemini<div class="api-input-container"><input id="geminiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Gemini 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
+                <label>OpenAI<div class="api-input-container"><input id="openaiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="OpenAI 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
+                <label>Anthropic<div class="api-input-container"><input id="anthropicApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Anthropic 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
+                <label>Cohere<div class="api-input-container"><input id="cohereApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Cohere 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
+                <label>Z.AI<div class="api-input-container"><input id="zaiApiKey" type="password" autocomplete="off"><button class="toggle-password" type="button" aria-label="Z.AI 키 표시 전환"><i class="fas fa-eye" aria-hidden="true"></i></button></div></label>
+              </div>
+              <button id="saveApiKeys" class="primary-btn" type="button">API 키 저장</button>
+            </article>
+
+            <article class="settings-section">
+              <h2>프롬프트</h2>
+              <select id="promptTemplate">
+                <option value="basicEnToKo">기본 영→한</option>
+                <option value="basicKoToEn">기본 한→영</option>
+                <option value="natural">자연스럽게</option>
+                <option value="formal">격식 있게</option>
+                <option value="casual">캐주얼</option>
+              </select>
+              <textarea id="customPrompt" class="prompt-box"></textarea>
+              <div class="inline-actions">
+                <button id="savePrompt" class="small-btn" type="button">저장</button>
+                <button id="saveAsTemplate" class="small-btn" type="button">템플릿 저장</button>
+              </div>
+              <label class="checkline"><input id="usePrefill" type="checkbox" /><span class="checkline-label">프리필 사용</span></label>
+              <div id="prefillContent" class="nested-setting">
+                <textarea id="prefillPrompt"></textarea>
+                <button id="resetPrefill" class="small-btn" type="button">기본값</button>
+              </div>
+            </article>
+
+            <article class="settings-section">
+              <h2>표시</h2>
+              <div class="color-grid">
+                <label>기본 <input id="baseColor" type="color" value="#111111"></label>
+                <label>따옴표 <input id="quoteColor" type="color" value="#2e5cb8"></label>
+                <label>생각 <input id="thoughtColor" type="color" value="#6b4c9a"></label>
+                <label>강조 <input id="emphasisColor" type="color" value="#7b3b3b"></label>
+                <label>볼드 <input id="boldColor" type="color" value="#e39db9"></label>
+              </div>
+              <label>글꼴
+                <select id="fontFamily" aria-label="편집 글꼴">
+                  <optgroup label="웹폰트">
+                    <option value="RIDIBatang">리디 바탕 (RIDIBatang)</option>
+                    <option value="Pretendard-Regular">프리텐다드</option>
+                    <option value="SUIT-Regular">SUIT</option>
+                    <option value="Chosunilbo_myungjo">조선일보명조</option>
+                    <option value="ChosunSm">조선신명조</option>
+                    <option value="ChosunGu">조선굴림</option>
+                    <option value="ChosunSg">조선고딕</option>
+                    <option value="NotoSerifKR">노토 세리프 KR</option>
+                    <option value="GangwonEdu_OTFBoldA">강원교육튼튼</option>
+                    <option value="MaruBuriSemiBold">마루 부리</option>
+                    <option value="SunBatang-Light">순바탕 Light</option>
+                    <option value="S-CoreDream-3Light">에스코어 드림 Light</option>
+                    <option value="KyoboHandwriting2020A">교보손글씨 2020</option>
+                    <option value="Ownglyph_corncorn-Rg">온글잎 옥수수</option>
+                    <option value="SDKukdetopokki">국민연단 뚝딱</option>
+                    <option value="MapoGoldenPier">마포한강체</option>
+                    <option value="Iropke Batang">이롭게 바탕</option>
+                    <option value="Jeju Myeongjo">제주명조</option>
+                    <option value="Father_loveletter">아버지의 편지</option>
+                    <option value="KyoboHand">교보손글씨</option>
+                    <option value="Danjo-bold-Regular">단조 볼드</option>
+                    <option value="Ownglyph_wiseelist-Rg">온글잎 위씨리스트</option>
+                    <option value="Ownglyph_ParkDaHyun">온글잎 박다현</option>
+                    <option value="Uiyeun">유이연체</option>
+                    <option value="Yoonwoo">윤우체</option>
+                    <option value="Ownglyph_ryuttung-Rg">온글잎 류뚱</option>
+                    <option value="GowunDodum-Regular">고운 돋움</option>
+                    <option value="SF_HambakSnow">SF 함박눈</option>
+                    <option value="LeeSeoyun">이서윤체</option>
+                  </optgroup>
+                  <optgroup label="구글 · 일반">
+                    <option value="Noto Sans KR">Noto Sans KR</option>
+                    <option value="system-ui">시스템 UI</option>
+                    <option value="serif">Serif (브라우저)</option>
+                    <option value="sans-serif">Sans-serif (브라우저)</option>
+                    <option value="monospace">고정폭</option>
+                  </optgroup>
+                </select>
+              </label>
+              <div class="two-cols">
+                <label>원문 크기 <input id="sourceFontSize" type="number" min="12" max="28" value="16"></label>
+                <label>결과 크기 <input id="resultFontSize" type="number" min="12" max="28" value="16"></label>
+              </div>
+              <label class="checkline"><input id="enableMarkdown" type="checkbox" checked /><span class="checkline-label">마크다운 렌더링</span></label>
+            </article>
+
+            <div class="legacy-rule-fields" aria-hidden="true">
+              <input id="sourceWord" tabindex="-1">
+              <input id="targetWord" tabindex="-1">
+              <button id="addRule" type="button" tabindex="-1"></button>
+              <button id="toggleRules" type="button" tabindex="-1"></button>
+              <div id="rulesContent"><div id="rulesList"></div></div>
+            </div>
+
+            <article class="settings-section wide">
+              <h2>용어집</h2>
+              <div class="term-row">
+                <input id="sourceTerm" placeholder="원어">
+                <input id="targetTerm" placeholder="번역어">
+                <select id="termContext">
+                  <option value="general">일반</option><option value="technical">기술/IT</option><option value="medical">의학</option><option value="legal">법률</option><option value="business">비즈니스</option><option value="academic">학술</option>
+                </select>
+                <button id="addTerm" class="small-btn" type="button">추가</button>
+              </div>
+              <button id="toggleGlossary" class="section-toggle mini" type="button"><span>용어집 목록</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+              <div id="glossaryContent" class="panel-content">
+                <div class="history-toolbar">
+                  <input id="searchTerm" type="search" placeholder="용어 검색" autocomplete="off">
+                  <select id="filterContext"><option value="all">전체</option><option value="general">일반</option><option value="technical">기술/IT</option><option value="medical">의학</option><option value="legal">법률</option><option value="business">비즈니스</option><option value="academic">학술</option></select>
+                </div>
+                <div class="inline-actions"><button id="exportGlossary" class="small-btn" type="button">내보내기</button><button id="importGlossary" class="small-btn" type="button">가져오기</button><input id="glossaryFileInput" type="file" accept="application/json" hidden></div>
+                <div id="glossaryList"></div>
+              </div>
+            </article>
+
+            <article class="settings-section wide">
+              <h2>리버스 프록시와 커스텀 모델</h2>
+              <label class="checkline"><input id="useReverseProxy" type="checkbox" /><span class="checkline-label">OpenAI 호환 프록시 사용</span></label>
+              <div id="proxySettings" class="nested-setting">
+                <input id="reverseProxyUrl" placeholder="https://example.com" autocomplete="off">
+                <input id="reverseProxyApiKey" type="password" placeholder="프록시 API 키" autocomplete="off">
+                <div class="inline-actions"><button id="testProxyBtn" class="small-btn" type="button">연결 테스트</button><button id="detectModelsBtn" class="small-btn" type="button">모델 감지</button></div>
+              </div>
+              <div class="term-row">
+                <input id="customModelName" placeholder="모델 이름">
+                <select id="customModelProvider"><option value="gemini">Gemini</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="cohere">Cohere</option><option value="zai">Z.AI</option><option value="vertex">Vertex AI</option></select>
+                <button id="addCustomModel" class="small-btn" type="button">모델 추가</button>
+              </div>
+              <div id="customModelsContainer"></div>
+            </article>
+
+            <article class="settings-section wide">
+              <h2>Vertex AI</h2>
+              <div class="option-grid">
+                <label><input type="radio" name="vertexMode" value="express" checked /><span>Express API 키</span></label>
+                <label><input type="radio" name="vertexMode" value="full" /><span>Service Account JSON</span></label>
+              </div>
+              <div id="vertexExpressMode" class="nested-setting"><input id="vertexApiKey" type="password" placeholder="Vertex API 키" autocomplete="off"></div>
+              <div id="vertexFullMode" class="nested-setting">
+                <select id="vertexRegion"><option value="us-central1">us-central1</option><option value="us-east1">us-east1</option><option value="us-west1">us-west1</option><option value="asia-northeast3">asia-northeast3</option><option value="global">global</option><option value="__custom__">직접 입력</option></select>
+                <input id="vertexRegionCustom" placeholder="custom-region" autocomplete="off">
+                <textarea id="vertexServiceAccount" placeholder="Service Account JSON"></textarea>
+                <button id="importServiceAccountBtn" class="small-btn" type="button">JSON 가져오기</button>
+                <input id="serviceAccountFileInput" type="file" accept="application/json" hidden>
+              </div>
+              <button id="saveVertexSettings" class="primary-btn" type="button">Vertex 설정 저장</button>
+            </article>
+
+            <article class="settings-section wide">
+              <button id="toggleAdvancedParams" class="section-toggle" type="button"><span>고급 모델 파라미터</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+              <div id="advancedParamsContent" class="panel-content">
+                <div class="param-grid">
+                  <label>Temperature<input id="temperatureSlider" type="range" min="0" max="100" value="20"><input id="temperatureInput" type="number" step="0.01" min="0" max="1" value="0.2"></label>
+                  <label>Max Tokens<input id="maxTokensSlider" type="range" min="100" max="100000" value="2000"><input id="maxTokensInput" type="number" min="100" max="100000" value="2000"></label>
+                  <label>Top P<input id="topPSlider" type="range" min="0" max="100" value="95"><input id="topPInput" type="number" step="0.01" min="0" max="1" value="0.95"></label>
+                  <label id="topKGroup">Top K<input id="topKSlider" type="range" min="1" max="100" value="40"><input id="topKInput" type="number" min="1" max="100" value="40"></label>
+                </div>
+                <div class="inline-actions"><button id="resetParams" class="small-btn" type="button">초기화</button><button id="saveParams" class="small-btn" type="button">저장</button></div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <div class="footer-actions">
+          <button id="themeToggle" class="icon-action" type="button" title="테마 전환"><i class="fas fa-moon" aria-hidden="true"></i></button>
+          <button id="showShortcuts" class="icon-action" type="button" title="단축키"><i class="fas fa-keyboard" aria-hidden="true"></i></button>
+          <button class="changelog-btn icon-action" type="button" title="업데이트"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i><span id="updateNotification" class="update-notification"></span></button>
         </div>
-        <div class="data-management-section">
-            <h3>⚙️ 설정 관리</h3>
-            <div class="data-controls">
-                <button id="exportData" class="btn-small">
-                    <span>💾 설정 내보내기</span>
-                    <small>모든 설정 파일로 저장</small>
-                </button>
-                <button id="importData" class="btn-small">
-                    <span>📂 설정 가져오기</span>
-                    <small>저장된 설정 복원</small>
-                </button>
-                <input type="file" id="importFile" accept=".json" style="display: none;">
-            </div>
-        </div>
-        <div class="settings-section">
-            <div class="style-settings">
-                <h3>텍스트 스타일 설정</h3>
-                <div class="style-options">
-                    <div class="color-picker">
-                        <label for="baseColor">기본 텍스트 색상:</label>
-                        <input type="color" id="baseColor" value="#333333">
-                    </div>
-                    <div class="color-picker">
-                        <label for="quoteColor">대사 색상 (쌍따옴표):</label>
-                        <input type="color" id="quoteColor" value="#2E5CB8">
-                    </div>
-                    <div class="color-picker">
-                        <label for="thoughtColor">생각 색상 (홑따옴표):</label>
-                        <input type="color" id="thoughtColor" value="#6B4C9A">
-                    </div>
-                    <div class="color-picker">
-                        <label for="emphasisColor">이텔릭체 색상:</label>
-                        <input type="color" id="emphasisColor" value="#7B3B3B">
-                    </div>
-                    <div class="color-picker">
-                        <label for="boldColor">볼드체 색상:</label>
-                        <input type="color" id="boldColor" value="#FF0000">
-                    </div>
-                    <div class="font-size-controls">
-                        <div class="font-size-input">
-                            <label>입력창 폰트 크기:</label>
-                            <input type="number" 
-                                   id="sourceFontSize" 
-                                   min="8" 
-                                   max="32" 
-                                   value="16">
-                            <span>px</span>
-                        </div>
-                        <div class="font-size-input">
-                            <label>결과창 폰트 크기:</label>
-                            <input type="number" 
-                                   id="resultFontSize" 
-                                   min="8" 
-                                   max="32" 
-                                   value="16">
-                            <span>px</span>
-                        </div>
-                    </div>
-                    <div class="font-selector">
-                        <label for="fontFamily">글꼴 선택:</label>
-                        <select id="fontFamily">
-                            <option value="Arial">Arial</option>
-                            <option value="Times New Roman">Times New Roman</option>
-                            <option value="Courier New">Courier New</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Verdana">Verdana</option>
-                            <option value="Roboto Slab">Roboto Slab</option>
-                            <option value="Noto Serif Telugu">Noto Serif Telugu</option>
-                            <option value="Nanum Gothic">나눔고딕</option>
-                            <option value="Malgun Gothic">맑은고딕</option>
-                            <option value="RIDIBatang">RIDI 바탕</option>
-                            <option value="Pretendard-Regular">프리텐다드</option>
-                            <option value="SUIT-Regular">수트</option>
-                            <option value="Chosunilbo_myungjo">조선일보명조</option>
-                            <option value="ChosunSm">조선신명조</option>
-                            <option value="ChosunGu">조선굴림</option>
-                            <option value="ChosunSg">조선가는고딕</option>
-                            <option value="NotoSerifKR">본명조</option>
-                            <option value="GangwonEdu_OTFBoldA">강원도교육체</option>
-                            <option value="MaruBuriSemiBold">마루부리</option>
-                            <option value="SunBatang-Light">순바탕</option>
-                            <option value="GowunDodum-Regular">고운돋움</option>
-                            <option value="S-CoreDream-3Light">에스코어드림</option>
-                            <option value="KyoboHandwriting2020A">교보손글씨 2020 박도연</option>
-                            <option value="Ownglyph_corncorn-Rg">온글잎 콘콘체</option>
-                            <option value="Ownglyph_wiseelist-Rg">온글잎 위씨리스트</option>
-                            <option value="Ownglyph_ParkDaHyun">온글잎 박다현체</option>
-                            <option value="Uiyeun">온글잎 의연체</option>
-                            <option value="Yoonwoo">온글잎 윤우체</option>
-                            <option value="Ownglyph_ryuttung-Rg">온글잎 류뚱체</option>
-                            <option value="SDKukdetopokki">국대떡볶이</option>
-                            <option value="SF_HambakSnow">SF함박눈</option>
-                            <option value="MapoGoldenPier">마포금빛나루</option>
-                            <option value="Iropke Batang">이롭게바탕</option>
-                            <option value="Jeju Myeongjo">제주명조</option>
-                            <option value="Father_loveletter">아빠의 연애편지</option>
-                            <option value="KyoboHand">교보손글씨 2019</option>
-                            <option value="Danjo-bold-Regular">단조</option>
-                            <option value="LeeSeoyun">이서윤</option>
-                        </select>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="enableMarkdown" checked>
-                        <label for="enableMarkdown">마크다운 변환 사용</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="glossary-section">
-            <h3>
-                용어집/사전 기능
-                <button class="toggle-btn" id="toggleGlossary"><i class="fas fa-chevron-down"></i></button>
-            </h3>
-            <div class="glossary-content" id="glossaryContent">
-                <div class="glossary-input">
-                    <input type="text" id="sourceTerm" placeholder="원본 용어">
-                    <input type="text" id="targetTerm" placeholder="번역된 용어">
-                    <select id="termContext" class="term-context">
-                        <option value="all">모든 맥락</option>
-                        <option value="general">일반</option>
-                        <option value="tech">기술/IT</option>
-                        <option value="med">의학</option>
-                        <option value="law">법률</option>
-                        <option value="biz">비즈니스</option>
-                        <option value="acad">학술</option>
-                    </select>
-                    <button id="addTerm" class="btn-small">용어 추가</button>
-                </div>
-                <div class="glossary-search">
-                    <input type="text" id="searchTerm" placeholder="용어 검색...">
-                    <select id="filterContext" class="filter-context">
-                        <option value="all">모든 맥락</option>
-                        <option value="general">일반</option>
-                        <option value="tech">기술/IT</option>
-                        <option value="med">의학</option>
-                        <option value="law">법률</option>
-                        <option value="biz">비즈니스</option>
-                        <option value="acad">학술</option>
-                    </select>
-                </div>
-                <div class="glossary-controls">
-                    <button id="exportGlossary" class="btn-small">용어집 내보내기</button>
-                    <button id="importGlossary" class="btn-small">용어집 가져오기</button>
-                    <input type="file" id="glossaryFileInput" accept=".json,.csv,.xlsx" style="display: none;">
-                </div>
-                <div class="glossary-list" id="glossaryList"></div>
-            </div>
-        </div>
-        
-        <div class="translation-history-section">
-            <h3>
-                번역 히스토리
-                <button id="toggleHistory" class="toggle-btn"><i class="fas fa-chevron-down"></i></button>
-            </h3>
-            <div id="historyContent" class="history-content collapsed">
-                <div class="history-filter">
-                    <button data-filter="all" id="showAllHistory" class="btn-small active">전체</button>
-                    <button data-filter="favorites" id="showBookmarked" class="btn-small">즐겨찾기</button>
-                </div>
-                <div class="history-controls">
-                    <!-- 검색 입력 필드 추가 -->
-                    <div class="history-search">
-                        <input type="text" id="historySearch" placeholder="히스토리 검색..." class="history-search-input">
-                    </div>
-                    <button id="clearHistory" class="btn-small">히스토리 비우기</button>
-                    <button id="exportHistory" class="btn-small">히스토리 내보내기</button>
-                    <button id="importHistory" class="btn-small">히스토리 가져오기</button>
-                    <input type="file" id="historyFileInput" accept=".json" style="display: none;">
-                </div>
-                <div class="history-list" id="historyList">
-                    <!-- 히스토리 아이템들이 여기에 추가됨 -->
-                    <div class="history-source" data-label="원문">
-                        <!-- 원문 내용 -->
-                    </div>
-                    <div class="history-translated" data-label="번역">
-                        <!-- 번역 내용 -->
-                    </div>
-                </div>
-                </div>
-            </div>
-      </div>
-      <div id="toastContainer" class="toast-container"></div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="autoSaveNotification" class="autosave">자동 저장됨</div>
+
+  <div id="shortcutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shortcutModalTitle">
+    <div class="modal-content">
+      <button class="close-modal" type="button" aria-label="닫기">&times;</button>
+      <h3 id="shortcutModalTitle">단축키</h3>
+      <p><kbd>Ctrl</kbd> + <kbd>Enter</kbd> 번역</p>
+      <p><kbd>Esc</kbd> 번역 취소</p>
+      <p><kbd>Alt</kbd> + <kbd>1</kbd> 한→영</p>
+      <p><kbd>Alt</kbd> + <kbd>2</kbd> 영→한</p>
+    </div>
+  </div>
+
+  <div id="changelogModal" class="modal changelog-modal" role="dialog" aria-modal="true" aria-labelledby="changelogModalTitle">
+    <div class="modal-content changelog-content">
+      <button class="close-modal" type="button" aria-label="닫기">&times;</button>
+      <h3 id="changelogModalTitle">업데이트</h3>
+      <div class="changelog-list">
+        <div class="changelog-item"><h4>v1.9.0</h4><p>최신 모델 목록, 리버스 프록시, 고급 파라미터, 용어집과 일괄 번역 기능을 유지합니다.</p></div>
       </div>
     </div>
-    <script src="translator.js?v=260508a1"></script>
-  </body>
+  </div>
+
+  <script src="translator.js"></script>
+</body>
 </html>
