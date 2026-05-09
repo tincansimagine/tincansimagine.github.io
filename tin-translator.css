@@ -1601,6 +1601,47 @@ kbd {
   .editor-pane {
     min-height: min(380px, 70vh);
     max-height: min(820px, 85vh);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--line-soft);
+  }
+
+  .editor-pane > .pane-header {
+    background: transparent;
+  }
+
+  .editor-pane .source-url-bar,
+  .editor-pane .counter-line {
+    background: transparent;
+    border-top-color: var(--line-soft);
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .editor-pane .source-url-bar {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .translate-layout .source-url-input {
+    box-shadow: none;
+    border: 1px solid var(--line-soft);
+    background: var(--surface-soft);
+  }
+
+  [data-theme="dark"] .translate-layout .source-url-input {
+    background: var(--surface-muted);
+    border-color: var(--line-soft);
+  }
+
+  .editor-pane .icon-btn,
+  .editor-pane .file-upload-btn {
+    background: color-mix(in srgb, var(--surface-muted) 70%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--line-soft) 65%, transparent);
+  }
+
+  .editor-pane.result-pane .formatted-result {
+    background: transparent;
+    border-top-color: var(--line-soft);
   }
 
   .command-bar {
